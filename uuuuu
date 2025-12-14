@@ -1,0 +1,1834 @@
+	
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+-- Ждём пока все основные сервисы загрузятся
+repeat wait() until game:GetService("Players")
+repeat wait() until game:GetService("Players").LocalPlayer
+repeat wait() until game:GetService("ReplicatedStorage")
+repeat wait() until game:GetService("Workspace")
+
+-- Даём дополнительное время на загрузку игровых данных
+wait(2)
+
+	local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/browncur/123/refs/heads/main/fenix.lua"))()
+
+	local PlaceId = game.PlaceId
+	local GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local Workspace = game:GetService("Workspace")
+	local Players = game:GetService("Players")
+	local LocalPlayer = Players.LocalPlayer
+
+	local Window = Fenix:CreateWindow({
+		Title = tostring(GameName).." | Apel Hub", 
+		TabWidth = 140,
+		Size = UDim2.fromOffset(580, 400),
+		Acrylic = false,
+		Theme = "GameSense",
+		MinimizeKey = Enum.KeyCode.LeftControl,
+		UserInfo = true,
+		UserInfoSubtitle = "",
+		UserInfoSubtitleColor = Color3.fromRGB(255, 55, 0),
+		UserInfoPosition = "Bottom"
+	})
+
+	local Options = Fenix.Options
+
+	local Tabs = {
+		Credits = Window:AddTab({ Title = "Credits", Icon = ""}),
+		Lobby = Window:AddTab({ Title = "Lobby", Icon = ""}),
+		Macros = Window:AddTab({ Title = "Macros", Icon = ""}),
+		Cards = Window:AddTab({ Title = "Cards", Icon = ""}),
+		Other = Window:AddTab({ Title = "Other", Icon = ""}),
+		Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+	}
+
+	function ShowNotification(String)
+		Fenix:Notify({
+			Title = "Apel Hub - Notifications",
+			Content = String,
+			Duration = 5
+		})
+	end
+
+	-- ============================================================================
+	-- DYNAMIC GAME DATA LOADER
+	-- ============================================================================
+
+	local GameData = ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Data")
+
+	-- Маппинг названий режимов
+	local GameModeMapping = {
+		["Story"] = "Waves",
+		["VirtualRealm"] = "VirtualRealm",
+		["LegendStages"] = "LegendStages"
+	}
+
+	-- Функция получения списка карт для режима
+	local function getMapsForMode(mode)
+		local folderName = GameModeMapping[mode]
+		if not folderName then return {} end
+		
+		local modeFolder = GameData:FindFirstChild(folderName)
+		if not modeFolder then return {} end
+		
+		local maps = {}
+		for _, child in pairs(modeFolder:GetChildren()) do
+			if child:IsA("ModuleScript") and child.Name ~= "PackageLink" then
+				table.insert(maps, child.Name)
+			end
+		end
+		
+		table.sort(maps)
+		return maps
+	end
+
+	-- Функция получения списка актов для карты
+	local function getActsForMap(mode, mapName)
+		local folderName = GameModeMapping[mode]
+		if not folderName then return {} end
+		
+		local modeFolder = GameData:FindFirstChild(folderName)
+		if not modeFolder then return {} end
+		
+		local mapFolder = modeFolder:FindFirstChild(mapName)
+		if not mapFolder then return {} end
+		
+		local acts = {}
+		for _, child in pairs(mapFolder:GetChildren()) do
+			if child:IsA("ModuleScript") and tonumber(child.Name) then
+				table.insert(acts, child.Name)
+			end
+		end
+		
+		-- Сортируем по номеру
+		table.sort(acts, function(a, b) return tonumber(a) < tonumber(b) end)
+		
+		-- Проверяем наличие Infinite
+		if mapFolder:FindFirstChild("Infinite") then
+			table.insert(acts, "Infinite")
+		end
+		
+		return acts
+	end
+
+	-- ============================================================================
+	-- BYTENET PACKET CREATOR MODULE
+	-- ============================================================================
+
+	local ByteNetModule = {}
+
+	function ByteNetModule.floatToBytes(value)
+		if value == 0 then
+			return "\000\000\000\000"
+		end
+		
+		local sign = value < 0 and 1 or 0
+		value = math.abs(value)
+		
+		local exponent = math.floor(math.log(value) / math.log(2))
+		local mantissa = (value / math.ldexp(1, exponent) - 1) * 0x800000
+		
+		exponent = exponent + 127
+		
+		local byte1 = math.floor(mantissa % 256)
+		mantissa = math.floor(mantissa / 256)
+		local byte2 = math.floor(mantissa % 256)
+		mantissa = math.floor(mantissa / 256)
+		local byte3 = math.floor(mantissa % 128) + (exponent % 2) * 128
+		local byte4 = math.floor(exponent / 2) + sign * 128
+		
+		return string.char(byte1, byte2, byte3, byte4)
+	end
+
+	function ByteNetModule.createPacket(difficulty, difficultyPercent, mode, act, friendOnly, mapName)
+		local parts = {}
+		
+		table.insert(parts, "'")
+		
+		local diffLen = #difficulty
+		table.insert(parts, string.char(diffLen % 256, math.floor(diffLen / 256)))
+		table.insert(parts, difficulty)
+		table.insert(parts, "\000")
+		
+		table.insert(parts, ByteNetModule.floatToBytes(difficultyPercent))
+		
+		local modeLen = #mode
+		table.insert(parts, string.char(modeLen % 256, math.floor(modeLen / 256)))
+		table.insert(parts, mode)
+		
+		table.insert(parts, "\001")
+		table.insert(parts, "\000")
+		
+		table.insert(parts, act)
+		
+		table.insert(parts, friendOnly and "\001" or "\000")
+		
+		local mapLen = #mapName
+		table.insert(parts, string.char(mapLen % 256, math.floor(mapLen / 256)))
+		table.insert(parts, mapName)
+		
+		return table.concat(parts)
+	end
+
+	function ByteNetModule.sendPacket(difficulty, difficultyPercent, mode, act, friendOnly, mapName)
+		local isLobby = Workspace:GetAttribute("IsLobby")
+		
+		if not isLobby then
+			ShowNotification("❌ You must be in lobby to start a game!")
+			return false
+		end
+		
+		local packetString = ByteNetModule.createPacket(difficulty, difficultyPercent, mode, act, friendOnly, mapName)
+		local args = { buffer.fromstring(packetString) }
+		
+		local success, error = pcall(function()
+			ReplicatedStorage:WaitForChild("ByteNetReliable"):FireServer(unpack(args))
+		end)
+		
+		if success then
+			ShowNotification(string.format("🚀 Starting: %s %d%% | Act %s | %s", difficulty, difficultyPercent * 100, act, mode))
+			return true
+		else
+			ShowNotification("❌ Failed to start game!")
+			warn("ByteNet Error:", error)
+			return false
+		end
+	end
+
+	-- Rest of the original script continues here...
+	-- (I'll include the full Anywhere Placement, Macros, and Other sections)
+
+	-- ============================================================================
+	-- ANYWHERE UNIT PLACEMENT MODULE  
+	-- ============================================================================
+
+	local AnywherePlace = {
+		Enabled = false,
+		Connections = {},
+		Initialized = false
+	}
+
+	function AnywherePlace:Initialize()
+		if self.Initialized then return end
+		
+		local UserInputService = game:GetService("UserInputService")
+		
+		-- Проверяем что мы не в лобби
+		if Workspace:GetAttribute("IsLobby") then
+			warn("Cannot initialize AnywherePlace in lobby!")
+			return
+		end
+		
+		local success, error = pcall(function()
+			self.ghostUnitsFolder = Workspace:WaitForChild("Ignore"):WaitForChild("GhostUnits")
+			self.hotbarUnits = LocalPlayer.PlayerGui:WaitForChild("GameUI"):WaitForChild("HUD")
+				:WaitForChild("Bottom"):WaitForChild("Hotbar"):WaitForChild("Units")
+			
+			self.PlaceUnitRF = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("_Index")
+				:WaitForChild("sleitnick_knit@1.7.0"):WaitForChild("knit")
+				:WaitForChild("Services"):WaitForChild("TowerService")
+				:WaitForChild("RF"):WaitForChild("PlaceUnit")
+		end)
+		
+		if not success then
+			warn("Failed to initialize AnywherePlace:", error)
+			return
+		end
+		self.lastGhostData = {
+			unitID = nil,
+			cframe = nil,
+			timestamp = 0
+		}
+		
+		self.lastGhostName = nil
+		self.isOurCall = false
+		self.gameTriedToPlace = false
+		self.gamePlacedSuccessfully = false
+		
+		local oldNamecall
+		oldNamecall = hookmetamethod(game, "__namecall", function(remote, ...)
+			local method = getnamecallmethod()
+			
+			if method == "InvokeServer" and remote == self.PlaceUnitRF then
+				if self.isOurCall then
+					self.isOurCall = false
+					return oldNamecall(remote, ...)
+				end
+				
+				self.gameTriedToPlace = true
+				local result = oldNamecall(remote, ...)
+				
+				if result and result ~= false then
+					self.gamePlacedSuccessfully = true
+				else
+					self.gamePlacedSuccessfully = false
+				end
+				
+				return result
+			end
+			
+			return oldNamecall(remote, ...)
+		end)
+		
+		self.Initialized = true
+	end
+
+	function AnywherePlace:GetActiveGhost()
+		for _, ghostUnit in pairs(self.ghostUnitsFolder:GetChildren()) do
+			if ghostUnit:IsA("Model") and ghostUnit:FindFirstChild("HumanoidRootPart") then
+				return ghostUnit
+			end
+		end
+		return nil
+	end
+
+	function AnywherePlace:GetUnitID(ghostUnit)
+		if not ghostUnit then return nil end
+		
+		local ghostName = ghostUnit.Name
+		local unitsWithPositions = {}
+		
+		for _, unitSlot in pairs(self.hotbarUnits:GetChildren()) do
+			if unitSlot:IsA("GuiObject") and unitSlot.AbsolutePosition then
+				local unitInfo = unitSlot:FindFirstChild("Unit")
+				if unitInfo then
+					local unitInfoChild = unitInfo:FindFirstChild("UnitInfomation") or unitInfo:FindFirstChild("UnitInformation")
+					if unitInfoChild then
+						local unitData = unitInfoChild:FindFirstChild("Unit")
+						if unitData and unitData:FindFirstChild("WorldModel") then
+							for _, model in pairs(unitData.WorldModel:GetChildren()) do
+								if model.Name == ghostName then
+									table.insert(unitsWithPositions, {
+										slot = unitSlot,
+										xPos = unitSlot.AbsolutePosition.X
+									})
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		
+		if #unitsWithPositions == 0 then return nil end
+		
+		local allSlots = {}
+		for _, unitSlot in pairs(self.hotbarUnits:GetChildren()) do
+			if unitSlot:IsA("GuiObject") and unitSlot.AbsolutePosition then
+				table.insert(allSlots, {
+					slot = unitSlot,
+					xPos = unitSlot.AbsolutePosition.X
+				})
+			end
+		end
+		
+		table.sort(allSlots, function(a, b) return a.xPos < b.xPos end)
+		
+		for position, slotData in ipairs(allSlots) do
+			if slotData.slot == unitsWithPositions[1].slot then
+				return position
+			end
+		end
+		
+		return nil
+	end
+
+	function AnywherePlace:PlaceTower(towerID, cframe)
+		self.isOurCall = true
+		
+		local success, result = pcall(function()
+			return self.PlaceUnitRF:InvokeServer(towerID, cframe)
+		end)
+		
+		if success then
+			print("✅ Unit placed anywhere!")
+		else
+			self.isOurCall = false
+		end
+	end
+
+	function AnywherePlace:UpdateData()
+		local activeGhost = self:GetActiveGhost()
+		
+		if activeGhost then
+			local hrp = activeGhost:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				if activeGhost.Name ~= self.lastGhostName then
+					local unitID = self:GetUnitID(activeGhost)
+					if unitID then
+						self.lastGhostData.unitID = unitID
+						self.lastGhostName = activeGhost.Name
+					end
+				end
+				
+				if self.lastGhostData.unitID then
+					self.lastGhostData.cframe = hrp.CFrame * CFrame.new(0, -1.5, 0)
+					self.lastGhostData.timestamp = tick()
+				end
+			end
+		else
+			if self.lastGhostName then
+				self.lastGhostName = nil
+			end
+		end
+	end
+
+	function AnywherePlace:Enable()
+		if self.Enabled then return end
+		self:Initialize()
+		self.Enabled = true
+		
+		local RunService = game:GetService("RunService")
+		local UserInputService = game:GetService("UserInputService")
+		
+		table.insert(self.Connections, RunService.Heartbeat:Connect(function()
+			if self.Enabled then
+				self:UpdateData()
+			end
+		end))
+		
+		local clickedWithGhost = false
+		
+		table.insert(self.Connections, UserInputService.InputBegan:Connect(function(input, gameProcessed)
+			if not self.Enabled then return end
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local data = self.lastGhostData
+				if data.unitID and data.cframe and (tick() - data.timestamp) < 0.1 then
+					self.gameTriedToPlace = false
+					self.gamePlacedSuccessfully = false
+					clickedWithGhost = true
+					
+					local savedUnitID = data.unitID
+					local savedCFrame = data.cframe
+					
+					task.spawn(function()
+						task.wait(0.15)
+						
+						if clickedWithGhost and not self.gameTriedToPlace then
+							self:PlaceTower(savedUnitID, savedCFrame)
+						elseif self.gameTriedToPlace and not self.gamePlacedSuccessfully then
+							self:PlaceTower(savedUnitID, savedCFrame)
+						end
+						
+						clickedWithGhost = false
+						data.unitID = nil
+						data.cframe = nil
+					end)
+				end
+			end
+		end))
+		
+	end
+
+	function AnywherePlace:Disable()
+		if not self.Enabled then return end
+		self.Enabled = false
+		
+		for _, conn in pairs(self.Connections) do
+			conn:Disconnect()
+		end
+		self.Connections = {}
+		
+		if self.lastGhostData then
+			self.lastGhostData.unitID = nil
+			self.lastGhostData.cframe = nil
+		end
+		
+	end
+
+	-- ======================
+	-- MACRO SYSTEM
+	-- ======================
+
+	local MACRO_FOLDER = "UTD MACRO"
+
+	local function ensureMacroFolder()
+		if not isfolder(MACRO_FOLDER) then
+			makefolder(MACRO_FOLDER)
+		end
+	end
+
+	if _G.MacroRecorderConnections then
+		for _, connection in pairs(_G.MacroRecorderConnections) do
+			connection:Disconnect()
+		end
+	end
+
+	_G.MacroRecorderConnections = {}
+	_G.MacroData = _G.MacroData or {}
+
+	local isRecording = false
+	local currentMacro = {}
+	local macroName = nil
+	local unitIndexCounter = 0
+	local unitIDToIndex = {}
+
+	-- Ленивая загрузка TowerService (только когда не в лобби)
+	local TowerService = nil
+	local PlaceUnit = nil
+	local UpgradeUnit = nil
+	local SellUnit = nil
+
+	local function ensureTowerServiceLoaded()
+		if TowerService then return true end
+		
+		local success, result = pcall(function()
+			TowerService = ReplicatedStorage.Packages._Index["sleitnick_knit@1.7.0"]
+				.knit.Services.TowerService.RF
+			
+			PlaceUnit = TowerService.PlaceUnit
+			UpgradeUnit = TowerService.UpgradeUnit
+			SellUnit = TowerService.SellUnit
+		end)
+		
+		return success
+	end
+
+	local function isUUID(str)
+		return string.match(str, "^%x%x%x%x%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%x%x%x%x%x%x%x%x$") ~= nil
+	end
+
+	local function findUnitByPosition(position, maxDistance)
+		maxDistance = maxDistance or 5
+		local unitsFolder = Workspace:FindFirstChild("Ignore") and Workspace.Ignore:FindFirstChild("Units")
+		
+		if not unitsFolder then return nil end
+		
+		local closestUnit = nil
+		local closestDistance = maxDistance
+		
+		for _, unit in pairs(unitsFolder:GetChildren()) do
+			if unit:IsA("Model") and isUUID(unit.Name) and unit.PrimaryPart then
+				local distance = (unit.PrimaryPart.Position - position).Magnitude
+				if distance < closestDistance then
+					closestDistance = distance
+					closestUnit = unit
+				end
+			end
+		end
+		
+		return closestUnit
+	end
+
+	local function getUnitNameByID(towerID)
+		local hotbarUnits = LocalPlayer.PlayerGui:WaitForChild("GameUI"):WaitForChild("HUD")
+			:WaitForChild("Bottom"):WaitForChild("Hotbar"):WaitForChild("Units")
+		
+		local allSlots = {}
+		for _, unitSlot in pairs(hotbarUnits:GetChildren()) do
+			if unitSlot:IsA("GuiObject") and unitSlot.AbsolutePosition then
+				table.insert(allSlots, {
+					slot = unitSlot,
+					xPos = unitSlot.AbsolutePosition.X
+				})
+			end
+		end
+		
+		table.sort(allSlots, function(a, b) return a.xPos < b.xPos end)
+		
+		if allSlots[towerID] then
+			local unitSlot = allSlots[towerID].slot
+			local unitInfo = unitSlot:FindFirstChild("Unit")
+			if unitInfo then
+				local unitInfoChild = unitInfo:FindFirstChild("UnitInfomation") or unitInfo:FindFirstChild("UnitInformation")
+				if unitInfoChild then
+					local unitData = unitInfoChild:FindFirstChild("Unit")
+					if unitData and unitData:FindFirstChild("WorldModel") then
+						for _, model in pairs(unitData.WorldModel:GetChildren()) do
+							if model:IsA("Model") then
+								return model.Name
+							end
+						end
+					end
+				end
+			end
+		end
+		
+		return "Unknown"
+	end
+
+	local oldNamecall
+	oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+		local method = getnamecallmethod()
+		local args = {...}
+		
+		-- Проверяем что TowerService загружен
+		if not ensureTowerServiceLoaded() then
+			return oldNamecall(self, ...)
+		end
+		
+		if self == PlaceUnit and method == "InvokeServer" then
+			if isRecording and #args >= 2 then
+				local towerID = args[1]
+				local cframe = args[2]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						wait(0.5)
+						local unit = findUnitByPosition(cframe.Position)
+						
+						if unit then
+							local realUnitID = unit.Name
+							unitIndexCounter = unitIndexCounter + 1
+							local unitIndex = unitIndexCounter
+							
+							unitIDToIndex[realUnitID] = unitIndex
+							
+							local unitName = getUnitNameByID(towerID)
+							
+							local record = {
+								action = "place",
+								towerID = towerID,
+								unitName = unitName,
+								cframe = {
+									position = {cframe.Position.X, cframe.Position.Y, cframe.Position.Z},
+									rotation = {cframe:GetComponents()}
+								},
+								unitIndex = unitIndex,
+								timestamp = tick()
+							}
+							
+							table.insert(currentMacro, record)
+							print(string.format("📹 PLACED: %s (Slot %d, Tower #%d)", unitName, towerID, unitIndex))
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		if self == UpgradeUnit and method == "InvokeServer" then
+			if isRecording and #args >= 1 then
+				local realUnitID = args[1]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						if isUUID(realUnitID) then
+							local unitIndex = unitIDToIndex[realUnitID]
+							
+							if unitIndex then
+								local record = {
+									action = "upgrade",
+									unitIndex = unitIndex,
+									timestamp = tick()
+								}
+								
+								table.insert(currentMacro, record)
+								print(string.format("📹 UPGRADE: Tower #%d", unitIndex))
+							end
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		if self == SellUnit and method == "InvokeServer" then
+			if isRecording and #args >= 1 then
+				local realUnitID = args[1]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						if isUUID(realUnitID) then
+							local unitIndex = unitIDToIndex[realUnitID]
+							
+							if unitIndex then
+								local record = {
+									action = "sell",
+									unitIndex = unitIndex,
+									timestamp = tick()
+								}
+								
+								table.insert(currentMacro, record)
+								print(string.format("📹 SELL: Tower #%d", unitIndex))
+								
+								unitIDToIndex[realUnitID] = nil
+							end
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		return oldNamecall(self, ...)
+	end)
+	local function placeUnitUntilSuccess(towerID, cframe)
+		if not ensureTowerServiceLoaded() then
+			warn("TowerService not loaded!")
+			return false
+		end
+		
+		while true do
+			local success, result = pcall(function()
+				return PlaceUnit:InvokeServer(towerID, cframe)
+			end)
+			
+			if success and (result == true or (type(result) == "table" and result.success == true)) then
+				return true
+			end
+			wait(0.3)
+		end
+	end
+
+	local function upgradeUnitUntilSuccess(unitID)
+		if not ensureTowerServiceLoaded() then
+			warn("TowerService not loaded!")
+			return false
+		end
+		
+		while true do
+			local success, result = pcall(function()
+				return UpgradeUnit:InvokeServer(unitID)
+			end)
+			
+			if success and (result == true or (type(result) == "table" and result.success == true)) then
+				return true
+			end
+			wait(0.3)
+		end
+	end
+
+	local function sellUnit(unitID)
+		if not ensureTowerServiceLoaded() then
+			warn("TowerService not loaded!")
+			return false
+		end
+		
+		local success, result = pcall(function()
+			return SellUnit:InvokeServer(unitID)
+		end)
+		
+		if success and (result == true or (type(result) == "table" and result.success == true)) then
+			return true
+		end
+		
+		return false
+	end
+
+	local function playMacro(macro, fast)
+		local indexToRealID = {}
+		local startTime = tick()
+		
+		for i, record in ipairs(macro) do
+			local delay
+			if fast then
+				delay = 0.05
+			else
+				if i > 1 then
+					delay = record.timestamp - macro[i-1].timestamp
+				else
+					delay = 0
+				end
+			end
+			
+			if delay > 0 then
+				if not fast and delay > 1 then
+					print(string.format("⏳ Waiting %.1f seconds...", delay))
+				end
+				wait(delay)
+			end
+			
+			if record.action == "place" then
+				local cframe
+				
+				if type(record.cframe) == "table" then
+					local pos = record.cframe.position
+					local rot = record.cframe.rotation
+					cframe = CFrame.new(pos[1], pos[2], pos[3], rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8], rot[9])
+				else
+					cframe = record.cframe
+				end
+				
+				placeUnitUntilSuccess(record.towerID, cframe)
+				wait(0.5)
+				
+				local newUnit = findUnitByPosition(cframe.Position)
+				if newUnit then
+					indexToRealID[record.unitIndex] = newUnit.Name
+				end
+				
+				if not fast then
+					print(string.format("✅ [%.1fs] Placed unit #%d", tick() - startTime, record.unitIndex))
+				end
+				
+			elseif record.action == "upgrade" then
+				local realID = indexToRealID[record.unitIndex]
+				if realID then
+					upgradeUnitUntilSuccess(realID)
+					
+					if not fast then
+						print(string.format("✅ [%.1fs] Upgraded unit #%d", tick() - startTime, record.unitIndex))
+					end
+				end
+				
+			elseif record.action == "sell" then
+				local realID = indexToRealID[record.unitIndex]
+				if realID then
+					sellUnit(realID)
+					indexToRealID[record.unitIndex] = nil
+					
+					if not fast then
+						print(string.format("✅ [%.1fs] Sold unit #%d", tick() - startTime, record.unitIndex))
+					end
+				end
+			end
+		end
+		
+		if not fast then
+			print(string.format("🏁 Macro completed in %.1f seconds", tick() - startTime))
+		end
+	end
+
+	local function saveMacroToFile(name, macro)
+		ensureMacroFolder()
+		
+		local data = "-- Macro: " .. name .. "\n"
+		data = data .. "-- Created: " .. os.date("%Y-%m-%d %H:%M:%S") .. "\n"
+		data = data .. "-- Actions: " .. #macro .. "\n\n"
+		data = data .. "local macro = {\n"
+		
+		for i, record in ipairs(macro) do
+			if record.action == "place" then
+				local pos = record.cframe.position
+				local rot = record.cframe.rotation
+				
+				data = data .. string.format("    {action = \"place\", towerID = %d, unitName = \"%s\", unitIndex = %d, cframe = CFrame.new(%.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f, %.6f), timestamp = %.3f},\n",
+					record.towerID, record.unitName or "Unknown", record.unitIndex,
+					pos[1], pos[2], pos[3],
+					rot[1], rot[2], rot[3], rot[4], rot[5], rot[6], rot[7], rot[8], rot[9],
+					record.timestamp
+				)
+			elseif record.action == "upgrade" then
+				data = data .. string.format("    {action = \"upgrade\", unitIndex = %d, timestamp = %.3f},\n",
+					record.unitIndex, record.timestamp
+				)
+			elseif record.action == "sell" then
+				data = data .. string.format("    {action = \"sell\", unitIndex = %d, timestamp = %.3f},\n",
+					record.unitIndex, record.timestamp
+				)
+			end
+		end
+		
+		data = data .. "}\n\nreturn macro"
+		writefile(MACRO_FOLDER .. "/" .. name .. ".lua", data)
+	end
+
+	local function loadMacroFromFile(name)
+		local filename = MACRO_FOLDER .. "/" .. name .. ".lua"
+		if not isfile(filename) then return nil end
+		
+		local success, content = pcall(function()
+			return readfile(filename)
+		end)
+		
+		if not success then return nil end
+		
+		local func = loadstring(content)
+		if not func then return nil end
+		
+		return func()
+	end
+
+	local function loadAllMacros()
+		ensureMacroFolder()
+		
+		local macroList = {}
+		
+		for name, _ in pairs(_G.MacroData) do
+			table.insert(macroList, name)
+		end
+		
+		local success, files = pcall(function()
+			return listfiles(MACRO_FOLDER)
+		end)
+		
+		if success and files then
+			for _, file in ipairs(files) do
+				if file:match("%.lua$") then
+					local name = file:match("([^/\\]+)%.lua$")
+					if name then
+						local found = false
+						for _, existing in ipairs(macroList) do
+							if existing == name then
+								found = true
+								break
+							end
+						end
+						
+						if not found then
+							table.insert(macroList, name)
+							local macro = loadMacroFromFile(name)
+							if macro then
+								_G.MacroData[name] = macro
+							end
+						end
+					end
+				end
+			end
+		end
+		
+		return macroList
+	end
+
+	-- ======================
+	-- GUI TABS
+	-- ======================
+
+	do
+		-- ============================================================================
+		-- CREDITS TAB
+		-- ============================================================================
+		
+		local ParagraphCredit = Tabs.Credits:AddParagraph({
+			Title = "Apel Hub",
+			Content = "Owner - ApelsinkaFr",
+			Alignment = Enum.TextXAlignment.Center
+		})
+
+		Tabs.Credits:AddButton({
+			Title = "Copy Discord Link",
+			Description = "",
+			Callback = function()
+				setclipboard("https://discord.gg/ZxfyQKkrGC")
+				ShowNotification("✅ Discord link copied!")
+			end
+		})
+
+	-- ============================================================================
+	-- LOBBY TAB
+	-- ============================================================================
+
+	local LobbySection = Tabs.Lobby:AddSection("Game Settings")
+
+	local selectedDifficulty = "Easy"
+	local selectedMode = "Story"
+	local selectedMap = nil
+	local selectedAct = nil
+	local difficultyPercent = 1.0
+	local friendOnly = false
+
+	-- Переменные для хранения dropdown'ов
+	local ModeDropdown
+	local MapDropdown
+	local ActDropdown
+
+	-- Dropdown для сложности
+	Tabs.Lobby:AddDropdown("Difficulty", {
+		Title = "🎯 Difficulty",
+		Values = {"Easy", "Normal", "Hard", "Nightmare"},
+		Multi = false,
+		Default = 1,
+		Callback = function(Value)
+			selectedDifficulty = Value
+		end
+	})
+
+	-- Slider для процента сложности
+	Tabs.Lobby:AddSlider("DifficultyPercent", {
+		Title = "📊 Difficulty Percent",
+		Description = "Adjust difficulty percentage (100% = normal)",
+		Default = 100,
+		Min = 50,
+		Max = 300,
+		Rounding = 0,
+		Callback = function(Value)
+			difficultyPercent = Value / 100
+		end
+	})
+
+	local ModeDropdown = Tabs.Lobby:AddDropdown("Mode", {
+		Title = "🎮 Game Mode",
+		Values = {"Story", "VirtualRealm", "LegendStages"},
+		Multi = false,
+		Default = 1,
+	})
+
+	local initialMaps = getMapsForMode("Story")
+	local MapDropdown = Tabs.Lobby:AddDropdown("Map", {
+		Title = "🗺️ Map",
+		Values = #initialMaps > 0 and initialMaps or {"No maps available"},
+		Multi = false,
+		Default = 1,
+	})
+
+	local initialActs = #initialMaps > 0 and getActsForMap("Story", initialMaps[1]) or {}
+	local ActDropdown = Tabs.Lobby:AddDropdown("Act", {
+		Title = "📜 Act / Chapter",
+		Values = #initialActs > 0 and initialActs or {"No acts available"},
+		Multi = false,
+		Default = 1,
+	})
+
+	-- Устанавливаем начальные значения
+	if #initialMaps > 0 then
+		selectedMap = initialMaps[1]
+		if #initialActs > 0 then
+			selectedAct = initialActs[1]
+		end
+	end
+
+	-- ТЕПЕРЬ добавляем логику через OnChanged (ПОСЛЕ создания всех dropdown'ов)
+	ModeDropdown:OnChanged(function(Value)
+		selectedMode = Value
+		
+		local maps = getMapsForMode(Value)
+		
+		if #maps > 0 then
+			selectedMap = maps[1]
+			MapDropdown:SetValues(maps)
+			
+			local acts = getActsForMap(Value, maps[1])
+			if #acts > 0 then
+				selectedAct = acts[1]
+				ActDropdown:SetValues(acts)
+			else
+				selectedAct = nil
+				ActDropdown:SetValues({"No acts available"})
+			end
+		else
+			selectedMap = nil
+			selectedAct = nil
+			MapDropdown:SetValues({"No maps available"})
+			ActDropdown:SetValues({"No acts available"})
+		end
+	end)
+
+	MapDropdown:OnChanged(function(Value)
+		if Value == "No maps available" then return end
+		
+		selectedMap = Value
+		
+		local acts = getActsForMap(selectedMode, Value)
+		if #acts > 0 then
+			selectedAct = acts[1]
+			ActDropdown:SetValues(acts)
+		else
+			selectedAct = nil
+			ActDropdown:SetValues({"No acts available"})
+		end
+	end)
+
+	ActDropdown:OnChanged(function(Value)
+		if Value == "No acts available" then return end
+		selectedAct = Value
+	end)
+
+	-- Toggle для Friend Only
+	Tabs.Lobby:AddToggle("FriendOnly", {
+		Title = "👥 Friend Only",
+		Description = "Only friends can join",
+		Default = false,
+		Callback = function(Value)
+			friendOnly = Value
+		end
+	})
+
+	-- Кнопка запуска
+	Tabs.Lobby:AddButton({
+		Title = "▶️ Start Game",
+		Description = "Start game with selected settings",
+		Callback = function()
+			if not selectedMap or not selectedAct or selectedMap == "No maps available" or selectedAct == "No acts available" then
+				ShowNotification("❌ Please select a valid map and act!")
+				return
+			end
+			
+			ByteNetModule.sendPacket(
+				selectedDifficulty,
+				difficultyPercent,
+				selectedMode,
+				selectedAct,
+				friendOnly,
+				selectedMap
+			)
+		end
+	})
+
+	-- Информация
+	Tabs.Lobby:AddParagraph({
+		Title = "ℹ️ Important",
+		Content = "You must be in lobby to start a game!\nMake sure you have selected the correct settings before starting."
+	})
+	-- ============================================================================
+	-- AUTO START SECTION
+	-- ============================================================================
+
+	Tabs.Lobby:AddSection("Auto Start")
+
+	local autoStartEnabled = false
+	local autoStartLoop = nil
+
+	Tabs.Lobby:AddToggle("LobbyAutoStart", {
+		Title = "🚀 Auto Start Game",
+		Description = "Automatically start game when in lobby",
+		Default = false,
+		Callback = function(Value)
+			autoStartEnabled = Value
+			
+			if autoStartEnabled then
+				
+				-- Запускаем цикл проверки
+				autoStartLoop = task.spawn(function()
+					while autoStartEnabled do
+						local isLobby = Workspace:GetAttribute("IsLobby")
+						
+						-- Если мы в лобби, пытаемся запустить игру
+						if isLobby then
+							if not selectedMap or not selectedAct or selectedMap == "No maps available" or selectedAct == "No acts available" then
+								ShowNotification("❌ Select valid map and act first!")
+								autoStartEnabled = false
+								break
+							end
+							
+							-- Отправляем пакет запуска игры
+							ByteNetModule.sendPacket(
+								selectedDifficulty,
+								difficultyPercent,
+								selectedMode,
+								selectedAct,
+								friendOnly,
+								selectedMap
+							)
+							
+							-- Ждём 3 секунды и пропускаем кат-сцену
+							wait(3)
+							pcall(function()
+								local skipArgs = { buffer.fromstring("*\000\000") }
+								ReplicatedStorage:WaitForChild("ByteNetReliable"):FireServer(unpack(skipArgs))
+							end)
+							
+							-- Ждём небольшую паузу перед следующей попыткой
+							wait(5)
+						else
+							-- Не в лобби, просто ждём
+							wait(2)
+						end
+					end
+				end)
+				
+			else
+				autoStartEnabled = false
+			end
+		end
+	})
+
+	Tabs.Lobby:AddParagraph({
+		Title = "ℹ️ Auto Start Info",
+		Content = "When enabled, the game will automatically start when you're in lobby.\nWill keep trying until game starts. Cutscene skipped after 3 seconds."
+	})
+		-- ============================================================================
+		-- MACROS TAB
+		-- ============================================================================
+		
+		local MacroSection = Tabs.Macros:AddSection("Macros Recording")
+		
+		Tabs.Macros:AddInput("MacroName", {
+			Title = "Macros Name",
+			Default = "",
+			Placeholder = "Put name here",
+			Numeric = false,
+			Finished = false,
+			Callback = function(Value)
+				macroName = Value
+			end
+		})
+		
+		Tabs.Macros:AddButton({
+			Title = "🔴 Start Record",
+			Description = "",
+			Callback = function()
+				if macroName == "" or not macroName then
+					ShowNotification("Put name of macros!")
+					return
+				end
+				
+				if isRecording then
+					ShowNotification("Macros is already recording!")
+					return
+				end
+				
+				currentMacro = {}
+				unitIndexCounter = 0
+				unitIDToIndex = {}
+				isRecording = true
+				
+				ShowNotification("🔴 Recording started: " .. macroName)
+			end
+		})
+		
+		Tabs.Macros:AddButton({
+			Title = "⏹️ Stop Recording",
+			Description = "Stop and Save Record",
+			Callback = function()
+				if not isRecording then
+					ShowNotification("There's no any recording rn!")
+					return
+				end
+				
+				isRecording = false
+				_G.MacroData[macroName] = currentMacro
+				saveMacroToFile(macroName, currentMacro)
+				
+				ShowNotification(string.format("✅ Macro saved: %d actions", #currentMacro))
+			end
+		})
+		
+		local PlaySection = Tabs.Macros:AddSection("Macro Replay")
+		
+		local macroList = loadAllMacros()
+		
+		local UnitRequirementsParagraph = Tabs.Macros:AddParagraph({
+			Title = "📋 Required Units",
+			Content = "Select a macro to see required units"
+		})
+		
+		local function getRequiredUnits(macro)
+			if not macro then return {} end
+			
+			local units = {}
+			
+			for _, record in ipairs(macro) do
+				if record.action == "place" then
+					local slotNum = record.towerID
+					local unitName = record.unitName or "Unknown"
+					
+					if not units[slotNum] then
+						units[slotNum] = unitName
+					end
+				end
+			end
+			
+			return units
+		end
+		
+		local function updateUnitRequirements(macroName)
+			if not macroName then
+				UnitRequirementsParagraph:SetDesc("Select a macro to see required units")
+				return
+			end
+			
+			local macro = _G.MacroData[macroName]
+			if not macro then
+				UnitRequirementsParagraph:SetDesc("Macro not found")
+				return
+			end
+			
+			local units = getRequiredUnits(macro)
+			
+			if next(units) == nil then
+				UnitRequirementsParagraph:SetDesc("No units required (empty macro)")
+				return
+			end
+			
+			local text = "Place these units in your hotbar:\n"
+			
+			local sortedSlots = {}
+			for slot, _ in pairs(units) do
+				table.insert(sortedSlots, slot)
+			end
+			table.sort(sortedSlots)
+			
+			for _, slot in ipairs(sortedSlots) do
+				text = text .. string.format("\nSlot %d: %s", slot, units[slot])
+			end
+			
+			UnitRequirementsParagraph:SetDesc(text)
+		end
+		
+		local MacroDropdown = Tabs.Macros:AddDropdown("MacroSelect", {
+			Title = "Choose Macro",
+			Values = macroList,
+			Multi = false,
+			Default = 1,
+		})
+		
+		local selectedMacro = nil
+		MacroDropdown:OnChanged(function(Value)
+			selectedMacro = Value
+			updateUnitRequirements(Value)
+		end)
+		
+		local playbackMode = "fast"
+		
+		Tabs.Macros:AddToggle("PlaybackMode", {
+			Title = "⏱️ Timed Playback Mode",
+			Description = "Use original timing from recording (slower but more accurate)",
+			Default = false,
+			Callback = function(Value)
+				playbackMode = Value and "timed" or "fast"
+				if Value then
+					ShowNotification("⏱️ Mode: Timed (uses original delays)")
+				else
+					ShowNotification("⚡ Mode: Fast (no delays)")
+				end
+			end
+		})
+		
+		Tabs.Macros:AddParagraph({
+			Title = "ℹ️ Playback Modes",
+			Content = "Fast Mode: Executes all actions immediately (0.05s delay)\nTimed Mode: Uses original timing from recording"
+		})
+		
+		local autoPlayEnabled = false
+		local matchFinishedConnection = nil
+		local isCurrentlyPlaying = false
+		
+		local function startMacroPlayback()
+			if not selectedMacro then
+				ShowNotification("Choose Macro!")
+				return false
+			end
+			
+			local macro = _G.MacroData[selectedMacro]
+			if not macro then
+				ShowNotification("Macro not found!")
+				return false
+			end
+			
+			if isCurrentlyPlaying then
+				return false
+			end
+			
+			isCurrentlyPlaying = true
+			
+			spawn(function()
+				playMacro(macro, playbackMode == "fast")
+				isCurrentlyPlaying = false
+				ShowNotification("✅ Done: " .. selectedMacro)
+			end)
+			
+			return true
+		end
+		
+		Tabs.Macros:AddToggle("MacroAutoPlay", {
+			Title = "▶️ Auto Play Macro",
+			Description = "Enable automatic macro replay",
+			Default = false,
+			Callback = function(Value)
+				autoPlayEnabled = Value
+				
+				if autoPlayEnabled then
+					
+					startMacroPlayback()
+					
+					matchFinishedConnection = task.spawn(function()
+						local lastMatchState = Workspace:GetAttribute("MatchFinished")
+						
+						while autoPlayEnabled do
+							local currentMatchState = Workspace:GetAttribute("MatchFinished")
+							
+							if currentMatchState == false and lastMatchState == true and not isCurrentlyPlaying then
+								wait(1)
+								startMacroPlayback()
+							end
+							
+							lastMatchState = currentMatchState
+							wait(1)
+						end
+					end)
+					
+				else
+					autoPlayEnabled = false
+				end
+			end
+		})
+		
+		Tabs.Macros:AddButton({
+			Title = "🗑️ Delete Macros",
+			Description = "Delete Selected macro",
+			Callback = function()
+				if not selectedMacro then
+					ShowNotification("Choose macro!")
+					return
+				end
+				
+				_G.MacroData[selectedMacro] = nil
+				pcall(function()
+					local filepath = MACRO_FOLDER .. "/" .. selectedMacro .. ".lua"
+					if isfile(filepath) then
+						delfile(filepath)
+					end
+				end)
+				
+				ShowNotification("🗑️ Deleted: " .. selectedMacro)
+				
+				macroList = loadAllMacros()
+				MacroDropdown:SetValues(macroList)
+			end
+		})
+		
+		Tabs.Macros:AddButton({
+			Title = "🔄 Refresh List",
+			Description = "",
+			Callback = function()
+				macroList = loadAllMacros()
+				MacroDropdown:SetValues(macroList)
+				ShowNotification("🔄 List Refreshed - Found: " .. #macroList .. " macros")
+			end
+		})
+	end
+	-- ======================
+	-- OTHER TAB
+	-- ======================
+	do
+		local NextMapSection = Tabs.Other:AddSection("Auto Next Map")
+
+		local autoNextMapEnabled = false
+		local nextMapConnection = nil
+		local NextMap = nil
+
+		local function getNextMap()
+			if NextMap then return NextMap end
+			
+			local success, result = pcall(function()
+				return ReplicatedStorage:WaitForChild("Packages", 5)
+					:WaitForChild("_Index", 5)
+					:WaitForChild("sleitnick_knit@1.7.0", 5)
+					:WaitForChild("knit", 5)
+					:WaitForChild("Services", 5)
+					:WaitForChild("WaveService", 5)
+					:WaitForChild("RE", 5)
+					:WaitForChild("NextMap", 5)
+			end)
+			
+			if success then
+				NextMap = result
+			end
+			
+			return NextMap
+		end
+
+		Tabs.Other:AddToggle("AutoNext", {
+			Title = "🗺️ Auto Next",
+			Description = "Automatically vote for next when match ends",
+			Default = false,
+			Callback = function(Value)
+				autoNextMapEnabled = Value
+				
+				if autoNextMapEnabled then
+					
+					nextMapConnection = task.spawn(function()
+						local lastMatchState = Workspace:GetAttribute("MatchFinished")
+						
+						while autoNextMapEnabled do
+							local currentMatchState = Workspace:GetAttribute("MatchFinished")
+							
+							if currentMatchState == true and lastMatchState == false then
+								wait(0.5)
+								local nextMap = getNextMap()
+								if nextMap then
+									pcall(function()
+										nextMap:FireServer()
+									end)
+								else
+									warn("Next not available (still in lobby?)")
+								end
+							end
+							
+							lastMatchState = currentMatchState
+							wait(1)
+						end
+					end)
+					
+				else
+					autoNextMapEnabled = false
+				end
+			end
+		})
+
+		local ReplaySection = Tabs.Other:AddSection("Auto Replay")
+		
+		local autoReplayEnabled = false
+		local replayConnection = nil
+		local VoteReplay = nil
+		
+		local function getVoteReplay()
+			if VoteReplay then return VoteReplay end
+			
+			local success, result = pcall(function()
+				return ReplicatedStorage:WaitForChild("Packages", 5)
+					:WaitForChild("_Index", 5)
+					:WaitForChild("sleitnick_knit@1.7.0", 5)
+					:WaitForChild("knit", 5)
+					:WaitForChild("Services", 5)
+					:WaitForChild("WaveService", 5)
+					:WaitForChild("RE", 5)
+					:WaitForChild("VoteReplay", 5)
+			end)
+			
+			if success then
+				VoteReplay = result
+			end
+			
+			return VoteReplay
+		end
+		
+		Tabs.Other:AddToggle("AutoReplay", {
+			Title = "🔄 Auto Replay",
+			Description = "Automatically vote for replay when match ends",
+			Default = false,
+			Callback = function(Value)
+				autoReplayEnabled = Value
+				
+				if autoReplayEnabled then
+					
+					replayConnection = task.spawn(function()
+						local lastMatchState = Workspace:GetAttribute("MatchFinished")
+						
+						while autoReplayEnabled do
+							local currentMatchState = Workspace:GetAttribute("MatchFinished")
+							
+							if currentMatchState == true and lastMatchState == false then
+								wait(0.5)
+								local voteReplay = getVoteReplay()
+								if voteReplay then
+									pcall(function()
+										voteReplay:FireServer()
+									end)
+								else
+									warn("VoteReplay not available (still in lobby?)")
+								end
+							end
+							
+							lastMatchState = currentMatchState
+							wait(1)
+						end
+					end)
+					
+				else
+					autoReplayEnabled = false
+				end
+			end
+		})
+		
+		local StartSection = Tabs.Other:AddSection("Auto Start")
+		
+		local autoStartEnabled = false
+		local startLoop = nil
+		local VoteStart = nil
+		
+		local function getVoteStart()
+			if VoteStart then return VoteStart end
+			
+			local success, result = pcall(function()
+				return ReplicatedStorage:WaitForChild("Packages", 5)
+					:WaitForChild("_Index", 5)
+					:WaitForChild("sleitnick_knit@1.7.0", 5)
+					:WaitForChild("knit", 5)
+					:WaitForChild("Services", 5)
+					:WaitForChild("WaveService", 5)
+					:WaitForChild("RF", 5)
+					:WaitForChild("Vote", 5)
+			end)
+			
+			if success then
+				VoteStart = result
+			end
+			
+			return VoteStart
+		end
+		
+		Tabs.Other:AddToggle("AutoStart", {
+			Title = "▶️ Auto Start",
+			Description = "Automatically vote to start when Wave is 0",
+			Default = false,
+			Callback = function(Value)
+				autoStartEnabled = Value
+				
+				if autoStartEnabled then
+					
+					startLoop = task.spawn(function()
+						while autoStartEnabled do
+							local wave = Workspace:GetAttribute("Wave")
+							
+							if wave == 0 then
+								local voteStart = getVoteStart()
+								if voteStart then
+									pcall(function()
+										voteStart:InvokeServer(true)
+									end)
+								else
+									warn("VoteStart not available (still in lobby?)")
+								end
+							end
+							
+							wait(1)
+						end
+					end)
+					
+				else
+					autoStartEnabled = false
+				end
+			end
+		})
+		
+		local PlacementSection = Tabs.Other:AddSection("Unit Placement")
+		
+		Tabs.Other:AddToggle("AnywherePlace", {
+			Title = "📍 Place Units Anywhere",
+			Description = "Place units anywhere on the map (bypasses restrictions)",
+			Default = false,
+			Callback = function(Value)
+				if Value then
+					AnywherePlace:Enable()
+				else
+					AnywherePlace:Disable()
+				end
+			end
+		})
+		
+		Tabs.Other:AddParagraph({
+			Title = "ℹ️ How to Use",
+			Content = "Select a unit and click anywhere - the unit will be placed at your cursor position, ignoring game restrictions"
+		})
+	end
+
+	-- ============================================================================
+-- CARDS TAB
+-- ============================================================================
+do
+    local CardsSection = Tabs.Cards:AddSection("Card Priority System")
+    
+    -- Получаем все доступные карточки из игры
+local function getAllCards()
+    local pathsFolder = ReplicatedStorage.Shared.Data.Paths
+    local cards = {}
+    
+    for _, child in ipairs(pathsFolder:GetChildren()) do
+        if child:IsA("ModuleScript") and child.Name ~= "PackageLink" then
+            -- Добавляем скобки к названию
+            table.insert(cards, "[" .. child.Name .. "]")
+        end
+    end
+    
+    table.sort(cards)
+    return cards
+end
+    
+    -- Храним приоритеты карточек
+    _G.CardPriorities = _G.CardPriorities or {}
+    
+    -- Создаем слайдеры для каждой карточки
+    local availableCards = getAllCards()
+    
+    Tabs.Cards:AddParagraph({
+        Title = "ℹ️ How Priority Works",
+        Content = "1 = Highest priority (will be selected first)\n999 = Lowest priority (will be ignored)\n\nSet priority for each card below:"
+    })
+    
+    for _, cardName in ipairs(availableCards) do
+        -- Устанавливаем дефолтный приоритет если его нет
+        if not _G.CardPriorities[cardName] then
+            _G.CardPriorities[cardName] = 999
+        end
+        
+        Tabs.Cards:AddSlider("CardPriority_" .. cardName, {
+            Title = "🃏 " .. cardName,
+            Description = "Set priority (1 = highest, 999 = lowest)",
+            Default = _G.CardPriorities[cardName],
+            Min = 1,
+            Max = 999,
+            Rounding = 0,
+            Callback = function(Value)
+                _G.CardPriorities[cardName] = Value
+            end
+        })
+    end
+    
+    -- Кнопка для сброса приоритетов
+    Tabs.Cards:AddButton({
+        Title = "🔄 Reset All Priorities",
+        Description = "Set all cards to lowest priority (999)",
+        Callback = function()
+            for _, cardName in ipairs(availableCards) do
+                _G.CardPriorities[cardName] = 999
+            end
+        end
+    })
+    
+    -- Система автоматического выбора карточек
+    local autoSelectEnabled = false
+    local cardSelectionConnection = nil
+    
+    local function getCardsWithPositions()
+    local player = Players.LocalPlayer
+    local success, cardsFolder = pcall(function()
+        return player.PlayerGui.GameUI.Paths.PathSelection.Cards
+    end)
+    
+    if not success or not cardsFolder then return {} end
+    
+    local cards = {}
+    
+    for _, card in ipairs(cardsFolder:GetChildren()) do
+        if card.Name == "Card" then
+            -- Отладка: смотрим что внутри карточки
+            local cardName = "Unknown"
+            
+            if card:FindFirstChild("TopTitle") then
+                local topTitle = card.TopTitle
+                
+                -- Пробуем разные варианты получения текста
+                if topTitle:IsA("TextLabel") or topTitle:IsA("TextButton") then
+                    cardName = topTitle.Text
+                elseif topTitle:FindFirstChild("Text") then
+                    if topTitle.Text:IsA("TextLabel") then
+                        cardName = topTitle.Text.Text
+                    end
+                end
+                
+            end
+            
+            local position = card.AbsolutePosition.X
+            
+            table.insert(cards, {
+                Name = cardName,
+                Position = position,
+                Object = card
+            })
+        end
+    end
+    
+    table.sort(cards, function(a, b)
+        return a.Position < b.Position
+    end)
+    
+    for i, card in ipairs(cards) do
+        card.Index = i
+    end
+    
+    return cards
+end
+    
+    local function selectBestCard(cards)
+        local bestCard = nil
+        local bestPriority = math.huge
+        
+        for _, card in ipairs(cards) do
+            local priority = _G.CardPriorities[card.Name] or 999
+            
+            if priority < bestPriority then
+                bestPriority = priority
+                bestCard = card
+            end
+        end
+        
+        return bestCard
+    end
+    
+    local function activateCard(cardIndex, totalCards)
+        local args = {cardIndex}
+        
+        local serviceRE
+        if totalCards == 5 then
+            serviceRE = ReplicatedStorage:WaitForChild("Packages")
+                :WaitForChild("_Index")
+                :WaitForChild("sleitnick_knit@1.7.0")
+                :WaitForChild("knit")
+                :WaitForChild("Services")
+                :WaitForChild("BlessingService")
+                :WaitForChild("RE")
+                :WaitForChild("GetNewPath")
+        elseif totalCards == 3 then
+            serviceRE = ReplicatedStorage:WaitForChild("Packages")
+                :WaitForChild("_Index")
+                :WaitForChild("sleitnick_knit@1.7.0")
+                :WaitForChild("knit")
+                :WaitForChild("Services")
+                :WaitForChild("BlessingService")
+                :WaitForChild("RE")
+                :WaitForChild("GetNewBlessing")
+        else
+            warn("Unexpected card count: " .. totalCards)
+            return false
+        end
+        
+        serviceRE:FireServer(unpack(args))
+        return true
+    end
+    
+    local function checkAndSelectCard()
+    local cards = getCardsWithPositions()
+    local totalCards = #cards
+    
+    if totalCards == 0 then
+        return
+    end
+    
+    for i, card in ipairs(cards) do
+        local priority = _G.CardPriorities[card.Name] or 999
+    end
+    
+    local selectedCard = selectBestCard(cards)
+    
+    if selectedCard then     
+        wait(0.5)
+        activateCard(selectedCard.Index, totalCards)
+    end
+end
+    
+    Tabs.Cards:AddToggle("AutoSelectCard", {
+        Title = "🎴 Auto Select Card",
+        Description = "Automatically select cards based on priority",
+        Default = false,
+        Callback = function(Value)
+            autoSelectEnabled = Value
+            
+            if autoSelectEnabled then
+
+                cardSelectionConnection = Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(descendant)
+                    if descendant.Name == "Card" and descendant.Parent and descendant.Parent.Name == "Cards" then
+                        wait(0.3)
+                        if autoSelectEnabled then
+                            checkAndSelectCard()
+                        end
+                    end
+                end)
+            else
+                if cardSelectionConnection then
+                    cardSelectionConnection:Disconnect()
+                    cardSelectionConnection = nil
+                end
+            end
+        end
+    })
+    
+    Tabs.Cards:AddParagraph({
+        Title = "ℹ️ Auto Selection Info",
+        Content = "When enabled, cards will be automatically selected based on their priority when they appear.\nMake sure to set priorities before enabling!"
+    })
+end
+
+
+Fenix:CreateMinimizer({
+    Icon = "rbxassetid://138310609771261",
+    Size = UDim2.fromOffset(60, 60),
+    Position = UDim2.new(0, 20, 0, 20),
+    Draggable = true,
+    Corner = 30,
+    Transparency = 0,
+})
+	-- Addons:
+	SaveManager:SetLibrary(Fenix)
+	InterfaceManager:SetLibrary(Fenix)
+	SaveManager:IgnoreThemeSettings()
+	SaveManager:SetIgnoreIndexes({})
+	InterfaceManager:SetFolder("ApelHub")
+	SaveManager:SetFolder("ApelHub/UTD")
+	InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+	SaveManager:BuildConfigSection(Tabs.Settings)
+	Window:SelectTab(1)
+	SaveManager:LoadAutoloadConfig()
