@@ -928,7 +928,7 @@ wait(2)
 	-- Dropdown для сложности
 	Tabs.Lobby:AddDropdown("Difficulty", {
 		Title = "🎯 Difficulty",
-		Values = {"Easy", "Normal", "Hard", "Nightmare"},
+		Values = {"Easy", "Hard", "Nightmare"},
 		Multi = false,
 		Default = 1,
 		Callback = function(Value)
@@ -941,8 +941,8 @@ wait(2)
 		Title = "📊 Difficulty Percent",
 		Description = "Adjust difficulty percentage (100% = normal)",
 		Default = 100,
-		Min = 50,
-		Max = 300,
+		Min = 75,
+		Max = 1000,
 		Rounding = 0,
 		Callback = function(Value)
 			difficultyPercent = Value / 100
