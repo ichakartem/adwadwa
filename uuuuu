@@ -12,6 +12,26 @@ repeat wait() until game:GetService("Workspace")
 -- Даём дополнительное время на загрузку игровых данных
 wait(2)
 
+
+coroutine.wrap(function()
+    local GC = getconnections or get_signal_cons
+	if GC then
+		for i,v in pairs(GC(game:GetService("Players").LocalPlayer.Idled)) do
+			if v["Disable"] then
+				v["Disable"](v)
+			elseif v["Disconnect"] then
+				v["Disconnect"](v)
+			end
+		end
+	else
+		local VirtualUser = cloneref(game:GetService("VirtualUser"))
+		game:GetService("Players").LocalPlayer.Idled:Connect(function()
+			VirtualUser:CaptureController()
+			VirtualUser:ClickButton2(Vector2.new())
+		end)
+	end
+end)()
+
 	local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/browncur/123/refs/heads/main/fenix.lua"))()
 
 	local PlaceId = game.PlaceId
