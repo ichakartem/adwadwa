@@ -1795,7 +1795,7 @@ end
     local selectedCard = selectBestCard(cards)
     
     if selectedCard then     
-        wait(0.5)
+        wait(2)
         activateCard(selectedCard.Index, totalCards)
     end
 end
@@ -1811,7 +1811,7 @@ end
 
                 cardSelectionConnection = Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(descendant)
                     if descendant.Name == "Card" and descendant.Parent and descendant.Parent.Name == "Cards" then
-                        wait(0.3)
+                        wait(2)
                         if autoSelectEnabled then
                             checkAndSelectCard()
                         end
