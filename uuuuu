@@ -1595,6 +1595,67 @@
 				end
 			})
 			
+			local RewardsSection = Tabs.Other:AddSection("Auto Claim Rewards")
+
+			local autoClaimEnabled = false
+			local claimConnection = nil
+
+			local function clickAtCenter(guiObject)
+				local VIM = game:GetService("VirtualInputManager")
+				
+				local absolutePosition = guiObject.AbsolutePosition
+				local absoluteSize = guiObject.AbsoluteSize
+				
+				-- Клик по центру
+				local clickX = absolutePosition.X + (absoluteSize.X / 2)
+				local clickY = absolutePosition.Y + (absoluteSize.Y / 2)
+				
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, true, game, 0)
+				wait(0.05)
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, false, game, 0)
+			end
+
+			Tabs.Other:AddToggle("AutoClaimRewards", {
+				Title = "🎁 Auto Claim Rewards",
+				Description = "Automatically claim rewards when they appear",
+				Default = false,
+				Callback = function(Value)
+					autoClaimEnabled = Value
+					
+					if autoClaimEnabled then
+						local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+						local RewardsGui = PlayerGui:WaitForChild("Rewards", 10)
+						
+						if RewardsGui then
+							-- Отслеживаем появление ViewReward
+							claimConnection = RewardsGui.ChildAdded:Connect(function(child)
+								if autoClaimEnabled and child.Name == "ViewReward" then
+									wait(0.3)
+									pcall(function()
+										clickAtCenter(child)
+									end)
+								end
+							end)
+							
+							-- Проверяем, если ViewReward уже существует
+							local ViewReward = RewardsGui:FindFirstChild("ViewReward")
+							if ViewReward and ViewReward.Visible then
+								pcall(function()
+									clickAtCenter(ViewReward)
+								end)
+							end
+						end
+						
+					else
+						autoClaimEnabled = false
+						if claimConnection then
+							claimConnection:Disconnect()
+							claimConnection = nil
+						end
+					end
+				end
+			})
+			
 			local PlacementSection = Tabs.Other:AddSection("Unit Placement")
 			
 			Tabs.Other:AddToggle("AnywherePlace", {
