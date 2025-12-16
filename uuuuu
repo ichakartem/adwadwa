@@ -485,6 +485,13 @@ local macroName = nil
 local unitIndexCounter = 0
 local unitIDToIndex = {}
 
+-- В начале скрипта с другими глобальными переменными
+_G.AutoPlayMacro = false
+_G.AutoPlayMacroName = nil
+_G.FastMacroMode = false
+_G.StopCurrentMacro = false
+_G.MacroRestartPending = false
+
 -- Ленивая загрузка TowerService (только когда не в лобби)
 local TowerService = nil
 local PlaceUnit = nil
@@ -725,6 +732,51 @@ oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
     return oldFireServer(self, ...)
 end)
 
+local MidMatchVote = nil
+
+local function getMidMatchVote()
+    if MidMatchVote then return MidMatchVote end
+    
+    local success, result = pcall(function()
+        return ReplicatedStorage:WaitForChild("Packages", 5)
+            :WaitForChild("_Index", 5)
+            :WaitForChild("sleitnick_knit@1.7.0", 5)
+            :WaitForChild("knit", 5)
+            :WaitForChild("Services", 5)
+            :WaitForChild("WaveService", 5)
+            :WaitForChild("RE", 5)
+            :WaitForChild("MidMatchVote", 5)
+    end)
+    
+    if success then
+        MidMatchVote = result
+    end
+    
+    return MidMatchVote
+end
+
+-- Хукаем MidMatchVote
+task.spawn(function()
+    local midMatchVote = getMidMatchVote()
+    if midMatchVote then
+        local oldMidMatchVote
+        oldMidMatchVote = hookmetamethod(game, "__namecall", function(self, ...)
+            local method = getnamecallmethod()
+            
+            if self == midMatchVote and method == "FireServer" then
+                -- Останавливаем текущий макрос при рестарте
+                if isCurrentlyPlaying then
+                    _G.StopCurrentMacro = true
+                    _G.MacroRestartPending = true -- Флаг для перезапуска
+                    print("🔄 MidMatchVote detected - stopping macro...")
+                end
+            end
+            
+            return oldMidMatchVote(self, ...)
+        end)
+    end
+end)
+
 local function placeUnitUntilSuccess(towerID, cframe)
     if not ensureTowerServiceLoaded() then
         warn("TowerService not loaded!")
@@ -790,12 +842,20 @@ local function useAbility(unitID, abilityNumber)
     
     return success
 end
-
 local function playMacro(macro, fast)
     local indexToRealID = {}
     local startTime = tick()
     
+    -- Сбрасываем флаг остановки в начале
+    _G.StopCurrentMacro = false
+    
     for i, record in ipairs(macro) do
+        -- Проверяем нужно ли остановить макрос
+        if _G.StopCurrentMacro then
+            print("🛑 Macro stopped by external signal")
+            break
+        end
+        
         local delay
         if fast then
             delay = 0.05
@@ -811,7 +871,19 @@ local function playMacro(macro, fast)
             if not fast and delay > 1 then
                 print(string.format("⏳ Waiting %.1f seconds...", delay))
             end
-            wait(delay)
+            
+            -- Разбиваем длинные задержки на части для быстрой реакции на остановку
+            local elapsed = 0
+            while elapsed < delay and not _G.StopCurrentMacro do
+                local stepDelay = math.min(0.5, delay - elapsed)
+                wait(stepDelay)
+                elapsed = elapsed + stepDelay
+            end
+            
+            if _G.StopCurrentMacro then
+                print("🛑 Macro stopped during wait")
+                break
+            end
         end
         
         if record.action == "place" then
@@ -870,8 +942,10 @@ local function playMacro(macro, fast)
         end
     end
     
-    if not fast then
-        print(string.format("🏁 Macro completed in %.1f seconds", tick() - startTime))
+    if not _G.StopCurrentMacro then
+        if not fast then
+            print(string.format("🏁 Macro completed in %.1f seconds", tick() - startTime))
+        end
     end
 end
 
@@ -1372,7 +1446,6 @@ end
 			local autoPlayEnabled = false
 			local matchFinishedConnection = nil
 			local isCurrentlyPlaying = false
-			
 			local function startMacroPlayback()
 				if not selectedMacro then
 					ShowNotification("Choose Macro!")
@@ -1391,10 +1464,21 @@ end
 				
 				isCurrentlyPlaying = true
 				
+				-- Сохраняем параметры для авто-перезапуска
+				_G.AutoPlayMacro = true
+				_G.AutoPlayMacroName = selectedMacro
+				_G.FastMacroMode = (playbackMode == "fast")
+				
 				spawn(function()
 					playMacro(macro, playbackMode == "fast")
 					isCurrentlyPlaying = false
-					ShowNotification("✅ Done: " .. selectedMacro)
+					
+					-- Только показываем уведомление если макрос не был остановлен принудительно
+					if not _G.StopCurrentMacro then
+						ShowNotification("✅ Done: " .. selectedMacro)
+					else
+						ShowNotification("🛑 Stopped: " .. selectedMacro)
+					end
 				end)
 				
 				return true
@@ -1408,7 +1492,7 @@ end
 					autoPlayEnabled = Value
 					
 					if autoPlayEnabled then
-						
+						-- Запускаем макрос сразу
 						startMacroPlayback()
 						
 						matchFinishedConnection = task.spawn(function()
@@ -1417,8 +1501,32 @@ end
 							while autoPlayEnabled do
 								local currentMatchState = Workspace:GetAttribute("MatchFinished")
 								
-								if currentMatchState == false and lastMatchState == true and not isCurrentlyPlaying then
-									wait(1)
+								-- Когда матч заканчивается
+								if currentMatchState == true and lastMatchState == false then
+									if isCurrentlyPlaying then
+										_G.StopCurrentMacro = true
+										isCurrentlyPlaying = false
+										print("🛑 Stopping macro due to match end...")
+									end
+								end
+								
+								-- Когда начинается новая игра (реплей или рестарт)
+								if currentMatchState == false and lastMatchState == true then
+									if not isCurrentlyPlaying then
+										_G.StopCurrentMacro = false
+										_G.MacroRestartPending = false
+										wait(1)
+										print("🔄 Restarting macro for new match...")
+										startMacroPlayback()
+									end
+								end
+								
+								-- Проверяем флаг рестарта (для MidMatchVote без изменения MatchFinished)
+								if _G.MacroRestartPending and not isCurrentlyPlaying then
+									_G.StopCurrentMacro = false
+									_G.MacroRestartPending = false
+									wait(2) -- Даем время на загрузку нового матча
+									print("🔄 Restarting macro after mid-match restart...")
 									startMacroPlayback()
 								end
 								
@@ -1429,6 +1537,11 @@ end
 						
 					else
 						autoPlayEnabled = false
+						if isCurrentlyPlaying then
+							_G.StopCurrentMacro = true
+							_G.AutoPlayMacro = false
+							isCurrentlyPlaying = false
+						end
 					end
 				end
 			})
@@ -1536,71 +1649,69 @@ end
 				end
 			})
 
-			local ReplaySection = Tabs.Other:AddSection("Auto Replay")
-			
-			local autoReplayEnabled = false
-			local replayConnection = nil
-			local VoteReplay = nil
-			
-			local function getVoteReplay()
-				if VoteReplay then return VoteReplay end
-				
-				local success, result = pcall(function()
-					return ReplicatedStorage:WaitForChild("Packages", 5)
-						:WaitForChild("_Index", 5)
-						:WaitForChild("sleitnick_knit@1.7.0", 5)
-						:WaitForChild("knit", 5)
-						:WaitForChild("Services", 5)
-						:WaitForChild("WaveService", 5)
-						:WaitForChild("RE", 5)
-						:WaitForChild("VoteReplay", 5)
-				end)
-				
-				if success then
-					VoteReplay = result
-				end
-				
-				return VoteReplay
-			end
-			
-			Tabs.Other:AddToggle("AutoReplay", {
-				Title = "🔄 Auto Replay",
-				Description = "Automatically vote for replay when match ends",
-				Default = false,
-				Callback = function(Value)
-					autoReplayEnabled = Value
-					
-					if autoReplayEnabled then
-						
-						replayConnection = task.spawn(function()
-							local lastMatchState = Workspace:GetAttribute("MatchFinished")
-							
-							while autoReplayEnabled do
-								local currentMatchState = Workspace:GetAttribute("MatchFinished")
-								
-								if currentMatchState == true and lastMatchState == false then
-									wait(0.5)
-									local voteReplay = getVoteReplay()
-									if voteReplay then
-										pcall(function()
-											voteReplay:FireServer()
-										end)
-									else
-										warn("VoteReplay not available (still in lobby?)")
-									end
-								end
-								
-								lastMatchState = currentMatchState
-								wait(1)
-							end
-						end)
-						
-					else
-						autoReplayEnabled = false
-					end
-				end
-			})
-			
+local ReplaySection = Tabs.Other:AddSection("Auto Replay")
+local autoReplayEnabled = false
+local replayConnection = nil
+local VoteReplay = nil
+
+local function getVoteReplay()
+    if VoteReplay then return VoteReplay end
+    
+    local success, result = pcall(function()
+        return ReplicatedStorage:WaitForChild("Packages", 5)
+            :WaitForChild("_Index", 5)
+            :WaitForChild("sleitnick_knit@1.7.0", 5)
+            :WaitForChild("knit", 5)
+            :WaitForChild("Services", 5)
+            :WaitForChild("WaveService", 5)
+            :WaitForChild("RE", 5)
+            :WaitForChild("VoteReplay", 5)
+    end)
+    
+    if success then
+        VoteReplay = result
+    end
+    
+    return VoteReplay
+end
+
+Tabs.Other:AddToggle("AutoReplay", {
+    Title = "🔄 Auto Replay",
+    Description = "Automatically vote for replay when match ends",
+    Default = false,
+    Callback = function(Value)
+        autoReplayEnabled = Value
+        
+        if autoReplayEnabled then
+            replayConnection = task.spawn(function()
+                local lastMatchState = Workspace:GetAttribute("MatchFinished")
+                
+                while autoReplayEnabled do
+                    local currentMatchState = Workspace:GetAttribute("MatchFinished")
+                    
+                    -- Когда матч заканчивается - просто голосуем за реплей
+                    if currentMatchState == true and lastMatchState == false then
+                        wait(0.5)
+                        local voteReplay = getVoteReplay()
+                        if voteReplay then
+                            pcall(function()
+                                voteReplay:FireServer()
+                                print("✅ Voted for replay")
+                            end)
+                        else
+                            warn("VoteReplay not available (still in lobby?)")
+                        end
+                    end
+                    
+                    lastMatchState = currentMatchState
+                    wait(1)
+                end
+            end)
+        else
+            autoReplayEnabled = false
+        end
+    end
+})
 			local StartSection = Tabs.Other:AddSection("Auto Start")
 			
 			local autoStartEnabled = false
