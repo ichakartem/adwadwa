@@ -1649,69 +1649,128 @@ end
 				end
 			})
 
-local ReplaySection = Tabs.Other:AddSection("Auto Replay")
-local autoReplayEnabled = false
-local replayConnection = nil
-local VoteReplay = nil
+			local ReplaySection = Tabs.Other:AddSection("Auto Replay")
+			local autoReplayEnabled = false
+			local autoClaimEnabled = false
+			local replayConnection = nil
+			local claimConnection = nil
+			local VoteReplay = nil
 
-local function getVoteReplay()
-    if VoteReplay then return VoteReplay end
-    
-    local success, result = pcall(function()
-        return ReplicatedStorage:WaitForChild("Packages", 5)
-            :WaitForChild("_Index", 5)
-            :WaitForChild("sleitnick_knit@1.7.0", 5)
-            :WaitForChild("knit", 5)
-            :WaitForChild("Services", 5)
-            :WaitForChild("WaveService", 5)
-            :WaitForChild("RE", 5)
-            :WaitForChild("VoteReplay", 5)
-    end)
-    
-    if success then
-        VoteReplay = result
-    end
-    
-    return VoteReplay
-end
+			local function getVoteReplay()
+				if VoteReplay then return VoteReplay end
+				
+				local success, result = pcall(function()
+					return ReplicatedStorage:WaitForChild("Packages", 5)
+						:WaitForChild("_Index", 5)
+						:WaitForChild("sleitnick_knit@1.7.0", 5)
+						:WaitForChild("knit", 5)
+						:WaitForChild("Services", 5)
+						:WaitForChild("WaveService", 5)
+						:WaitForChild("RE", 5)
+						:WaitForChild("VoteReplay", 5)
+				end)
+				
+				if success then
+					VoteReplay = result
+				end
+				
+				return VoteReplay
+			end
 
-Tabs.Other:AddToggle("AutoReplay", {
-    Title = "🔄 Auto Replay",
-    Description = "Automatically vote for replay when match ends",
-    Default = false,
-    Callback = function(Value)
-        autoReplayEnabled = Value
-        
-        if autoReplayEnabled then
-            replayConnection = task.spawn(function()
-                local lastMatchState = Workspace:GetAttribute("MatchFinished")
-                
-                while autoReplayEnabled do
-                    local currentMatchState = Workspace:GetAttribute("MatchFinished")
-                    
-                    -- Когда матч заканчивается - просто голосуем за реплей
-                    if currentMatchState == true and lastMatchState == false then
-                        wait(0.5)
-                        local voteReplay = getVoteReplay()
-                        if voteReplay then
-                            pcall(function()
-                                voteReplay:FireServer()
-                                print("✅ Voted for replay")
-                            end)
-                        else
-                            warn("VoteReplay not available (still in lobby?)")
-                        end
-                    end
-                    
-                    lastMatchState = currentMatchState
-                    wait(1)
-                end
-            end)
-        else
-            autoReplayEnabled = false
-        end
-    end
-})
+			local function clickAtCenter(guiObject)
+				local VIM = game:GetService("VirtualInputManager")
+				
+				local absolutePosition = guiObject.AbsolutePosition
+				local absoluteSize = guiObject.AbsoluteSize
+				
+				-- Клик по центру
+				local clickX = absolutePosition.X + (absoluteSize.X / 2)
+				local clickY = absolutePosition.Y + (absoluteSize.Y / 2)
+				
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, true, game, 0)
+				wait(0.05)
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, false, game, 0)
+			end
+
+			local function claimAllRewards()
+				local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+				local RewardsGui = PlayerGui:FindFirstChild("Rewards")
+				
+				if not RewardsGui then return false end
+				
+				local rewardsClaimed = 0
+				
+				-- Ищем все ViewReward и кликаем по ним
+				while true do
+					local ViewReward = RewardsGui:FindFirstChild("ViewReward")
+					if ViewReward and ViewReward.Visible then
+						pcall(function()
+							clickAtCenter(ViewReward)
+							rewardsClaimed = rewardsClaimed + 1
+							print("🎁 Claimed reward #" .. rewardsClaimed)
+						end)
+						wait(0.5) -- Ждем между кликами
+					else
+						break -- Больше нет наград
+					end
+				end
+				
+				return rewardsClaimed > 0
+			end
+
+			Tabs.Other:AddToggle("AutoReplay", {
+				Title = "🔄 Auto Replay (with Rewards)",
+				Description = "Claims all rewards, then votes for replay",
+				Default = false,
+				Callback = function(Value)
+					autoReplayEnabled = Value
+					
+					if autoReplayEnabled then
+						replayConnection = task.spawn(function()
+							local lastMatchState = Workspace:GetAttribute("MatchFinished")
+							
+							while autoReplayEnabled do
+								local currentMatchState = Workspace:GetAttribute("MatchFinished")
+								
+								-- Когда матч заканчивается
+								if currentMatchState == true and lastMatchState == false then
+									print("🏁 Match finished, processing rewards and replay...")
+									
+									-- Ждем появления наград
+									wait(1)
+									
+									-- Собираем все награды
+									local hadRewards = claimAllRewards()
+									
+									if hadRewards then
+										print("✅ All rewards claimed, waiting before replay vote...")
+										wait(2) -- Дополнительная задержка после наград
+									else
+										print("ℹ️ No rewards found, proceeding to replay vote...")
+										wait(1)
+									end
+									
+									-- Голосуем за реплей
+									local voteReplay = getVoteReplay()
+									if voteReplay then
+										pcall(function()
+											voteReplay:FireServer()
+											print("✅ Voted for replay")
+										end)
+									else
+										warn("VoteReplay not available (still in lobby?)")
+									end
+								end
+								
+								lastMatchState = currentMatchState
+								wait(1)
+							end
+						end)
+					else
+						autoReplayEnabled = false
+					end
+				end
+			})
 			local StartSection = Tabs.Other:AddSection("Auto Start")
 			
 			local autoStartEnabled = false
@@ -1769,67 +1828,6 @@ Tabs.Other:AddToggle("AutoReplay", {
 						
 					else
 						autoStartEnabled = false
-					end
-				end
-			})
-			
-			local RewardsSection = Tabs.Other:AddSection("Auto Claim Rewards")
-
-			local autoClaimEnabled = false
-			local claimConnection = nil
-
-			local function clickAtCenter(guiObject)
-				local VIM = game:GetService("VirtualInputManager")
-				
-				local absolutePosition = guiObject.AbsolutePosition
-				local absoluteSize = guiObject.AbsoluteSize
-				
-				-- Клик по центру
-				local clickX = absolutePosition.X + (absoluteSize.X / 2)
-				local clickY = absolutePosition.Y + (absoluteSize.Y / 2)
-				
-				VIM:SendMouseButtonEvent(clickX, clickY, 0, true, game, 0)
-				wait(0.05)
-				VIM:SendMouseButtonEvent(clickX, clickY, 0, false, game, 0)
-			end
-
-			Tabs.Other:AddToggle("AutoClaimRewards", {
-				Title = "🎁 Auto Claim Rewards",
-				Description = "Automatically claim rewards when they appear",
-				Default = false,
-				Callback = function(Value)
-					autoClaimEnabled = Value
-					
-					if autoClaimEnabled then
-						local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
-						local RewardsGui = PlayerGui:WaitForChild("Rewards", 10)
-						
-						if RewardsGui then
-							-- Отслеживаем появление ViewReward
-							claimConnection = RewardsGui.ChildAdded:Connect(function(child)
-								if autoClaimEnabled and child.Name == "ViewReward" then
-									wait(0.3)
-									pcall(function()
-										clickAtCenter(child)
-									end)
-								end
-							end)
-							
-							-- Проверяем, если ViewReward уже существует
-							local ViewReward = RewardsGui:FindFirstChild("ViewReward")
-							if ViewReward and ViewReward.Visible then
-								pcall(function()
-									clickAtCenter(ViewReward)
-								end)
-							end
-						end
-						
-					else
-						autoClaimEnabled = false
-						if claimConnection then
-							claimConnection:Disconnect()
-							claimConnection = nil
-						end
 					end
 				end
 			})
