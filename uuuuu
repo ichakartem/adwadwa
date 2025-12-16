@@ -1610,10 +1610,10 @@ end
 				
 				return NextMap
 			end
-
+			
 			Tabs.Other:AddToggle("AutoNext", {
 				Title = "🗺️ Auto Next",
-				Description = "Automatically vote for next when match ends",
+				Description = "Claims all rewards, then votes for next map",
 				Default = false,
 				Callback = function(Value)
 					autoNextMapEnabled = Value
@@ -1626,15 +1626,60 @@ end
 							while autoNextMapEnabled do
 								local currentMatchState = Workspace:GetAttribute("MatchFinished")
 								
+								-- Когда матч заканчивается
 								if currentMatchState == true and lastMatchState == false then
-									wait(0.5)
+									print("🏁 Match finished, processing rewards and next map...")
+									
+									-- Останавливаем текущий макрос
+									if isCurrentlyPlaying then
+										_G.StopCurrentMacro = true
+										isCurrentlyPlaying = false
+										print("🛑 Stopping macro due to match end...")
+									end
+									
+									-- Ждем появления наград
+									wait(1)
+									
+									-- Собираем все награды
+									local hadRewards = claimAllRewards()
+									
+									if hadRewards then
+										print("✅ All rewards claimed, waiting before next map vote...")
+										wait(2) -- Дополнительная задержка после наград
+									else
+										print("ℹ️ No rewards found, proceeding to next map vote...")
+										wait(0.5)
+									end
+									
+									-- Голосуем за следующую карту
 									local nextMap = getNextMap()
 									if nextMap then
 										pcall(function()
 											nextMap:FireServer()
+											print("✅ Voted for next map")
 										end)
 									else
 										warn("Next not available (still in lobby?)")
+									end
+								end
+								
+								-- Когда начинается новая игра на следующей карте
+								if currentMatchState == false and lastMatchState == true then
+									-- Перезапускаем макрос если он был активен
+									if _G.AutoPlayMacro and _G.AutoPlayMacroName and not isCurrentlyPlaying then
+										_G.StopCurrentMacro = false
+										wait(1)
+										print("🔄 Restarting macro for new map...")
+										
+										local macro = _G.MacroData[_G.AutoPlayMacroName]
+										if macro then
+											isCurrentlyPlaying = true
+											
+											spawn(function()
+												playMacro(macro, _G.FastMacroMode or false)
+												isCurrentlyPlaying = false
+											end)
+										end
 									end
 								end
 								
@@ -1648,7 +1693,6 @@ end
 					end
 				end
 			})
-
 			local ReplaySection = Tabs.Other:AddSection("Auto Replay")
 			local autoReplayEnabled = false
 			local autoClaimEnabled = false
