@@ -1648,7 +1648,7 @@ end
 										wait(2) -- Дополнительная задержка после наград
 									else
 										print("ℹ️ No rewards found, proceeding to next map vote...")
-										wait(0.5)
+										wait(1)
 									end
 									
 									-- Голосуем за следующую карту
