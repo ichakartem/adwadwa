@@ -1610,6 +1610,48 @@ end
 				
 				return NextMap
 			end
+
+
+			local function clickAtCenter(guiObject)
+				local VIM = game:GetService("VirtualInputManager")
+				
+				local absolutePosition = guiObject.AbsolutePosition
+				local absoluteSize = guiObject.AbsoluteSize
+				
+				-- Клик по центру
+				local clickX = absolutePosition.X + (absoluteSize.X / 2)
+				local clickY = absolutePosition.Y + (absoluteSize.Y / 2)
+				
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, true, game, 0)
+				wait(0.05)
+				VIM:SendMouseButtonEvent(clickX, clickY, 0, false, game, 0)
+			end
+
+			local function claimAllRewards()
+				local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+				local RewardsGui = PlayerGui:FindFirstChild("Rewards")
+				
+				if not RewardsGui then return false end
+				
+				local rewardsClaimed = 0
+				
+				-- Ищем все ViewReward и кликаем по ним
+				while true do
+					local ViewReward = RewardsGui:FindFirstChild("ViewReward")
+					if ViewReward and ViewReward.Visible then
+						pcall(function()
+							clickAtCenter(ViewReward)
+							rewardsClaimed = rewardsClaimed + 1
+							print("🎁 Claimed reward #" .. rewardsClaimed)
+						end)
+						wait(0.5) -- Ждем между кликами
+					else
+						break -- Больше нет наград
+					end
+				end
+				
+				return rewardsClaimed > 0
+			end
 			
 			Tabs.Other:AddToggle("AutoNext", {
 				Title = "🗺️ Auto Next",
@@ -1719,47 +1761,6 @@ end
 				end
 				
 				return VoteReplay
-			end
-
-			local function clickAtCenter(guiObject)
-				local VIM = game:GetService("VirtualInputManager")
-				
-				local absolutePosition = guiObject.AbsolutePosition
-				local absoluteSize = guiObject.AbsoluteSize
-				
-				-- Клик по центру
-				local clickX = absolutePosition.X + (absoluteSize.X / 2)
-				local clickY = absolutePosition.Y + (absoluteSize.Y / 2)
-				
-				VIM:SendMouseButtonEvent(clickX, clickY, 0, true, game, 0)
-				wait(0.05)
-				VIM:SendMouseButtonEvent(clickX, clickY, 0, false, game, 0)
-			end
-
-			local function claimAllRewards()
-				local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
-				local RewardsGui = PlayerGui:FindFirstChild("Rewards")
-				
-				if not RewardsGui then return false end
-				
-				local rewardsClaimed = 0
-				
-				-- Ищем все ViewReward и кликаем по ним
-				while true do
-					local ViewReward = RewardsGui:FindFirstChild("ViewReward")
-					if ViewReward and ViewReward.Visible then
-						pcall(function()
-							clickAtCenter(ViewReward)
-							rewardsClaimed = rewardsClaimed + 1
-							print("🎁 Claimed reward #" .. rewardsClaimed)
-						end)
-						wait(0.5) -- Ждем между кликами
-					else
-						break -- Больше нет наград
-					end
-				end
-				
-				return rewardsClaimed > 0
 			end
 
 			Tabs.Other:AddToggle("AutoReplay", {
