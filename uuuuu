@@ -162,26 +162,25 @@
 			
 			return string.char(byte1, byte2, byte3, byte4)
 		end
-
+		
 		function ByteNetModule.createPacket(difficulty, difficultyPercent, mode, act, friendOnly, mapName)
 			local parts = {}
-			
 			table.insert(parts, "'")
 			
 			local diffLen = #difficulty
 			table.insert(parts, string.char(diffLen % 256, math.floor(diffLen / 256)))
 			table.insert(parts, difficulty)
-			table.insert(parts, "\000")
 			
+			table.insert(parts, "\000")
 			table.insert(parts, ByteNetModule.floatToBytes(difficultyPercent))
 			
 			local modeLen = #mode
 			table.insert(parts, string.char(modeLen % 256, math.floor(modeLen / 256)))
 			table.insert(parts, mode)
 			
-			table.insert(parts, "\001")
-			table.insert(parts, "\000")
-			
+			-- ИСПРАВЛЕНИЕ: добавляем длину act
+			local actLen = #act
+			table.insert(parts, string.char(actLen % 256, math.floor(actLen / 256)))
 			table.insert(parts, act)
 			
 			table.insert(parts, friendOnly and "\001" or "\000")
