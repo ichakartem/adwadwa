@@ -2194,6 +2194,7 @@ local function formatNumber(num)
 end
 
 -- Функция для отправки webhook
+-- Функция для отправки webhook
 local function SendWebhook(data)
     if not _G.WEBHOOK_ENABLED then
         return
@@ -2249,6 +2250,32 @@ local function SendWebhook(data)
             name = "💥 Total Damage",
             value = formatNumber(data.LeaderStats.Damage),
             inline = true
+        })
+    end
+    
+    -- Player Currency (из атрибутов)
+    local currencyText = {}
+    
+    local gems = LocalPlayer:GetAttribute("Gems")
+    if gems then
+        table.insert(currencyText, "💎 **Gems:** " .. formatNumber(gems))
+    end
+    
+    local coins = LocalPlayer:GetAttribute("Coins")
+    if coins then
+        table.insert(currencyText, "🪙 **Coins:** " .. formatNumber(coins))
+    end
+    
+    local rerolls = LocalPlayer:GetAttribute("Rerolls")
+    if rerolls then
+        table.insert(currencyText, "🎲 **Rerolls:** " .. formatNumber(rerolls))
+    end
+    
+    if #currencyText > 0 then
+        table.insert(fields, {
+            name = "💰 Player Currency",
+            value = table.concat(currencyText, "\n"),
+            inline = false
         })
     end
     
@@ -2317,7 +2344,7 @@ local function SendWebhook(data)
     -- Создаем payload для Discord
     local webhookData = {
         username = "Universal Tower Defense Stats",
-        avatar_url = "",
+        avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
         embeds = {
             {
                 title = string.format("%s MATCH %s", 
