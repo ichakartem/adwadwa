@@ -2252,34 +2252,6 @@ local function SendWebhook(data)
         })
     end
     
-    -- Units Damage
-    if data.UnitStats and #data.UnitStats > 0 then
-        local unitsText = {}
-        for i, unit in ipairs(data.UnitStats) do
-            if i <= 10 then -- Показываем топ 10
-                local upgradeStar = string.rep("⭐", unit.Upgrade)
-                if upgradeStar == "" then
-                    upgradeStar = "☆"
-                end
-                
-                table.insert(unitsText, string.format(
-                    "**%d.** %s %s\n💥 %s | 🎯 %s kills",
-                    i,
-                    unit.Name,
-                    upgradeStar,
-                    formatNumber(unit.Damage),
-                    formatNumber(unit.Kills)
-                ))
-            end
-        end
-        
-        table.insert(fields, {
-            name = "🎯 Units Damage (Top 10)",
-            value = table.concat(unitsText, "\n"),
-            inline = false
-        })
-    end
-    
     -- Rewards
     local rewardsText = {}
     local rewards = data.Rewards
