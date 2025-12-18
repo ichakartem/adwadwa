@@ -61,6 +61,7 @@
 			Lobby = Window:AddTab({ Title = "Lobby", Icon = ""}),
 			Macros = Window:AddTab({ Title = "Macros", Icon = ""}),
 			Cards = Window:AddTab({ Title = "Cards", Icon = ""}),
+            Webhook = Window:AddTab({ Title = "Webhook", Icon = ""}),
 			Other = Window:AddTab({ Title = "Other", Icon = ""}),
 			Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 		}
@@ -841,6 +842,7 @@ local function useAbility(unitID, abilityNumber)
     
     return success
 end
+
 local function playMacro(macro, fast)
     local indexToRealID = {}
     local startTime = tick()
@@ -2119,6 +2121,416 @@ end
 		})
 	end
 
+    local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+
+-- НАСТРОЙКИ WEBHOOK
+_G.WEBHOOK_URL = _G.WEBHOOK_URL or ""
+_G.WEBHOOK_ENABLED = _G.WEBHOOK_ENABLED or false
+
+-- Глобальное хранилище статистики юнитов
+local CurrentUnitStats = {}
+
+-- Функция для сбора статистики юнитов
+local function CollectUnitStats()
+    local towers = PlacedTowerController:GetTowers()
+    local unitStats = {}
+    
+    for towerGUID, towerData in pairs(towers) do
+        if towerData and towerData.Model then
+            local model = towerData.Model
+            
+            local unitName = model.Name or towerData.TowerID or "Unknown"
+            local damage = model.DamageAmount or 0
+            local kills = model.Kills or 0
+            local upgrade = model.Upgrade or 0
+            
+            table.insert(unitStats, {
+                Name = unitName,
+                Damage = damage,
+                Kills = kills,
+                Upgrade = upgrade,
+                TowerID = towerData.TowerID,
+                GUID = towerGUID
+            })
+        end
+    end
+    
+    table.sort(unitStats, function(a, b)
+        return a.Damage > b.Damage
+    end)
+    
+    return unitStats
+end
+
+-- Постоянное обновление статистики каждую секунду
+local lastUpdate = 0
+RunService.Heartbeat:Connect(function()
+    local now = tick()
+    if now - lastUpdate >= 1 then
+        lastUpdate = now
+        local newStats = CollectUnitStats()
+        
+        if #newStats > 0 then
+            CurrentUnitStats = newStats
+        end
+    end
+end)
+
+-- Функция для форматирования чисел
+local function formatNumber(num)
+    if num >= 1000000000 then
+        return string.format("%.2fB", num / 1000000000)
+    elseif num >= 1000000 then
+        return string.format("%.2fM", num / 1000000)
+    elseif num >= 1000 then
+        return string.format("%.2fK", num / 1000)
+    else
+        return tostring(num)
+    end
+end
+
+-- Функция для отправки webhook
+local function SendWebhook(data)
+    if not _G.WEBHOOK_ENABLED then
+        return
+    end
+    
+    if _G.WEBHOOK_URL == "" then
+        warn("⚠️ Webhook URL not configured!")
+        return
+    end
+    
+    local resultType = data.ResultType or "Unknown"
+    local resultEmoji = {
+        ["Won"] = "🏆",
+        ["Lost"] = "💀",
+        ["Infinite"] = "♾️"
+    }
+    
+    -- Определяем цвет embed'а
+    local embedColor = {
+        ["Won"] = 3066993,      -- Зеленый
+        ["Lost"] = 15158332,    -- Красный
+        ["Infinite"] = 16776960 -- Желтый
+    }
+    
+    -- Формируем основную информацию
+    local fields = {}
+    
+    -- Player Name (скрытый)
+    table.insert(fields, {
+        name = "👤 Player",
+        value = string.format("||%s||", LocalPlayer.Name),
+        inline = true
+    })
+    
+    -- Match Info
+    if data.MatchData and data.MatchData.Time then
+        local time = data.MatchData.Time
+        local formatted_time = string.format("%02i:%02i:%02i", 
+            math.floor(time / 3600), 
+            math.floor(time / 60 % 60), 
+            math.floor(time % 60)
+        )
+        table.insert(fields, {
+            name = "⏱️ Play Time",
+            value = formatted_time,
+            inline = true
+        })
+    end
+    
+    -- Total Damage
+    if data.LeaderStats and data.LeaderStats.Damage then
+        table.insert(fields, {
+            name = "💥 Total Damage",
+            value = formatNumber(data.LeaderStats.Damage),
+            inline = true
+        })
+    end
+    
+    -- Units Damage
+    if data.UnitStats and #data.UnitStats > 0 then
+        local unitsText = {}
+        for i, unit in ipairs(data.UnitStats) do
+            if i <= 10 then -- Показываем топ 10
+                local upgradeStar = string.rep("⭐", unit.Upgrade)
+                if upgradeStar == "" then
+                    upgradeStar = "☆"
+                end
+                
+                table.insert(unitsText, string.format(
+                    "**%d.** %s %s\n💥 %s | 🎯 %s kills",
+                    i,
+                    unit.Name,
+                    upgradeStar,
+                    formatNumber(unit.Damage),
+                    formatNumber(unit.Kills)
+                ))
+            end
+        end
+        
+        table.insert(fields, {
+            name = "🎯 Units Damage (Top 10)",
+            value = table.concat(unitsText, "\n"),
+            inline = false
+        })
+    end
+    
+    -- Rewards
+    local rewardsText = {}
+    local rewards = data.Rewards
+    
+    if rewards.Unit then
+        table.insert(rewardsText, string.format(
+            "🎯 **Unit:** %s (★%s) Lvl.%d",
+            rewards.Unit.Unit,
+            rewards.Unit.Rarity,
+            rewards.Unit.Level or 1
+        ))
+    end
+    
+    if rewards.Relics then
+        for relic_id, relic_data in pairs(rewards.Relics) do
+            local parts = string.split(tostring(relic_id), ":")
+            local relic_name = parts[2] or relic_id
+            table.insert(rewardsText, string.format(
+                "⚡ **Relic:** %s x%d (★%s)",
+                relic_name,
+                relic_data.Amount or 1,
+                relic_data.Rarity or "Common"
+            ))
+        end
+    end
+    
+    if rewards.Gems and rewards.Gems > 0 then
+        table.insert(rewardsText, "💎 **Gems:** " .. rewards.Gems)
+    end
+    
+    if rewards.Gold and rewards.Gold > 0 then
+        table.insert(rewardsText, "🪙 **Gold:** " .. rewards.Gold)
+    end
+    
+    if rewards.Experience and rewards.Experience > 0 then
+        table.insert(rewardsText, "⭐ **Experience:** " .. rewards.Experience)
+    end
+    
+    if rewards.Rerolls and rewards.Rerolls > 0 then
+        table.insert(rewardsText, "🎲 **Rerolls:** " .. rewards.Rerolls)
+    end
+    
+    if rewards.StatRerolls and rewards.StatRerolls > 0 then
+        table.insert(rewardsText, "📊 **Stat Rerolls:** " .. rewards.StatRerolls)
+    end
+    
+    if rewards.Locks and rewards.Locks > 0 then
+        table.insert(rewardsText, "🔒 **Locks:** " .. rewards.Locks)
+    end
+    
+    if rewards.VirtualTokens and rewards.VirtualTokens > 0 then
+        table.insert(rewardsText, "🎫 **Virtual Tokens:** " .. rewards.VirtualTokens)
+    end
+    
+    if #rewardsText > 0 then
+        table.insert(fields, {
+            name = "🎁 Rewards",
+            value = table.concat(rewardsText, "\n"),
+            inline = false
+        })
+    end
+    
+    -- Создаем payload для Discord
+    local webhookData = {
+        username = "Universal Tower Defense Stats",
+        avatar_url = "",
+        embeds = {
+            {
+                title = string.format("%s MATCH %s", 
+                    resultEmoji[resultType] or "🎮", 
+                    resultType:upper()
+                ),
+                color = embedColor[resultType] or 3447003,
+                fields = fields,
+                footer = {
+                    text = "Universal Tower Defense Stats Tracker"
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+            }
+        }
+    }
+    
+    -- Отправка webhook
+    local success, response = pcall(function()
+        local jsonData = HttpService:JSONEncode(webhookData)
+        
+        return request({
+            Url = _G.WEBHOOK_URL,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = jsonData
+        })
+    end)
+    
+    if success then
+        print("✅ Webhook sent successfully!")
+    else
+        warn("❌ Failed to send webhook:", response)
+    end
+end
+
+-- Перехватываем LoadMatch
+local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
+local old_LoadMatch = MatchFinishedModule.LoadMatch
+
+MatchFinishedModule.LoadMatch = function(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+    local unitStats = CurrentUnitStats or {}
+    
+    local matchData = {
+        ResultType = result_type,
+        Rewards = rewards,
+        MatchData = match_data,
+        UnitStats = unitStats,
+        LeaderStats = {}
+    }
+    
+    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+    if leaderstats then
+        for _, stat in pairs(leaderstats:GetChildren()) do
+            if stat:IsA("IntValue") or stat:IsA("NumberValue") then
+                matchData.LeaderStats[stat.Name] = stat.Value
+            end
+        end
+    end
+    
+    print("✅ Match data collected!")
+    print("📊 Collected stats for " .. #unitStats .. " units")
+    
+    -- Отправляем webhook
+    task.spawn(function()
+        SendWebhook(matchData)
+    end)
+    
+    return old_LoadMatch(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+end
+
+    -- ============================================================================
+-- WEBHOOK TAB
+-- ============================================================================
+do
+    local WebhookSection = Tabs.Webhook:AddSection("Discord Webhook Settings")
+    
+    local webhookEnabled = false
+    
+    -- Input для webhook URL
+    Tabs.Webhook:AddInput("WebhookURL", {
+        Title = "🔗 Webhook URL",
+        Default = "",
+        Placeholder = "https://discord.com/api/webhooks/...",
+        Numeric = false,
+        Finished = false,
+        Callback = function(Value)
+            _G.WEBHOOK_URL = Value
+        end
+    })
+    
+    -- Toggle для включения webhook
+    Tabs.Webhook:AddToggle("WebhookEnabled", {
+        Title = "🔔 Enable Webhook",
+        Description = "Send match stats to Discord after each game",
+        Default = false,
+        Callback = function(Value)
+            webhookEnabled = Value
+            _G.WEBHOOK_ENABLED = Value
+            
+            if Value then
+                if _G.WEBHOOK_URL == "" then
+                    ShowNotification("❌ Please enter webhook URL first!")
+                    webhookEnabled = false
+                    return
+                end
+                ShowNotification("✅ Webhook enabled!")
+            else
+                ShowNotification("🔕 Webhook disabled")
+            end
+        end
+    })
+    
+    -- Кнопка для тестирования webhook
+    Tabs.Webhook:AddButton({
+        Title = "🧪 Test Webhook",
+        Description = "Send a test message to your webhook",
+        Callback = function()
+            if _G.WEBHOOK_URL == "" then
+                ShowNotification("❌ Please enter webhook URL first!")
+                return
+            end
+            
+            local testData = {
+                username = "Universal Tower Defense Stats",
+                avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
+                embeds = {
+                    {
+                        title = "🧪 Test Webhook",
+                        description = "This is a test message from Universal Tower Defense Stats Tracker",
+                        color = 3447003,
+                        fields = {
+                            {
+                                name = "👤 Player",
+                                value = string.format("||%s||", LocalPlayer.Name),
+                                inline = true
+                            },
+                            {
+                                name = "✅ Status",
+                                value = "Webhook is working correctly!",
+                                inline = true
+                            }
+                        },
+                        footer = {
+                            text = "Universal Tower Defense Stats Tracker"
+                        },
+                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+                    }
+                }
+            }
+            
+            local success, response = pcall(function()
+                local jsonData = HttpService:JSONEncode(testData)
+                
+                return request({
+                    Url = _G.WEBHOOK_URL,
+                    Method = "POST",
+                    Headers = {
+                        ["Content-Type"] = "application/json"
+                    },
+                    Body = jsonData
+                })
+            end)
+            
+            if success then
+                ShowNotification("✅ Test webhook sent successfully!")
+            else
+                ShowNotification("❌ Failed to send test webhook!")
+                warn("Webhook Error:", response)
+            end
+        end
+    })
+    
+    Tabs.Webhook:AddParagraph({
+        Title = "ℹ️ How to Setup",
+        Content = "1. Create a webhook in your Discord server\n2. Copy the webhook URL\n3. Paste it in the input field above\n4. Enable the webhook toggle\n5. Test the webhook to make sure it works"
+    })
+    
+    Tabs.Webhook:AddParagraph({
+        Title = "📊 What Gets Sent",
+        Content = "• Match result (Won/Lost/Infinite)\n• Play time\n• Total damage\n• Units damage (Top 10)\n• All rewards received\n• Player name (hidden/spoiler)\n\nData is sent automatically after each match ends."
+    })
+end
+
 
 	Fenix:CreateMinimizer({
 		Icon = "rbxassetid://138310609771261",
@@ -2128,6 +2540,7 @@ end
 		Corner = 30,
 		Transparency = 0,
 	})
+
 		-- Addons:
 		SaveManager:SetLibrary(Fenix)
 		InterfaceManager:SetLibrary(Fenix)
