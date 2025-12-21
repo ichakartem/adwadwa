@@ -32,6 +32,7 @@
 		end
 	end)()
 
+		local executorname = identifyexecutor()
 		local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/browncur/123/refs/heads/main/fenix.lua"))()
 
 		local PlaceId = game.PlaceId
@@ -267,31 +268,32 @@
 			self.isOurCall = false
 			self.gameTriedToPlace = false
 			self.gamePlacedSuccessfully = false
-			
-			local oldNamecall
-			oldNamecall = hookmetamethod(game, "__namecall", function(remote, ...)
-				local method = getnamecallmethod()
-				
-				if method == "InvokeServer" and remote == self.PlaceUnitRF then
-					if self.isOurCall then
-						self.isOurCall = false
-						return oldNamecall(remote, ...)
+			if hookmetamethod then
+				local oldNamecall
+				oldNamecall = hookmetamethod(game, "__namecall", function(remote, ...)
+					local method = getnamecallmethod()
+					
+					if method == "InvokeServer" and remote == self.PlaceUnitRF then
+						if self.isOurCall then
+							self.isOurCall = false
+							return oldNamecall(remote, ...)
+						end
+						
+						self.gameTriedToPlace = true
+						local result = oldNamecall(remote, ...)
+						
+						if result and result ~= false then
+							self.gamePlacedSuccessfully = true
+						else
+							self.gamePlacedSuccessfully = false
+						end
+						
+						return result
 					end
 					
-					self.gameTriedToPlace = true
-					local result = oldNamecall(remote, ...)
-					
-					if result and result ~= false then
-						self.gamePlacedSuccessfully = true
-					else
-						self.gamePlacedSuccessfully = false
-					end
-					
-					return result
-				end
-				
-				return oldNamecall(remote, ...)
-			end)
+					return oldNamecall(remote, ...)
+				end)
+			end
 			
 			self.Initialized = true
 		end
@@ -577,160 +579,164 @@ local function getUnitNameByID(towerID)
     
     return "Unknown"
 end
+if hookmetamethod then
 
-local oldNamecall
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-    
-    -- Проверяем что TowerService загружен
-    if not ensureTowerServiceLoaded() then
-        return oldNamecall(self, ...)
-    end
-    
-    if self == PlaceUnit and method == "InvokeServer" then
-        if isRecording and #args >= 2 then
-            local towerID = args[1]
-            local cframe = args[2]
-            
-            local result = oldNamecall(self, ...)
-            
-            if result == true or (type(result) == "table" and result.success == true) then
-                spawn(function()
-                    wait(0.5)
-                    local unit = findUnitByPosition(cframe.Position)
-                    
-                    if unit then
-                        local realUnitID = unit.Name
-                        unitIndexCounter = unitIndexCounter + 1
-                        local unitIndex = unitIndexCounter
-                        
-                        unitIDToIndex[realUnitID] = unitIndex
-                        
-                        local unitName = getUnitNameByID(towerID)
-                        
-                        local record = {
-                            action = "place",
-                            towerID = towerID,
-                            unitName = unitName,
-                            cframe = {
-                                position = {cframe.Position.X, cframe.Position.Y, cframe.Position.Z},
-                                rotation = {cframe:GetComponents()}
-                            },
-                            unitIndex = unitIndex,
-                            timestamp = tick()
-                        }
-                        
-                        table.insert(currentMacro, record)
-                        print(string.format("📹 PLACED: %s (Slot %d, Tower #%d)", unitName, towerID, unitIndex))
-                    end
-                end)
-            end
-            
-            return result
-        end
-    end
-    
-    if self == UpgradeUnit and method == "InvokeServer" then
-        if isRecording and #args >= 1 then
-            local realUnitID = args[1]
-            
-            local result = oldNamecall(self, ...)
-            
-            if result == true or (type(result) == "table" and result.success == true) then
-                spawn(function()
-                    if isUUID(realUnitID) then
-                        local unitIndex = unitIDToIndex[realUnitID]
-                        
-                        if unitIndex then
-                            local record = {
-                                action = "upgrade",
-                                unitIndex = unitIndex,
-                                timestamp = tick()
-                            }
-                            
-                            table.insert(currentMacro, record)
-                            print(string.format("📹 UPGRADE: Tower #%d", unitIndex))
-                        end
-                    end
-                end)
-            end
-            
-            return result
-        end
-    end
-    
-    if self == SellUnit and method == "InvokeServer" then
-        if isRecording and #args >= 1 then
-            local realUnitID = args[1]
-            
-            local result = oldNamecall(self, ...)
-            
-            if result == true or (type(result) == "table" and result.success == true) then
-                spawn(function()
-                    if isUUID(realUnitID) then
-                        local unitIndex = unitIDToIndex[realUnitID]
-                        
-                        if unitIndex then
-                            local record = {
-                                action = "sell",
-                                unitIndex = unitIndex,
-                                timestamp = tick()
-                            }
-                            
-                            table.insert(currentMacro, record)
-                            print(string.format("📹 SELL: Tower #%d", unitIndex))
-                            
-                            unitIDToIndex[realUnitID] = nil
-                        end
-                    end
-                end)
-            end
-            
-            return result
-        end
-    end
-    
-    return oldNamecall(self, ...)
-end)
+	local oldNamecall
+	oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+		local method = getnamecallmethod()
+		local args = {...}
+		
+		-- Проверяем что TowerService загружен
+		if not ensureTowerServiceLoaded() then
+			return oldNamecall(self, ...)
+		end
+		
+		if self == PlaceUnit and method == "InvokeServer" then
+			if isRecording and #args >= 2 then
+				local towerID = args[1]
+				local cframe = args[2]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						wait(0.5)
+						local unit = findUnitByPosition(cframe.Position)
+						
+						if unit then
+							local realUnitID = unit.Name
+							unitIndexCounter = unitIndexCounter + 1
+							local unitIndex = unitIndexCounter
+							
+							unitIDToIndex[realUnitID] = unitIndex
+							
+							local unitName = getUnitNameByID(towerID)
+							
+							local record = {
+								action = "place",
+								towerID = towerID,
+								unitName = unitName,
+								cframe = {
+									position = {cframe.Position.X, cframe.Position.Y, cframe.Position.Z},
+									rotation = {cframe:GetComponents()}
+								},
+								unitIndex = unitIndex,
+								timestamp = tick()
+							}
+							
+							table.insert(currentMacro, record)
+							print(string.format("📹 PLACED: %s (Slot %d, Tower #%d)", unitName, towerID, unitIndex))
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		if self == UpgradeUnit and method == "InvokeServer" then
+			if isRecording and #args >= 1 then
+				local realUnitID = args[1]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						if isUUID(realUnitID) then
+							local unitIndex = unitIDToIndex[realUnitID]
+							
+							if unitIndex then
+								local record = {
+									action = "upgrade",
+									unitIndex = unitIndex,
+									timestamp = tick()
+								}
+								
+								table.insert(currentMacro, record)
+								print(string.format("📹 UPGRADE: Tower #%d", unitIndex))
+							end
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		if self == SellUnit and method == "InvokeServer" then
+			if isRecording and #args >= 1 then
+				local realUnitID = args[1]
+				
+				local result = oldNamecall(self, ...)
+				
+				if result == true or (type(result) == "table" and result.success == true) then
+					spawn(function()
+						if isUUID(realUnitID) then
+							local unitIndex = unitIDToIndex[realUnitID]
+							
+							if unitIndex then
+								local record = {
+									action = "sell",
+									unitIndex = unitIndex,
+									timestamp = tick()
+								}
+								
+								table.insert(currentMacro, record)
+								print(string.format("📹 SELL: Tower #%d", unitIndex))
+								
+								unitIDToIndex[realUnitID] = nil
+							end
+						end
+					end)
+				end
+				
+				return result
+			end
+		end
+		
+		return oldNamecall(self, ...)
+	end)
+end
 
 -- Хук для FireServer (абилки)
-local oldFireServer
-oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-    
-    if not ensureTowerServiceLoaded() then
-        return oldFireServer(self, ...)
-    end
-    
-    if self == UseAbility and method == "FireServer" then
-        if isRecording and #args >= 2 then
-            local realUnitID = args[1]
-            local abilityNumber = args[2]
-            
-            spawn(function()
-                if isUUID(realUnitID) then
-                    local unitIndex = unitIDToIndex[realUnitID]
-                    
-                    if unitIndex then
-                        local record = {
-                            action = "ability",
-                            unitIndex = unitIndex,
-                            abilityNumber = abilityNumber,
-                            timestamp = tick()
-                        }
-                        
-                        table.insert(currentMacro, record)
-                        print(string.format("📹 ABILITY: Tower #%d, Ability #%d", unitIndex, abilityNumber))
-                    end
-                end
-            end)
-        end
-    end
-    
-    return oldFireServer(self, ...)
-end)
+if hookmetamethod then
+	local oldFireServer
+	oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
+		local method = getnamecallmethod()
+		local args = {...}
+		
+		if not ensureTowerServiceLoaded() then
+			return oldFireServer(self, ...)
+		end
+		
+		if self == UseAbility and method == "FireServer" then
+			if isRecording and #args >= 2 then
+				local realUnitID = args[1]
+				local abilityNumber = args[2]
+				
+				spawn(function()
+					if isUUID(realUnitID) then
+						local unitIndex = unitIDToIndex[realUnitID]
+						
+						if unitIndex then
+							local record = {
+								action = "ability",
+								unitIndex = unitIndex,
+								abilityNumber = abilityNumber,
+								timestamp = tick()
+							}
+							
+							table.insert(currentMacro, record)
+							print(string.format("📹 ABILITY: Tower #%d, Ability #%d", unitIndex, abilityNumber))
+						end
+					end
+				end)
+			end
+		end
+		
+		return oldFireServer(self, ...)
+	end)
+end
 
 local MidMatchVote = nil
 
@@ -755,27 +761,28 @@ local function getMidMatchVote()
     return MidMatchVote
 end
 
--- Хукаем MidMatchVote
-task.spawn(function()
-    local midMatchVote = getMidMatchVote()
-    if midMatchVote then
-        local oldMidMatchVote
-        oldMidMatchVote = hookmetamethod(game, "__namecall", function(self, ...)
-            local method = getnamecallmethod()
-            
-            if self == midMatchVote and method == "FireServer" then
-                -- Останавливаем текущий макрос при рестарте
-                if isCurrentlyPlaying then
-                    _G.StopCurrentMacro = true
-                    _G.MacroRestartPending = true -- Флаг для перезапуска
-                    print("🔄 MidMatchVote detected - stopping macro...")
-                end
-            end
-            
-            return oldMidMatchVote(self, ...)
-        end)
-    end
-end)
+if hookmetamethod then
+	task.spawn(function()
+		local midMatchVote = getMidMatchVote()
+		if midMatchVote then
+			local oldMidMatchVote
+			oldMidMatchVote = hookmetamethod(game, "__namecall", function(self, ...)
+				local method = getnamecallmethod()
+				
+				if self == midMatchVote and method == "FireServer" then
+					-- Останавливаем текущий макрос при рестарте
+					if isCurrentlyPlaying then
+						_G.StopCurrentMacro = true
+						_G.MacroRestartPending = true -- Флаг для перезапуска
+						print("🔄 MidMatchVote detected - stopping macro...")
+					end
+				end
+				
+				return oldMidMatchVote(self, ...)
+			end)
+		end
+	end)
+end
 
 local function placeUnitUntilSuccess(towerID, cframe)
     if not ensureTowerServiceLoaded() then
@@ -1296,57 +1303,63 @@ end
 			-- ============================================================================
 			
 			local MacroSection = Tabs.Macros:AddSection("Macros Recording")
-			
-			Tabs.Macros:AddInput("MacroName", {
-				Title = "Macros Name",
-				Default = "",
-				Placeholder = "Put name here",
-				Numeric = false,
-				Finished = false,
-				Callback = function(Value)
-					macroName = Value
-				end
-			})
-			
-			Tabs.Macros:AddButton({
-				Title = "🔴 Start Record",
-				Description = "",
-				Callback = function()
-					if macroName == "" or not macroName then
-						ShowNotification("Put name of macros!")
-						return
+			if hookmetamethod then
+				Tabs.Macros:AddInput("MacroName", {
+					Title = "Macros Name",
+					Default = "",
+					Placeholder = "Put name here",
+					Numeric = false,
+					Finished = false,
+					Callback = function(Value)
+						macroName = Value
 					end
-					
-					if isRecording then
-						ShowNotification("Macros is already recording!")
-						return
+				})
+				
+				Tabs.Macros:AddButton({
+					Title = "🔴 Start Record",
+					Description = "",
+					Callback = function()
+						if macroName == "" or not macroName then
+							ShowNotification("Put name of macros!")
+							return
+						end
+						
+						if isRecording then
+							ShowNotification("Macros is already recording!")
+							return
+						end
+						
+						currentMacro = {}
+						unitIndexCounter = 0
+						unitIDToIndex = {}
+						isRecording = true
+						
+						ShowNotification("🔴 Recording started: " .. macroName)
 					end
-					
-					currentMacro = {}
-					unitIndexCounter = 0
-					unitIDToIndex = {}
-					isRecording = true
-					
-					ShowNotification("🔴 Recording started: " .. macroName)
-				end
-			})
-			
-			Tabs.Macros:AddButton({
-				Title = "⏹️ Stop Recording",
-				Description = "Stop and Save Record",
-				Callback = function()
-					if not isRecording then
-						ShowNotification("There's no any recording rn!")
-						return
+				})
+				
+				Tabs.Macros:AddButton({
+					Title = "⏹️ Stop Recording",
+					Description = "Stop and Save Record",
+					Callback = function()
+						if not isRecording then
+							ShowNotification("There's no any recording rn!")
+							return
+						end
+						
+						isRecording = false
+						_G.MacroData[macroName] = currentMacro
+						saveMacroToFile(macroName, currentMacro)
+						
+						ShowNotification(string.format("✅ Macro saved: %d actions", #currentMacro))
 					end
-					
-					isRecording = false
-					_G.MacroData[macroName] = currentMacro
-					saveMacroToFile(macroName, currentMacro)
-					
-					ShowNotification(string.format("✅ Macro saved: %d actions", #currentMacro))
-				end
-			})
+				})
+			else
+				Tabs.Macros:AddParagraph({
+					Title = "⚠️ EXECUTOR NOT SUPPORTED FOR THAT FUNCTION",
+					Content = "YOU CAN USE ONLY REPLAY FUNCTION WITH UR EXECUTOR, GET MACROS ON DISCORD OR CHANGE EXECUTOR"
+				})
+			end
 			
 			local PlaySection = Tabs.Macros:AddSection("Macro Replay")
 			
@@ -1879,24 +1892,29 @@ end
 			})
 			
 			local PlacementSection = Tabs.Other:AddSection("Unit Placement")
-			
-			Tabs.Other:AddToggle("AnywherePlace", {
-				Title = "📍 Place Units Anywhere",
-				Description = "Place units anywhere on the map (bypasses restrictions)",
-				Default = false,
-				Callback = function(Value)
-					if Value then
-						AnywherePlace:Enable()
-					else
-						AnywherePlace:Disable()
+			if hookmetamethod then
+				Tabs.Other:AddToggle("AnywherePlace", {
+					Title = "📍 Place Units Anywhere",
+					Description = "Place units anywhere on the map (bypasses restrictions)",
+					Default = false,
+					Callback = function(Value)
+						if Value then
+							AnywherePlace:Enable()
+						else
+							AnywherePlace:Disable()
+						end
 					end
-				end
-			})
-			
-			Tabs.Other:AddParagraph({
-				Title = "ℹ️ How to Use",
-				Content = "Select a unit and click anywhere - the unit will be placed at your cursor position, ignoring game restrictions"
-			})
+				})
+				
+				Tabs.Other:AddParagraph({
+					Title = "ℹ️ How to Use",
+					Content = "Select a unit and click anywhere - the unit will be placed at your cursor position, ignoring game restrictions"
+				})
+			else
+				Tabs.Other:AddParagraph({
+					Title = "⚠️ EXECUTOR NOT SUPPORTED FOR THAT FUNCTION",
+				})
+			end
 		end
 
 		-- ============================================================================
@@ -2120,8 +2138,10 @@ end
 			Content = "When enabled, cards will be automatically selected based on their priority when they appear.\nMake sure to set priorities before enabling!"
 		})
 	end
-
-    local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+	local Controllers = game:GetService("ReplicatedFirst").Client.Controllers
+	if Controllers:FindFirstChild("PlacedTowerController") and executorname ~= "Xeno" then
+    	local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+	end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -2135,50 +2155,52 @@ _G.WEBHOOK_ENABLED = _G.WEBHOOK_ENABLED or false
 local CurrentUnitStats = {}
 
 -- Функция для сбора статистики юнитов
-local function CollectUnitStats()
-    local towers = PlacedTowerController:GetTowers()
-    local unitStats = {}
-    
-    for towerGUID, towerData in pairs(towers) do
-        if towerData and towerData.Model then
-            local model = towerData.Model
-            
-            local unitName = model.Name or towerData.TowerID or "Unknown"
-            local damage = model.DamageAmount or 0
-            local kills = model.Kills or 0
-            local upgrade = model.Upgrade or 0
-            
-            table.insert(unitStats, {
-                Name = unitName,
-                Damage = damage,
-                Kills = kills,
-                Upgrade = upgrade,
-                TowerID = towerData.TowerID,
-                GUID = towerGUID
-            })
-        end
-    end
-    
-    table.sort(unitStats, function(a, b)
-        return a.Damage > b.Damage
-    end)
-    
-    return unitStats
-end
+if PlacedTowerController then
+	local function CollectUnitStats()
+		local towers = PlacedTowerController:GetTowers()
+		local unitStats = {}
+		
+		for towerGUID, towerData in pairs(towers) do
+			if towerData and towerData.Model then
+				local model = towerData.Model
+				
+				local unitName = model.Name or towerData.TowerID or "Unknown"
+				local damage = model.DamageAmount or 0
+				local kills = model.Kills or 0
+				local upgrade = model.Upgrade or 0
+				
+				table.insert(unitStats, {
+					Name = unitName,
+					Damage = damage,
+					Kills = kills,
+					Upgrade = upgrade,
+					TowerID = towerData.TowerID,
+					GUID = towerGUID
+				})
+			end
+		end
+		
+		table.sort(unitStats, function(a, b)
+			return a.Damage > b.Damage
+		end)
+		
+		return unitStats
+	end
 
--- Постоянное обновление статистики каждую секунду
-local lastUpdate = 0
-RunService.Heartbeat:Connect(function()
-    local now = tick()
-    if now - lastUpdate >= 1 then
-        lastUpdate = now
-        local newStats = CollectUnitStats()
-        
-        if #newStats > 0 then
-            CurrentUnitStats = newStats
-        end
-    end
-end)
+	-- Постоянное обновление статистики каждую секунду
+	local lastUpdate = 0
+	RunService.Heartbeat:Connect(function()
+		local now = tick()
+		if now - lastUpdate >= 1 then
+			lastUpdate = now
+			local newStats = CollectUnitStats()
+			
+			if #newStats > 0 then
+				CurrentUnitStats = newStats
+			end
+		end
+	end)
+end
 
 -- Функция для форматирования чисел
 local function formatNumber(num)
@@ -2383,151 +2405,161 @@ local function SendWebhook(data)
 end
 
 -- Перехватываем LoadMatch
-local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
-local old_LoadMatch = MatchFinishedModule.LoadMatch
-
-MatchFinishedModule.LoadMatch = function(self, result_type, rewards, match_data, can_replay, can_next, units_data)
-    local unitStats = CurrentUnitStats or {}
-    
-    local matchData = {
-        ResultType = result_type,
-        Rewards = rewards,
-        MatchData = match_data,
-        UnitStats = unitStats,
-        LeaderStats = {}
-    }
-    
-    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
-    if leaderstats then
-        for _, stat in pairs(leaderstats:GetChildren()) do
-            if stat:IsA("IntValue") or stat:IsA("NumberValue") then
-                matchData.LeaderStats[stat.Name] = stat.Value
-            end
-        end
-    end
-    
-    print("✅ Match data collected!")
-    print("📊 Collected stats for " .. #unitStats .. " units")
-    
-    -- Отправляем webhook
-    task.spawn(function()
-        SendWebhook(matchData)
-    end)
-    
-    return old_LoadMatch(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") and executorname ~= "Xeno" then
+	local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
 end
+if MatchFinishedModule then
+	local old_LoadMatch = MatchFinishedModule.LoadMatch
 
+	MatchFinishedModule.LoadMatch = function(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+		local unitStats = CurrentUnitStats or {}
+		
+		local matchData = {
+			ResultType = result_type,
+			Rewards = rewards,
+			MatchData = match_data,
+			UnitStats = unitStats,
+			LeaderStats = {}
+		}
+		
+		local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+		if leaderstats then
+			for _, stat in pairs(leaderstats:GetChildren()) do
+				if stat:IsA("IntValue") or stat:IsA("NumberValue") then
+					matchData.LeaderStats[stat.Name] = stat.Value
+				end
+			end
+		end
+		
+		print("✅ Match data collected!")
+		print("📊 Collected stats for " .. #unitStats .. " units")
+		
+		-- Отправляем webhook
+		task.spawn(function()
+			SendWebhook(matchData)
+		end)
+		
+		return old_LoadMatch(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+	end
+end
     -- ============================================================================
 -- WEBHOOK TAB
 -- ============================================================================
 do
-    local WebhookSection = Tabs.Webhook:AddSection("Discord Webhook Settings")
-    
-    local webhookEnabled = false
-    
-    -- Input для webhook URL
-    Tabs.Webhook:AddInput("WebhookURL", {
-        Title = "🔗 Webhook URL",
-        Default = "",
-        Placeholder = "https://discord.com/api/webhooks/...",
-        Numeric = false,
-        Finished = false,
-        Callback = function(Value)
-            _G.WEBHOOK_URL = Value
-        end
-    })
-    
-    -- Toggle для включения webhook
-    Tabs.Webhook:AddToggle("WebhookEnabled", {
-        Title = "🔔 Enable Webhook",
-        Description = "Send match stats to Discord after each game",
-        Default = false,
-        Callback = function(Value)
-            webhookEnabled = Value
-            _G.WEBHOOK_ENABLED = Value
-            
-            if Value then
-                if _G.WEBHOOK_URL == "" then
-                    ShowNotification("❌ Please enter webhook URL first!")
-                    webhookEnabled = false
-                    return
-                end
-                ShowNotification("✅ Webhook enabled!")
-            else
-                ShowNotification("🔕 Webhook disabled")
-            end
-        end
-    })
-    
-    -- Кнопка для тестирования webhook
-    Tabs.Webhook:AddButton({
-        Title = "🧪 Test Webhook",
-        Description = "Send a test message to your webhook",
-        Callback = function()
-            if _G.WEBHOOK_URL == "" then
-                ShowNotification("❌ Please enter webhook URL first!")
-                return
-            end
-            
-            local testData = {
-                username = "Universal Tower Defense Stats",
-                avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
-                embeds = {
-                    {
-                        title = "🧪 Test Webhook",
-                        description = "This is a test message from Universal Tower Defense Stats Tracker",
-                        color = 3447003,
-                        fields = {
-                            {
-                                name = "👤 Player",
-                                value = string.format("||%s||", LocalPlayer.Name),
-                                inline = true
-                            },
-                            {
-                                name = "✅ Status",
-                                value = "Webhook is working correctly!",
-                                inline = true
-                            }
-                        },
-                        footer = {
-                            text = "Universal Tower Defense Stats Tracker"
-                        },
-                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
-                    }
-                }
-            }
-            
-            local success, response = pcall(function()
-                local jsonData = HttpService:JSONEncode(testData)
-                
-                return request({
-                    Url = _G.WEBHOOK_URL,
-                    Method = "POST",
-                    Headers = {
-                        ["Content-Type"] = "application/json"
-                    },
-                    Body = jsonData
-                })
-            end)
-            
-            if success then
-                ShowNotification("✅ Test webhook sent successfully!")
-            else
-                ShowNotification("❌ Failed to send test webhook!")
-                warn("Webhook Error:", response)
-            end
-        end
-    })
-    
-    Tabs.Webhook:AddParagraph({
-        Title = "ℹ️ How to Setup",
-        Content = "1. Create a webhook in your Discord server\n2. Copy the webhook URL\n3. Paste it in the input field above\n4. Enable the webhook toggle\n5. Test the webhook to make sure it works"
-    })
-    
-    Tabs.Webhook:AddParagraph({
-        Title = "📊 What Gets Sent",
-        Content = "• Match result (Won/Lost/Infinite)\n• Play time\n• Total damage\n• Units damage (Top 10)\n• All rewards received\n• Player name (hidden/spoiler)\n\nData is sent automatically after each match ends."
-    })
+	if executorname ~= "Xeno" then
+		local WebhookSection = Tabs.Webhook:AddSection("Discord Webhook Settings")
+		
+		local webhookEnabled = false
+		
+		-- Input для webhook URL
+		Tabs.Webhook:AddInput("WebhookURL", {
+			Title = "🔗 Webhook URL",
+			Default = "",
+			Placeholder = "https://discord.com/api/webhooks/...",
+			Numeric = false,
+			Finished = false,
+			Callback = function(Value)
+				_G.WEBHOOK_URL = Value
+			end
+		})
+		
+		-- Toggle для включения webhook
+		Tabs.Webhook:AddToggle("WebhookEnabled", {
+			Title = "🔔 Enable Webhook",
+			Description = "Send match stats to Discord after each game",
+			Default = false,
+			Callback = function(Value)
+				webhookEnabled = Value
+				_G.WEBHOOK_ENABLED = Value
+				
+				if Value then
+					if _G.WEBHOOK_URL == "" then
+						ShowNotification("❌ Please enter webhook URL first!")
+						webhookEnabled = false
+						return
+					end
+					ShowNotification("✅ Webhook enabled!")
+				else
+					ShowNotification("🔕 Webhook disabled")
+				end
+			end
+		})
+		
+		-- Кнопка для тестирования webhook
+		Tabs.Webhook:AddButton({
+			Title = "🧪 Test Webhook",
+			Description = "Send a test message to your webhook",
+			Callback = function()
+				if _G.WEBHOOK_URL == "" then
+					ShowNotification("❌ Please enter webhook URL first!")
+					return
+				end
+				
+				local testData = {
+					username = "Universal Tower Defense Stats",
+					avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
+					embeds = {
+						{
+							title = "🧪 Test Webhook",
+							description = "This is a test message from Universal Tower Defense Stats Tracker",
+							color = 3447003,
+							fields = {
+								{
+									name = "👤 Player",
+									value = string.format("||%s||", LocalPlayer.Name),
+									inline = true
+								},
+								{
+									name = "✅ Status",
+									value = "Webhook is working correctly!",
+									inline = true
+								}
+							},
+							footer = {
+								text = "Universal Tower Defense Stats Tracker"
+							},
+							timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+						}
+					}
+				}
+				
+				local success, response = pcall(function()
+					local jsonData = HttpService:JSONEncode(testData)
+					
+					return request({
+						Url = _G.WEBHOOK_URL,
+						Method = "POST",
+						Headers = {
+							["Content-Type"] = "application/json"
+						},
+						Body = jsonData
+					})
+				end)
+				
+				if success then
+					ShowNotification("✅ Test webhook sent successfully!")
+				else
+					ShowNotification("❌ Failed to send test webhook!")
+					warn("Webhook Error:", response)
+				end
+			end
+		})
+		
+		Tabs.Webhook:AddParagraph({
+			Title = "ℹ️ How to Setup",
+			Content = "1. Create a webhook in your Discord server\n2. Copy the webhook URL\n3. Paste it in the input field above\n4. Enable the webhook toggle\n5. Test the webhook to make sure it works"
+		})
+		
+		Tabs.Webhook:AddParagraph({
+			Title = "📊 What Gets Sent",
+			Content = "• Match result (Won/Lost/Infinite)\n• Play time\n• Total damage\n• Units damage (Top 10)\n• All rewards received\n• Player name (hidden/spoiler)\n\nData is sent automatically after each match ends."
+		})
+	else
+		Tabs.Webhook:AddParagraph({
+			Title = "⚠️ YOUR EXECUTOR IS NOT SUPPORTED FOR THAT FUNCTION",
+			Content = "CHANGE YOUR EXECUTOR, YOU CAN FIND A LIST OF WORKING EXECUTORS ON MY DISCORD"
+		})
+	end
 end
 
 
