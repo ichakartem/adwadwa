@@ -2405,7 +2405,7 @@ local function SendWebhook(data)
 end
 
 -- Перехватываем LoadMatch
-if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") then
+if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") and executorname ~= "Xeno" then
 	local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
 end
 if MatchFinishedModule then
@@ -2446,113 +2446,120 @@ end
 -- WEBHOOK TAB
 -- ============================================================================
 do
-    local WebhookSection = Tabs.Webhook:AddSection("Discord Webhook Settings")
-    
-    local webhookEnabled = false
-    
-    -- Input для webhook URL
-    Tabs.Webhook:AddInput("WebhookURL", {
-        Title = "🔗 Webhook URL",
-        Default = "",
-        Placeholder = "https://discord.com/api/webhooks/...",
-        Numeric = false,
-        Finished = false,
-        Callback = function(Value)
-            _G.WEBHOOK_URL = Value
-        end
-    })
-    
-    -- Toggle для включения webhook
-    Tabs.Webhook:AddToggle("WebhookEnabled", {
-        Title = "🔔 Enable Webhook",
-        Description = "Send match stats to Discord after each game",
-        Default = false,
-        Callback = function(Value)
-            webhookEnabled = Value
-            _G.WEBHOOK_ENABLED = Value
-            
-            if Value then
-                if _G.WEBHOOK_URL == "" then
-                    ShowNotification("❌ Please enter webhook URL first!")
-                    webhookEnabled = false
-                    return
-                end
-                ShowNotification("✅ Webhook enabled!")
-            else
-                ShowNotification("🔕 Webhook disabled")
-            end
-        end
-    })
-    
-    -- Кнопка для тестирования webhook
-    Tabs.Webhook:AddButton({
-        Title = "🧪 Test Webhook",
-        Description = "Send a test message to your webhook",
-        Callback = function()
-            if _G.WEBHOOK_URL == "" then
-                ShowNotification("❌ Please enter webhook URL first!")
-                return
-            end
-            
-            local testData = {
-                username = "Universal Tower Defense Stats",
-                avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
-                embeds = {
-                    {
-                        title = "🧪 Test Webhook",
-                        description = "This is a test message from Universal Tower Defense Stats Tracker",
-                        color = 3447003,
-                        fields = {
-                            {
-                                name = "👤 Player",
-                                value = string.format("||%s||", LocalPlayer.Name),
-                                inline = true
-                            },
-                            {
-                                name = "✅ Status",
-                                value = "Webhook is working correctly!",
-                                inline = true
-                            }
-                        },
-                        footer = {
-                            text = "Universal Tower Defense Stats Tracker"
-                        },
-                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
-                    }
-                }
-            }
-            
-            local success, response = pcall(function()
-                local jsonData = HttpService:JSONEncode(testData)
-                
-                return request({
-                    Url = _G.WEBHOOK_URL,
-                    Method = "POST",
-                    Headers = {
-                        ["Content-Type"] = "application/json"
-                    },
-                    Body = jsonData
-                })
-            end)
-            
-            if success then
-                ShowNotification("✅ Test webhook sent successfully!")
-            else
-                ShowNotification("❌ Failed to send test webhook!")
-                warn("Webhook Error:", response)
-            end
-        end
-    })
-    
-    Tabs.Webhook:AddParagraph({
-        Title = "ℹ️ How to Setup",
-        Content = "1. Create a webhook in your Discord server\n2. Copy the webhook URL\n3. Paste it in the input field above\n4. Enable the webhook toggle\n5. Test the webhook to make sure it works"
-    })
-    
-    Tabs.Webhook:AddParagraph({
-        Title = "📊 What Gets Sent",
-        Content = "• Match result (Won/Lost/Infinite)\n• Play time\n• Total damage\n• Units damage (Top 10)\n• All rewards received\n• Player name (hidden/spoiler)\n\nData is sent automatically after each match ends."
-    })
+	if executorname ~= "Xeno" then
+		local WebhookSection = Tabs.Webhook:AddSection("Discord Webhook Settings")
+		
+		local webhookEnabled = false
+		
+		-- Input для webhook URL
+		Tabs.Webhook:AddInput("WebhookURL", {
+			Title = "🔗 Webhook URL",
+			Default = "",
+			Placeholder = "https://discord.com/api/webhooks/...",
+			Numeric = false,
+			Finished = false,
+			Callback = function(Value)
+				_G.WEBHOOK_URL = Value
+			end
+		})
+		
+		-- Toggle для включения webhook
+		Tabs.Webhook:AddToggle("WebhookEnabled", {
+			Title = "🔔 Enable Webhook",
+			Description = "Send match stats to Discord after each game",
+			Default = false,
+			Callback = function(Value)
+				webhookEnabled = Value
+				_G.WEBHOOK_ENABLED = Value
+				
+				if Value then
+					if _G.WEBHOOK_URL == "" then
+						ShowNotification("❌ Please enter webhook URL first!")
+						webhookEnabled = false
+						return
+					end
+					ShowNotification("✅ Webhook enabled!")
+				else
+					ShowNotification("🔕 Webhook disabled")
+				end
+			end
+		})
+		
+		-- Кнопка для тестирования webhook
+		Tabs.Webhook:AddButton({
+			Title = "🧪 Test Webhook",
+			Description = "Send a test message to your webhook",
+			Callback = function()
+				if _G.WEBHOOK_URL == "" then
+					ShowNotification("❌ Please enter webhook URL first!")
+					return
+				end
+				
+				local testData = {
+					username = "Universal Tower Defense Stats",
+					avatar_url = "https://tr.rbxcdn.com/180DAY-e22610ee6ba2362e6f07fa18bb1bb926/768/432/Image/Webp/noFilter",
+					embeds = {
+						{
+							title = "🧪 Test Webhook",
+							description = "This is a test message from Universal Tower Defense Stats Tracker",
+							color = 3447003,
+							fields = {
+								{
+									name = "👤 Player",
+									value = string.format("||%s||", LocalPlayer.Name),
+									inline = true
+								},
+								{
+									name = "✅ Status",
+									value = "Webhook is working correctly!",
+									inline = true
+								}
+							},
+							footer = {
+								text = "Universal Tower Defense Stats Tracker"
+							},
+							timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+						}
+					}
+				}
+				
+				local success, response = pcall(function()
+					local jsonData = HttpService:JSONEncode(testData)
+					
+					return request({
+						Url = _G.WEBHOOK_URL,
+						Method = "POST",
+						Headers = {
+							["Content-Type"] = "application/json"
+						},
+						Body = jsonData
+					})
+				end)
+				
+				if success then
+					ShowNotification("✅ Test webhook sent successfully!")
+				else
+					ShowNotification("❌ Failed to send test webhook!")
+					warn("Webhook Error:", response)
+				end
+			end
+		})
+		
+		Tabs.Webhook:AddParagraph({
+			Title = "ℹ️ How to Setup",
+			Content = "1. Create a webhook in your Discord server\n2. Copy the webhook URL\n3. Paste it in the input field above\n4. Enable the webhook toggle\n5. Test the webhook to make sure it works"
+		})
+		
+		Tabs.Webhook:AddParagraph({
+			Title = "📊 What Gets Sent",
+			Content = "• Match result (Won/Lost/Infinite)\n• Play time\n• Total damage\n• Units damage (Top 10)\n• All rewards received\n• Player name (hidden/spoiler)\n\nData is sent automatically after each match ends."
+		})
+	else
+		Tabs.Webhook:AddParagraph({
+			Title = "⚠️ YOUR EXECUTOR IS NOT SUPPORTED FOR THAT FUNCTION",
+			Content = "CHANGE YOUR EXECUTOR, YOU CAN FIND A LIST OF WORKING EXECUTORS ON MY DISCORD"
+		})
+	end
 end
 
 
