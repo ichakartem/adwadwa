@@ -2139,7 +2139,7 @@ end
 		})
 	end
 	local Controllers = game:GetService("ReplicatedFirst").Client.Controllers
-	if Controllers:FindFirstChild("PlacedTowerController") and executorname ~= "Xeno" then
+	if Controllers:FindFirstChild("PlacedTowerController") and executorname ~= "Xeno" and require then
     	local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
 	end
 local Players = game:GetService("Players")
@@ -2405,7 +2405,7 @@ local function SendWebhook(data)
 end
 
 -- Перехватываем LoadMatch
-if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") and executorname ~= "Xeno" then
+if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") and executorname ~= "Xeno" and require then
 	local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
 end
 if MatchFinishedModule then
