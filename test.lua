@@ -32,6 +32,7 @@
 		end
 	end)()
 
+		local executorname = identifyexecutor()
 		local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/browncur/123/refs/heads/main/fenix.lua"))()
 
 		local PlaceId = game.PlaceId
@@ -2138,7 +2139,7 @@ end
 		})
 	end
 	local Controllers = game:GetService("ReplicatedFirst").Client.Controllers
-	if Controllers:FindFirstChild("PlacedTowerController") then
+	if Controllers:FindFirstChild("PlacedTowerController") and executorname ~= "Xeno" then
     	local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
 	end
 local Players = game:GetService("Players")
