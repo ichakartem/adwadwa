@@ -996,19 +996,39 @@ local function saveMacroToFile(name, macro)
 end
 
 local function loadMacroFromFile(name)
-    local filename = MACRO_FOLDER .. "/" .. name .. ".lua"
-    if not isfile(filename) then return nil end
+    -- Сначала пробуем загрузить .lua файл
+    local luaFilename = MACRO_FOLDER .. "/" .. name .. ".lua"
+    local txtFilename = MACRO_FOLDER .. "/" .. name .. ".txt"
     
-    local success, content = pcall(function()
-        return readfile(filename)
-    end)
+    -- Проверяем .lua файл
+    if isfile(luaFilename) then
+        local success, content = pcall(function()
+            return readfile(luaFilename)
+        end)
+        
+        if success then
+            local func = loadstring(content)
+            if func then
+                return func()
+            end
+        end
+    end
     
-    if not success then return nil end
+    -- Если .lua не найден или не загрузился, пробуем .txt
+    if isfile(txtFilename) then
+        local success, content = pcall(function()
+            return readfile(txtFilename)
+        end)
+        
+        if success then
+            local func = loadstring(content)
+            if func then
+                return func()
+            end
+        end
+    end
     
-    local func = loadstring(content)
-    if not func then return nil end
-    
-    return func()
+    return nil
 end
 
 local function loadAllMacros()
@@ -1026,8 +1046,9 @@ local function loadAllMacros()
     
     if success and files then
         for _, file in ipairs(files) do
-            if file:match("%.lua$") then
-                local name = file:match("([^/\\]+)%.lua$")
+            -- Проверяем как .lua, так и .txt файлы
+            if file:match("%.lua$") or file:match("%.txt$") then
+                local name = file:match("([^/\\]+)%.lua$") or file:match("([^/\\]+)%.txt$")
                 if name then
                     local found = false
                     for _, existing in ipairs(macroList) do
@@ -1051,7 +1072,6 @@ local function loadAllMacros()
     
     return macroList
 end
-
 		-- ======================
 		-- GUI TABS
 		-- ======================
