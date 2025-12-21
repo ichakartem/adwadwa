@@ -2137,8 +2137,10 @@ end
 			Content = "When enabled, cards will be automatically selected based on their priority when they appear.\nMake sure to set priorities before enabling!"
 		})
 	end
-
-    local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+	local Controllers = game:GetService("ReplicatedFirst").Client.Controllers
+	if Controllers:FindFirstChild("PlacedTowerController") then
+    	local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+	end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -2152,50 +2154,52 @@ _G.WEBHOOK_ENABLED = _G.WEBHOOK_ENABLED or false
 local CurrentUnitStats = {}
 
 -- Функция для сбора статистики юнитов
-local function CollectUnitStats()
-    local towers = PlacedTowerController:GetTowers()
-    local unitStats = {}
-    
-    for towerGUID, towerData in pairs(towers) do
-        if towerData and towerData.Model then
-            local model = towerData.Model
-            
-            local unitName = model.Name or towerData.TowerID or "Unknown"
-            local damage = model.DamageAmount or 0
-            local kills = model.Kills or 0
-            local upgrade = model.Upgrade or 0
-            
-            table.insert(unitStats, {
-                Name = unitName,
-                Damage = damage,
-                Kills = kills,
-                Upgrade = upgrade,
-                TowerID = towerData.TowerID,
-                GUID = towerGUID
-            })
-        end
-    end
-    
-    table.sort(unitStats, function(a, b)
-        return a.Damage > b.Damage
-    end)
-    
-    return unitStats
-end
+if PlacedTowerController then
+	local function CollectUnitStats()
+		local towers = PlacedTowerController:GetTowers()
+		local unitStats = {}
+		
+		for towerGUID, towerData in pairs(towers) do
+			if towerData and towerData.Model then
+				local model = towerData.Model
+				
+				local unitName = model.Name or towerData.TowerID or "Unknown"
+				local damage = model.DamageAmount or 0
+				local kills = model.Kills or 0
+				local upgrade = model.Upgrade or 0
+				
+				table.insert(unitStats, {
+					Name = unitName,
+					Damage = damage,
+					Kills = kills,
+					Upgrade = upgrade,
+					TowerID = towerData.TowerID,
+					GUID = towerGUID
+				})
+			end
+		end
+		
+		table.sort(unitStats, function(a, b)
+			return a.Damage > b.Damage
+		end)
+		
+		return unitStats
+	end
 
--- Постоянное обновление статистики каждую секунду
-local lastUpdate = 0
-RunService.Heartbeat:Connect(function()
-    local now = tick()
-    if now - lastUpdate >= 1 then
-        lastUpdate = now
-        local newStats = CollectUnitStats()
-        
-        if #newStats > 0 then
-            CurrentUnitStats = newStats
-        end
-    end
-end)
+	-- Постоянное обновление статистики каждую секунду
+	local lastUpdate = 0
+	RunService.Heartbeat:Connect(function()
+		local now = tick()
+		if now - lastUpdate >= 1 then
+			lastUpdate = now
+			local newStats = CollectUnitStats()
+			
+			if #newStats > 0 then
+				CurrentUnitStats = newStats
+			end
+		end
+	end)
+end
 
 -- Функция для форматирования чисел
 local function formatNumber(num)
@@ -2400,40 +2404,43 @@ local function SendWebhook(data)
 end
 
 -- Перехватываем LoadMatch
-local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
-local old_LoadMatch = MatchFinishedModule.LoadMatch
-
-MatchFinishedModule.LoadMatch = function(self, result_type, rewards, match_data, can_replay, can_next, units_data)
-    local unitStats = CurrentUnitStats or {}
-    
-    local matchData = {
-        ResultType = result_type,
-        Rewards = rewards,
-        MatchData = match_data,
-        UnitStats = unitStats,
-        LeaderStats = {}
-    }
-    
-    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
-    if leaderstats then
-        for _, stat in pairs(leaderstats:GetChildren()) do
-            if stat:IsA("IntValue") or stat:IsA("NumberValue") then
-                matchData.LeaderStats[stat.Name] = stat.Value
-            end
-        end
-    end
-    
-    print("✅ Match data collected!")
-    print("📊 Collected stats for " .. #unitStats .. " units")
-    
-    -- Отправляем webhook
-    task.spawn(function()
-        SendWebhook(matchData)
-    end)
-    
-    return old_LoadMatch(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") then
+	local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
 end
+if MatchFinishedModule then
+	local old_LoadMatch = MatchFinishedModule.LoadMatch
 
+	MatchFinishedModule.LoadMatch = function(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+		local unitStats = CurrentUnitStats or {}
+		
+		local matchData = {
+			ResultType = result_type,
+			Rewards = rewards,
+			MatchData = match_data,
+			UnitStats = unitStats,
+			LeaderStats = {}
+		}
+		
+		local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+		if leaderstats then
+			for _, stat in pairs(leaderstats:GetChildren()) do
+				if stat:IsA("IntValue") or stat:IsA("NumberValue") then
+					matchData.LeaderStats[stat.Name] = stat.Value
+				end
+			end
+		end
+		
+		print("✅ Match data collected!")
+		print("📊 Collected stats for " .. #unitStats .. " units")
+		
+		-- Отправляем webhook
+		task.spawn(function()
+			SendWebhook(matchData)
+		end)
+		
+		return old_LoadMatch(self, result_type, rewards, match_data, can_replay, can_next, units_data)
+	end
+end
     -- ============================================================================
 -- WEBHOOK TAB
 -- ============================================================================
