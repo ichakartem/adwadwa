@@ -1223,6 +1223,11 @@ end
 					friendOnly,
 					selectedMap
 				)
+				wait(1.5)
+				pcall(function()
+					local skipArgs = { buffer.fromstring("*\000\000") }
+					ReplicatedStorage:WaitForChild("ByteNetReliable"):FireServer(unpack(skipArgs))
+				end)
 			end
 		})
 
