@@ -2165,7 +2165,7 @@ end
 	end
 	local Controllers = game:GetService("ReplicatedFirst").Client.Controllers
 	if Controllers:FindFirstChild("PlacedTowerController") and executorname ~= "Xeno" and require then
-    	local PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
+    	PlacedTowerController = require(game:GetService("ReplicatedFirst").Client.Controllers.PlacedTowerController)
 	end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -2431,7 +2431,7 @@ end
 
 -- Перехватываем LoadMatch
 if Controllers:FindFirstChild("UiController"):FindFirstChild("Frames"):FindFirstChild("MatchFinished") and executorname ~= "Xeno" and require then
-	local MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
+	MatchFinishedModule = require(game:GetService("ReplicatedFirst").Client.Controllers.UiController.Frames.MatchFinished)
 end
 if MatchFinishedModule then
 	local old_LoadMatch = MatchFinishedModule.LoadMatch
