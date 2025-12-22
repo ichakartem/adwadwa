@@ -1108,6 +1108,7 @@ end
 		local selectedAct = nil
 		local difficultyPercent = 1.0
 		local friendOnly = false
+		local ModeForSearch = "Story"
 
 		-- Переменные для хранения dropdown'ов
 		local ModeDropdown
@@ -1140,7 +1141,7 @@ end
 
 		local ModeDropdown = Tabs.Lobby:AddDropdown("Mode", {
 			Title = "🎮 Game Mode",
-			Values = {"Story", "VirtualRealm", "LegendStages"},
+			Values = {"Story", "VirtualRealm", "LegendStage"},
 			Multi = false,
 			Default = 1,
 		})
@@ -1172,14 +1173,17 @@ end
 		-- ТЕПЕРЬ добавляем логику через OnChanged (ПОСЛЕ создания всех dropdown'ов)
 		ModeDropdown:OnChanged(function(Value)
 			selectedMode = Value
-			
-			local maps = getMapsForMode(Value)
+			ModeForSearch = Value
+			if ModeForSearch == "LegendStage" then
+				ModeForSearch = "LegendStages"
+			end
+			local maps = getMapsForMode(ModeForSearch)
 			
 			if #maps > 0 then
 				selectedMap = maps[1]
 				MapDropdown:SetValues(maps)
 				
-				local acts = getActsForMap(Value, maps[1])
+				local acts = getActsForMap(ModeForSearch, maps[1])
 				if #acts > 0 then
 					selectedAct = acts[1]
 					ActDropdown:SetValues(acts)
@@ -1200,7 +1204,7 @@ end
 			
 			selectedMap = Value
 			
-			local acts = getActsForMap(selectedMode, Value)
+			local acts = getActsForMap(ModeForSearch, Value)
 			if #acts > 0 then
 				selectedAct = acts[1]
 				ActDropdown:SetValues(acts)
