@@ -33,7 +33,7 @@
 	end)()
 
 		local executorname = identifyexecutor()
-		local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/browncur/123/refs/heads/main/fenix.lua"))()
+		local Fenix, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dvorfkar6-lab/uis/refs/heads/main/fluent"))()
 
 		local PlaceId = game.PlaceId
 		local GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
@@ -2244,7 +2244,6 @@ local function formatNumber(num)
     end
 end
 
--- Функция для отправки webhook
 -- Функция для отправки webhook
 local function SendWebhook(data)
     if not _G.WEBHOOK_ENABLED then
