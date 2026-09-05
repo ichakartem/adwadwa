@@ -14540,7 +14540,8 @@ end
 ay:Slider{
 Name="Cast Only Within",
 Desc="uses abilities only when the target is this close — 0 casts at any range",
-Default=0,Min=0,Max=80,Decimals=0,
+
+Default=0,Min=0,Max=200,Decimals=0,
 Flag="CastReach",
 Callback=function(bn)S.castReach=bn end,
 }
@@ -25879,7 +25880,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="05.09 00:38:19",
+Build="06.09 01:17:48",
 S=S,
 Window=Window,
 Priority=a.j(),
