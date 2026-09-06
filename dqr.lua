@@ -640,7 +640,14 @@ Raid=tabs.Lobby:Section("Boss Raid",{Side="Left",Scope="lobby"}),
 
 
 
-Hoster=tabs.Joiner:Section("Hoster",{Side="Left"}),
+
+
+
+
+
+
+HostCtl=tabs.Joiner:Section("Party",{Side="Left"}),
+Hoster=tabs.Joiner:Section("Hoster",{Side="Left",Scroll=true,Height=0.55}),
 Joining=tabs.Joiner:Section("Joiner",{Side="Right"}),
 
 Sell=tabs.Items:Section("Auto Sell",{Side="Left"}),
@@ -16099,11 +16106,12 @@ local ab=a.E()
 local ac=a.m()
 local ad=a.l()
 
-local ae=10
+local ae=50
 
 return function(af)
 local ag=af.Hoster
-local ah=af.Joining
+local ah=af.HostCtl or af.Hoster
+local ai=af.Joining
 
 
 
@@ -16112,49 +16120,53 @@ local ah=af.Joining
 S.hostNames=S.hostNames or{}
 
 local function wanted()
-local ai,aj={},{}
-for ak=1,ae do
-local al=S.hostNames[ak]
-al=type(al)=="string"and al:gsub("^%s+",""):gsub("%s+$","")or""
-if al~=""and not aj[al:lower()]then
-aj[al:lower()]=true
-ai[#ai+1]=al
+local aj,ak={},{}
+for al=1,ae do
+local am=S.hostNames[al]
+am=type(am)=="string"and am:gsub("^%s+",""):gsub("%s+$","")or""
+if am~=""and not ak[am:lower()]then
+ak[am:lower()]=true
+aj[#aj+1]=am
 end
 end
-return ai
+return aj
 end
 
-for ai=1,ae do
-ag:Input{
-Name="Player "..ai,
+
+
+
+local aj=ag:Section("Player Names",{Collapsible=false})
+for ak=1,ae do
+aj:Input{
+Name="Player "..ak,
 Default="",Placeholder="username",
-Flag="HostName"..ai,
-Callback=function(aj)S.hostNames[ai]=tostring(aj or"")end,
+Flag="HostName"..ak,
+Callback=function(al)S.hostNames[ak]=tostring(al or"")end,
 }
 end
 
-ag:Toggle{
+ah:Toggle{
 Name="Wait For Them",
 Desc="accepts join requests from the names above and holds the run until they are all here",
 Default=false,Flag="HostWait",
-Callback=function(ai)
-S.hostWait=ai
-if ai and not aa.CanHost()then
+Callback=function(ak)
+S.hostWait=ak
+if ak and not aa.CanHost()then
 Notify"Joiner: requests arrive inside the dungeon — start it first"
 end
 end,
 }
 
-local ai=ag:Label"No names yet"
+local ak=ah:Label"No names yet"
 
 
 local function stillWaiting()
 if not S.hostWait then return false,nil end
-local aj=wanted()
-if#aj==0 then return false,nil end
-local ak=aa.Missing(aj)
-if#ak==0 then return false,nil end
-return true,ak
+local al=wanted()
+if#al==0 then return false,nil end
+local am=aa.Missing(al)
+if#am==0 then return false,nil end
+return true,am
 end
 
 
@@ -16162,13 +16174,13 @@ end
 aa.SetHold(stillWaiting)
 
 
-ac.OnClient("showJoinRequest",function(aj,ak,al)
+ac.OnClient("showJoinRequest",function(al,am,an)
 if _apelStopped or not S.hostWait then return end
-if al=="close"or type(ak)~="string"or aj==nil then return end
+if an=="close"or type(am)~="string"or al==nil then return end
 
-local am=false
-for an,ao in ipairs(wanted())do
-if ao:lower()==ak:lower()then am=true break end
+local ao=false
+for ap,aq in ipairs(wanted())do
+if aq:lower()==am:lower()then ao=true break end
 end
 
 
@@ -16177,7 +16189,7 @@ end
 
 
 
-if not am then
+if not ao then
 if ad.enabled then
 
 end
@@ -16188,23 +16200,23 @@ end
 
 task.delay(0.3,function()
 if _apelStopped then return end
-aa.Answer(aj,true)
-Notify("Joiner: accepted "..ak)
+aa.Answer(al,true)
+Notify("Joiner: accepted "..am)
 end)
 end)
 
 spawnLoop(function()
 while not _apelStopped do
-if ai then
-local aj=wanted()
-if#aj==0 then
-ai:Set"No names yet"
+if ak then
+local al=wanted()
+if#al==0 then
+ak:Set"No names yet"
 elseif not S.hostWait then
-ai:Set(("%d names, waiting is off"):format(#aj))
+ak:Set(("%d names, waiting is off"):format(#al))
 else
-local ak,al=stillWaiting()
-ai:Set(ak
-and("waiting for %d: %s"):format(#al,table.concat(al,", "))
+local am,an=stillWaiting()
+ak:Set(am
+and("waiting for %d: %s"):format(#an,table.concat(an,", "))
 or"everyone is here — the run can start")
 end
 end
@@ -16214,20 +16226,20 @@ end)
 
 
 
-local aj
-local ak,al=0,false
+local al
+local am,an=0,false
 
-ah:Input{
+ai:Input{
 Name="Host",
 Default="",Placeholder="username to join",
 Flag="JoinHost",
-Callback=function(am)S.joinHost=tostring(am or"")end,
+Callback=function(ao)S.joinHost=tostring(ao or"")end,
 }
 
 local function askOnce()
-local am=S.joinHost
-am=type(am)=="string"and am:gsub("^%s+",""):gsub("%s+$","")or""
-if am==""then
+local ao=S.joinHost
+ao=type(ao)=="string"and ao:gsub("^%s+",""):gsub("%s+$","")or""
+if ao==""then
 Notify"Joiner: type a host name first"
 return
 end
@@ -16236,71 +16248,71 @@ Notify"Joiner: requests can only be sent from the lobby"
 return
 end
 task.spawn(function()
-al=true
-local an,ao,ap=aa.SendRequest(am)
-al=false
-if aj then
-aj:Set(not an and"request failed"
-or ao and("waiting for "..am.." to accept")
-or("refused: "..tostring(ap or"?")))
+an=true
+local ap,aq,ar=aa.SendRequest(ao)
+an=false
+if al then
+al:Set(not ap and"request failed"
+or aq and("waiting for "..ao.." to accept")
+or("refused: "..tostring(ar or"?")))
 end
 end)
 end
 
-ah:Button{Name="Send Request",Text="Send",Callback=askOnce}
+ai:Button{Name="Send Request",Text="Send",Callback=askOnce}
 
-ah:Toggle{
+ai:Toggle{
 Name="Auto Request",
 Desc="keeps asking the host to let you in while you sit in the lobby",
 Default=false,Flag="JoinerOn",
-Callback=function(am)S.joinerOn=am end,
+Callback=function(ao)S.joinerOn=ao end,
 }
 
-ah:Slider{
+ai:Slider{
 Name="Leave After",Default=30,Min=10,Max=180,Decimals=0,
 Desc="seconds without the host in your dungeon before going back to the lobby",
 Flag="JoinerPatience",
-Callback=function(am)S.joinerPatience=am end,
+Callback=function(ao)S.joinerPatience=ao end,
 }
 
-aj=ah:Label"Idle"
+al=ai:Label"Idle"
 
 
 
 spawnLoop(function()
 while not _apelStopped do
-local am=S.joinHost
-am=type(am)=="string"and am:gsub("^%s+",""):gsub("%s+$","")or""
+local ao=S.joinHost
+ao=type(ao)=="string"and ao:gsub("^%s+",""):gsub("%s+$","")or""
 
-if S.joinerOn and am~=""and not al
+if S.joinerOn and ao~=""and not an
 and aa.CanRequest()and not Window:IsLoadingConfig()
-and(os.clock()-ak)>10
+and(os.clock()-am)>10
 then
 
 
-local an=false
-for ao,ap in ipairs(ab.Open()or{})do
-if tostring(ap.name):lower()==am:lower()then
-ab.Join(am)
-an=true
-if aj then aj:Set("joining "..am.." here")end
+local ap=false
+for aq,ar in ipairs(ab.Open()or{})do
+if tostring(ar.name):lower()==ao:lower()then
+ab.Join(ao)
+ap=true
+if al then al:Set("joining "..ao.." here")end
 break
 end
 end
 
-if not an then
-ak=os.clock()
-al=true
-local ao,ap,aq=aa.SendRequest(am)
-al=false
-if aj then
-aj:Set(not ao and"request failed"
-or ap and("waiting for "..am.." to accept")
-or("refused: "..tostring(aq or"?")))
+if not ap then
+am=os.clock()
+an=true
+local aq,ar,as=aa.SendRequest(ao)
+an=false
+if al then
+al:Set(not aq and"request failed"
+or ar and("waiting for "..ao.." to accept")
+or("refused: "..tostring(as or"?")))
 end
 
 
-if ap then ak=os.clock()+15 end
+if ar then am=os.clock()+15 end
 end
 end
 task.wait(1)
@@ -16312,30 +16324,30 @@ end)
 
 
 spawnLoop(function()
-local am
+local ao
 while not _apelStopped do
-local an=S.joinHost
-an=type(an)=="string"and an:gsub("^%s+",""):gsub("%s+$","")or""
-local ao=tonumber(S.joinerPatience)or 30
+local ap=S.joinHost
+ap=type(ap)=="string"and ap:gsub("^%s+",""):gsub("%s+$","")or""
+local aq=tonumber(S.joinerPatience)or 30
 
-if S.joinerOn and an~=""and not aa.CanRequest()then
-if aa.Present(an)then
-am=nil
+if S.joinerOn and ap~=""and not aa.CanRequest()then
+if aa.Present(ap)then
+ao=nil
 else
-am=am or os.clock()
-local ap=os.clock()-am
-if aj then
-aj:Set(("%s is not here — %.0fs of %.0f")
-:format(an,ap,ao))
+ao=ao or os.clock()
+local ar=os.clock()-ao
+if al then
+al:Set(("%s is not here — %.0fs of %.0f")
+:format(ap,ar,aq))
 end
-if ap>ao then
-am=nil
-Notify("Joiner: "..an.." never showed up, going back")
+if ar>aq then
+ao=nil
+Notify("Joiner: "..ap.." never showed up, going back")
 ac.Fire"ReturnToLobbyEvent"
 end
 end
 else
-am=nil
+ao=nil
 end
 task.wait(1)
 end
@@ -23049,28 +23061,174 @@ return ao
 end
 
 
+
+
+
+
+
+
+
+
+ad.GROUP_TYPES={
+weapon={weapon=true},
+armor={helmet=true,chest=true},
+ability={ability=true},
+}
+
+
+
+
+local ae={"physicalDamage","physicalPower","spellPower","health"}
+
+local function dupRank(af)
+local ag=tonumber(af.data.currentUpgrade)or 0
+local ah=0
+for ai,aj in ipairs(ae)do
+local ak=tonumber(af.data[aj])
+if ak and ak>ah then ah=ak end
+end
+return ag,ah
+end
+
+
+
+
+
+
+
+function ad.AdvancedCandidates(af)
+af=af or{}
+local ag=af.groups or{}
+local ah=af.keepUpgraded~=false
+local ai=ab.Items(true)
+
+
+local aj={}
+for ak,al in pairs(ad.GROUP_TYPES)do
+for am in pairs(al)do aj[am]=ak end
+end
+
+
+
+
+local ak={}
+if af.keepBest then
+local al={weapon=true,helmet=true,chest=true}
+local am={}
+for an,ao in ipairs(ai)do
+local ap=(tonumber(ao.data.currentUpgrade)or 0)>0
+if al[ao.type]and not ao.equipped
+and not(ah and ap)then
+for aq,ar in ipairs(ae)do
+local as=tonumber(ao.data[ar])
+if as then
+local au=ao.type.."/"..ar
+local av=am[au]
+if not av or as>(tonumber(av.data[ar])or 0)then am[au]=ao end
+end
+end
+end
+end
+for an,ao in pairs(am)do ak[ao.key]=true end
+end
+
+
+local al={}
+for am,an in ipairs(ai)do
+local ao=aj[an.type]
+local ap=ao and ag[ao]
+if ap and ap.on and not an.equipped and not ak[an.key]then
+local aq=(tonumber(an.data.currentUpgrade)or 0)>0
+local ar=an.name
+local as=not(ah and aq)
+and not(ap.keep or{})[ar]
+
+
+
+if as and next(ap.only or{})~=nil then as=(ap.only or{})[ar]==true end
+
+
+if as and next(ap.rarities or{})~=nil then as=(ap.rarities or{})[an.rarity]==true end
+local au=tonumber(ap.maxLevel)or 0
+if as and au>0 then as=(tonumber(an.data.levelReq)or 0)<au end
+
+if as then al[#al+1]=an end
+end
+end
+
+
+
+
+
+
+local am={}
+for an,ao in ipairs(al)do
+local ap=aj[ao.type]
+local aq=tonumber((ag[ap]or{}).dupes)or 0
+if aq>0 then
+local ar=am[ao.name]
+if not ar then ar={};am[ao.name]=ar end
+ar[#ar+1]=ao
+end
+end
+local an={}
+for ao,ap in pairs(am)do
+local aq=aj[ap[1].type]
+local ar=tonumber((ag[aq]or{}).dupes)or 0
+table.sort(ap,function(as,au)
+local av,aw=dupRank(as)
+local ax,ay=dupRank(au)
+if av~=ax then return av>ax end
+return aw>ay
+end)
+for as=1,math.min(ar,#ap)do an[ap[as].key]=true end
+end
+
+local ao={}
+for ap,aq in ipairs(al)do
+if not an[aq.key]then ao[#ao+1]=aq end
+end
+return ao
+end
+
+
+function ad.GroupNames(af)
+local ag=ad.GROUP_TYPES[af]
+if not ag then return{}end
+local ah,ai={},{}
+for aj,ak in ipairs(ab.Items())do
+if ag[ak.type]and not ah[ak.name]then
+ah[ak.name]=true
+ai[#ai+1]=ak.name
+end
+end
+table.sort(ai)
+return ai
+end
+
+
 function ad.OwnedNames()
-local ae,af={},{}
-for ag,ah in ipairs(ab.Items())do
-if not ae[ah.name]then ae[ah.name]=true;af[#af+1]=ah.name end
+local af,ag={},{}
+for ah,ai in ipairs(ab.Items())do
+if not af[ai.name]then af[ai.name]=true;ag[#ag+1]=ai.name end
 end
-table.sort(af)
-return af
-end
-
-
-
-
-
-function ad.Equip(ae,af)
-if af then
-return(aa.Invoke("equipItem",ae.type,ae.num,af))
-end
-return(aa.Invoke("equipItem",ae.type,ae.num))
+table.sort(ag)
+return ag
 end
 
-function ad.Unequip(ae)
-return(aa.Invoke("unequipItem",ae.type,ae.num))
+
+
+
+
+function ad.Equip(af,ag)
+if ag then
+return(aa.Invoke("equipItem",af.type,af.num,ag))
+end
+return(aa.Invoke("equipItem",af.type,af.num))
+end
+
+function ad.Unequip(af)
+return(aa.Invoke("unequipItem",af.type,af.num))
 end
 
 
@@ -23091,36 +23249,18 @@ ad.ARMOR_SLOTS={"helmet","chest"}
 
 
 
-local function scoreOf(ae,af,ag)
-if ag then return ac.OfItem(ae,af)end
-return tonumber(ae[af])or 0
+local function scoreOf(af,ag,ah)
+if ah then return ac.OfItem(af,ag)end
+return tonumber(af[ag])or 0
 end
 
-function ad.BestWeapon(ae,af)
-local ag=ad.EQUIP_STATS[ae]or"spellPower"
-local ah=ab.Level()
-local ai,aj,ak=(-1)
-
-for al,am in ipairs(ab.Items())do
-if am.type=="weapon"then
-local an=tonumber(am.data.levelReq)or 0
-local ao=scoreOf(am.data,ag,af)
-if am.equipped then ak=am end
-if an<=ah and ao>ai then aj,ai=am,ao end
-end
-end
-return aj,ak,ai
-end
-
-
-
-function ad.BestArmor(ae,af,ag)
-local ah=ad.ARMOR_STATS[af]or"health"
+function ad.BestWeapon(af,ag)
+local ah=ad.EQUIP_STATS[af]or"spellPower"
 local ai=ab.Level()
 local aj,ak,al=(-1)
 
 for am,an in ipairs(ab.Items())do
-if an.type==ae then
+if an.type=="weapon"then
 local ao=tonumber(an.data.levelReq)or 0
 local ap=scoreOf(an.data,ah,ag)
 if an.equipped then al=an end
@@ -23132,9 +23272,27 @@ end
 
 
 
-function ad.Score(ae,af,ag)
-if not ae or not af then return 0 end
-return scoreOf(ae.data,af,ag)
+function ad.BestArmor(af,ag,ah)
+local ai=ad.ARMOR_STATS[ag]or"health"
+local aj=ab.Level()
+local ak,al,am=(-1)
+
+for an,ao in ipairs(ab.Items())do
+if ao.type==af then
+local ap=tonumber(ao.data.levelReq)or 0
+local aq=scoreOf(ao.data,ai,ah)
+if ao.equipped then am=ao end
+if ap<=aj and aq>ak then al,ak=ao,aq end
+end
+end
+return al,am,ak
+end
+
+
+
+function ad.Score(af,ag,ah)
+if not af or not ag then return 0 end
+return scoreOf(af.data,ag,ah)
 end
 
 
@@ -23155,64 +23313,64 @@ ad.UPGRADE_STATS={
 
 
 
-function ad.UpgradeCost(ae)
-ae=math.max(0,math.floor(tonumber(ae)or 0))
-if ae==0 then return 100 end
-if ae>466 then return 100000 end
-local af=100
-for ag=1,ae do
-if af*1.06+50-af>220 then
-af=af+220
+function ad.UpgradeCost(af)
+af=math.max(0,math.floor(tonumber(af)or 0))
+if af==0 then return 100 end
+if af>466 then return 100000 end
+local ag=100
+for ah=1,af do
+if ag*1.06+50-ag>220 then
+ag=ag+220
 else
-af=af*1.06+50
+ag=ag*1.06+50
 end
 end
-return math.floor(af>100000 and 100000 or af)
+return math.floor(ag>100000 and 100000 or ag)
 end
 
 
 
 
-function ad.AffordableUpgrades(ae,af,ag)
-local ah=tonumber(ae.data.currentUpgrade)or 0
-local ai=(tonumber(ae.data.maxUpgrades)or 0)-ah
-if ag then ai=math.min(ai,ag)end
+function ad.AffordableUpgrades(af,ag,ah)
+local ai=tonumber(af.data.currentUpgrade)or 0
+local aj=(tonumber(af.data.maxUpgrades)or 0)-ai
+if ah then aj=math.min(aj,ah)end
 
-local aj,ak=tonumber(af)or 0,0
-for al=0,ai-1 do
-local am=ad.UpgradeCost(ah+al)
-if am>aj then break end
-aj=aj-am
-ak=ak+1
+local ak,al=tonumber(ag)or 0,0
+for am=0,aj-1 do
+local an=ad.UpgradeCost(ai+am)
+if an>ak then break end
+ak=ak-an
+al=al+1
 end
-return ak
-end
-
-function ad.Upgrade(ae,af,ag)
-local ah=tonumber(ae.data.currentUpgrade)or 0
-local ai=(tonumber(ae.data.maxUpgrades)or 0)-ah
-if ai<=0 then return false,"already maxed"end
-
-local aj,ak=1
-if ag=="10x"then
-aj,ak=10,"10x"
-elseif ag=="spendAll"then
-aj,ak=ai,"spendAll"
+return al
 end
 
-local al=ad.AffordableUpgrades(ae,ab.Gold(),aj)
-if al<=0 then
-return false,("need %d gold"):format(ad.UpgradeCost(ah))
+function ad.Upgrade(af,ag,ah)
+local ai=tonumber(af.data.currentUpgrade)or 0
+local aj=(tonumber(af.data.maxUpgrades)or 0)-ai
+if aj<=0 then return false,"already maxed"end
+
+local ak,al=1
+if ah=="10x"then
+ak,al=10,"10x"
+elseif ah=="spendAll"then
+ak,al=aj,"spendAll"
 end
 
-aa.Fire("upgradeItem",ae.type,ae.num,af,al,ak)
+local am=ad.AffordableUpgrades(af,ab.Gold(),ak)
+if am<=0 then
+return false,("need %d gold"):format(ad.UpgradeCost(ai))
+end
+
+aa.Fire("upgradeItem",af.type,af.num,ag,am,al)
 ab.InvalidateInventory()
-return true,("+%d %s"):format(al,af)
+return true,("+%d %s"):format(am,ag)
 end
 
 function ad.EquippedWeapon()
-for ae,af in ipairs(ab.Items())do
-if af.type=="weapon"and af.equipped then return af end
+for af,ag in ipairs(ab.Items())do
+if ag.type=="weapon"and ag.equipped then return ag end
 end
 return nil
 end
@@ -23225,35 +23383,35 @@ end
 
 
 
-local ae={weapon=1,helmet=2,chest=3}
+local af={weapon=1,helmet=2,chest=3}
 
 function ad.EquippedGear()
-local af={}
-for ag,ah in ipairs(ab.Items())do
-if ah.equipped and ae[ah.type]then af[#af+1]=ah end
+local ag={}
+for ah,ai in ipairs(ab.Items())do
+if ai.equipped and af[ai.type]then ag[#ag+1]=ai end
 end
-table.sort(af,function(ag,ah)return ae[ag.type]<ae[ah.type]end)
-return af
+table.sort(ag,function(ah,ai)return af[ah.type]<af[ai.type]end)
+return ag
 end
 
 
-function ad.UpgradeTargets(af)
-local ag=ad.EquippedGear()
-if af~="All"then return ag end
+function ad.UpgradeTargets(ag)
+local ah=ad.EquippedGear()
+if ag~="All"then return ah end
 
-local ah={}
 local ai={}
-for aj,ak in ipairs(ag)do
-ah[#ah+1]=ak
-ai[ak]=true
+local aj={}
+for ak,al in ipairs(ah)do
+ai[#ai+1]=al
+aj[al]=true
 end
-for aj,ak in ipairs(ab.Items())do
-if not ai[ak]and not ak.equipped and ae[ak.type]
-and(tonumber(ak.data.maxUpgrades)or 0)>(tonumber(ak.data.currentUpgrade)or 0)then
-ah[#ah+1]=ak
+for ak,al in ipairs(ab.Items())do
+if not aj[al]and not al.equipped and af[al.type]
+and(tonumber(al.data.maxUpgrades)or 0)>(tonumber(al.data.currentUpgrade)or 0)then
+ai[#ai+1]=al
 end
 end
-return ah
+return ai
 end
 
 
@@ -23265,9 +23423,9 @@ ad.SKILL_STATS={
 "stamina",
 }
 
-function ad.SpendSkill(af,ag)
-local ah=math.max(1,math.floor(tonumber(ag)or 1))
-return aa.Fire("spendSkillPoint",af,ah)
+function ad.SpendSkill(ag,ah)
+local ai=math.max(1,math.floor(tonumber(ah)or 1))
+return aa.Fire("spendSkillPoint",ag,ai)
 end
 
 function ad.ResetSkills()
@@ -23319,9 +23477,18 @@ end
 
 return function(ae)
 local af=ae.Sell
-local ag=ae.Equip
-local ah=ae.Smith
-local ai=ae.Skills
+
+
+
+
+
+
+
+local ag=af:Section"Simple Auto Sell"
+local ah=af:Section("Advanced Auto Sell",{Open=false})
+local ai=ae.Equip
+local aj=ae.Smith
+local ak=ae.Skills
 
 
 
@@ -23337,112 +23504,112 @@ keepUpgraded=S.sellKeepUpgraded~=false,
 }
 end
 
-af:Dropdown{
+ag:Dropdown{
 Name="Sell By",
 Desc="Rarity uses the rarity list, Level dumps gear you have outgrown, Both needs the two to agree",
 Options={"Rarity","Level","Both"},
 Default="Rarity",
 Flag="SellMode",
-Callback=function(aj)S.sellMode=aj end,
+Callback=function(al)S.sellMode=al end,
 }
 
-af:Dropdown{
+ag:Dropdown{
 Name="Sell Rarities",
 Desc="nothing is sold while this is empty and the mode uses rarity",
 Options=rarityOptions(),Multi=true,
 Flag="SellRarities",
-Callback=function(aj)
-local ak={}
-for al,am in pairs(aj or{})do
-if am then ak[plain(al)]=true end
+Callback=function(al)
+local am={}
+for an,ao in pairs(al or{})do
+if ao then am[plain(an)]=true end
 end
-S.sellRarities=ak
+S.sellRarities=am
 end,
 }
 
-af:Slider{
+ag:Slider{
 Name="Sell Below Level",
 Desc="sells items whose level requirement is under this — set it to your own level to dump outgrown gear",
 Default=1,Min=1,Max=250,Decimals=0,
 Flag="SellBelowLevel",
-Callback=function(aj)S.sellBelowLevel=aj end,
+Callback=function(al)S.sellBelowLevel=al end,
 }
 
-af:Dropdown{
+ag:Dropdown{
 Name="Sell Categories",
 Desc="leave empty to allow every category",
 Options={"Weapons","Abilities","Helmets","Chests"},Multi=true,
 Flag="SellCategories",
-Callback=function(aj)
-local ak={}
-for al,am in pairs(aj or{})do
-if am and ad[al]then ak[ad[al] ]=true end
+Callback=function(al)
+local am={}
+for an,ao in pairs(al or{})do
+if ao and ad[an]then am[ad[an] ]=true end
 end
-S.sellCategories=ak
+S.sellCategories=am
 end,
 }
 
-local aj
-aj=af:Dropdown{
+local al
+al=ag:Dropdown{
 Name="Hold List",
 Desc="items picked here are never sold, whatever the filters say",
 Options=ab.OwnedNames(),Multi=true,Search=true,CacheOptions=true,
 Flag="SellHold",
-Callback=function(ak)
-local al={}
-for am,an in pairs(ak or{})do if an then al[am]=true end end
-S.sellHold=al
+Callback=function(am)
+local an={}
+for ao,ap in pairs(am or{})do if ap then an[ao]=true end end
+S.sellHold=an
 end,
 }
 
-af:Toggle{
+ag:Toggle{
 Name="Keep Best Weapon",
 Desc="never sell the strongest weapon by spell power or by physical damage",
 Default=true,Flag="SellKeepBest",
-Callback=function(ak)S.sellKeepBest=ak end,
+Callback=function(am)S.sellKeepBest=am end,
 }
 
-af:Toggle{
+ag:Toggle{
 Name="Keep Upgraded",
 Desc="never sell anything you have poured gold into",
 Default=true,Flag="SellKeepUpgraded",
-Callback=function(ak)S.sellKeepUpgraded=ak end,
+Callback=function(am)S.sellKeepUpgraded=am end,
 }
 
-af:Button{Name="Open Sell Menu",Text="Open",Callback=function()
-local ak,al=ab.OpenSellUi()
-Notify(ak and("Sell menu "..tostring(al))or("Could not open — "..tostring(al)))
+ag:Button{Name="Open Sell Menu",Text="Open",Callback=function()
+local am,an=ab.OpenSellUi()
+Notify(am and("Sell menu "..tostring(an))or("Could not open — "..tostring(an)))
 end}
 
-af:Toggle{
+ag:Toggle{
 Name="Auto Sell",
-Desc="sells everything matching the filters, anywhere — town or dungeon",
+Desc="sells everything matching the filters, anywhere — town or dungeon; ignored while Advanced Auto Sell is on",
 Default=false,Flag="AutoSell",
-Callback=function(ak)S.autoSell=ak end,
+Callback=function(am)S.autoSell=am end,
 }
 
-local ak=af:Label"Nothing matches the sell filters"
+local am=ag:Label"Nothing matches the sell filters"
 
 local function sellNow()
-local al=ab.SellCandidates(sellOpts())
-if#al==0 then return 0 end
-return ab.Sell(al)
+local an=ab.SellCandidates(sellOpts())
+if#an==0 then return 0 end
+return ab.Sell(an)
 end
 
-af:Button{Name="Sell Now",Text="Sell",Callback=function()
+ag:Button{Name="Sell Now",Text="Sell",Callback=function()
 task.spawn(function()
-local al=sellNow()
-Notify(al>0 and("Sold %d item%s"):format(al,al==1 and""or"s")
+local an=sellNow()
+Notify(an>0 and("Sold %d item%s"):format(an,an==1 and""or"s")
 or"Nothing matches the sell filters")
 end)
 end}
 
-af:Button{Name="Refresh Hold List",Text="Refresh",Callback=function()
+ag:Button{Name="Refresh Hold List",Text="Refresh",Callback=function()
 task.spawn(function()
 aa.InvalidateInventory()
-local al=ab.OwnedNames()
-pcall(function()aj:SetOptions(al)end)
-Notify(("%d item name%s in your inventory"):format(#al,#al==1 and""or"s"))
+local an=ab.OwnedNames()
+pcall(function()al:SetOptions(an)end)
+Notify(("%d item name%s in your inventory"):format(#an,#an==1 and""or"s"))
 end)
 end}
 
@@ -23450,14 +23617,16 @@ spawnLoop(function()
 while not _apelStopped do
 task.wait(3)
 pcall(function()
-local al=ab.SellCandidates(sellOpts())
-local am=0
-for an,ao in ipairs(al)do am=am+(tonumber(ao.data.sellPrice)or 0)end
-ak:Set(#al==0 and"Nothing matches the sell filters"
-or("%d item%s matching · %d gold"):format(#al,#al==1 and""or"s",am))
+local an=ab.SellCandidates(sellOpts())
+local ao=0
+for ap,aq in ipairs(an)do ao=ao+(tonumber(aq.data.sellPrice)or 0)end
+am:Set(#an==0 and"Nothing matches the sell filters"
+or("%d item%s matching · %d gold"):format(#an,#an==1 and""or"s",ao))
 end)
 
-if S.autoSell and not Window:IsLoadingConfig()then
+
+
+if S.autoSell and not S.autoSellAdv and not Window:IsLoadingConfig()then
 pcall(sellNow)
 end
 end
@@ -23465,46 +23634,224 @@ end)
 
 
 
-ag:Dropdown{
+
+
+
+
+
+
+
+
+
+S.sellAdv=S.sellAdv or{}
+S.sellAdvGroups={
+weapon={on=false,keep={},only={},rarities={},maxLevel=0,dupes=0},
+armor={on=false,keep={},only={},rarities={},maxLevel=0,dupes=0},
+ability={on=false,keep={},only={},rarities={},maxLevel=0,dupes=0},
+}
+
+local function advOpts()
+return{
+keepBest=S.sellAdvKeepBest~=false,
+keepUpgraded=S.sellAdvKeepUpgraded~=false,
+groups=S.sellAdvGroups,
+}
+end
+
+ah:SubLabel"Each group has its own rules. The simple filters above are ignored while this is on."
+
+ah:Toggle{
+Name="Keep Best",
+Desc="never sell the strongest weapon or armor piece by any stat",
+Default=true,Flag="SellAdvKeepBest",
+Callback=function(an)S.sellAdvKeepBest=an end,
+}
+
+ah:Toggle{
+Name="Keep Upgraded",
+Desc="never sell anything you have poured gold into",
+Default=true,Flag="SellAdvKeepUpgraded",
+Callback=function(an)S.sellAdvKeepUpgraded=an end,
+}
+
+
+
+local an={
+{key="weapon",title="Weapons",noun="weapons"},
+{key="armor",title="Armor",noun="helmets and chests"},
+{key="ability",title="Abilities",noun="abilities"},
+}
+
+local ao={}
+
+for ap,aq in ipairs(an)do
+local ar=S.sellAdvGroups[aq.key]
+local as=ah:Section(aq.title,{Open=false})
+
+as:Toggle{
+Name="Sell "..aq.title,
+Desc="turn on the rules below for "..aq.noun,
+Default=false,Flag="SellAdvOn"..aq.title,
+Callback=function(au)ar.on=au end,
+}
+
+local au=as:Dropdown{
+Name="Never Sell",
+Desc="these are kept whatever the other rules say",
+Options=ab.GroupNames(aq.key),Multi=true,Search=true,CacheOptions=true,
+Flag="SellAdvKeep"..aq.title,
+Callback=function(au)
+local av={}
+for aw,ax in pairs(au or{})do if ax then av[aw]=true end end
+ar.keep=av
+end,
+}
+
+local av=as:Dropdown{
+Name="Sell Only These",
+Desc="leave empty to allow every item in the group",
+Options=ab.GroupNames(aq.key),Multi=true,Search=true,CacheOptions=true,
+Flag="SellAdvOnly"..aq.title,
+Callback=function(av)
+local aw={}
+for ax,ay in pairs(av or{})do if ay then aw[ax]=true end end
+ar.only=aw
+end,
+}
+
+as:Dropdown{
+Name="Rarities",
+Desc="leave empty to allow every rarity",
+Options=rarityOptions(),Multi=true,
+Flag="SellAdvRar"..aq.title,
+Callback=function(aw)
+local ax={}
+for ay,az in pairs(aw or{})do if az then ax[plain(ay)]=true end end
+ar.rarities=ax
+end,
+}
+
+
+
+
+
+if aq.key=="ability"then
+as:Slider{
+Name="Keep Duplicates",
+Desc="keep at most this many copies of the same ability, sell the weaker ones — 0 turns it off",
+Default=0,Min=0,Max=10,Decimals=0,
+Flag="SellAdvDupes"..aq.title,
+Callback=function(aw)ar.dupes=aw end,
+}
+else
+as:Slider{
+Name="Sell Below Level",
+Desc="only sell gear you have outgrown — 0 turns it off",
+Default=0,Min=0,Max=150,Decimals=0,
+Flag="SellAdvLvl"..aq.title,
+Callback=function(aw)ar.maxLevel=aw end,
+}
+end
+
+ao[#ao+1]=function()
+local aw=ab.GroupNames(aq.key)
+pcall(function()au:SetOptions(aw)end)
+pcall(function()av:SetOptions(aw)end)
+return#aw
+end
+end
+
+ah:Button{Name="Refresh Item Lists",Text="Refresh",Callback=function()
+task.spawn(function()
+aa.InvalidateInventory()
+local ap=0
+for aq,ar in ipairs(ao)do ap=ap+(ar()or 0)end
+Notify(("%d item name%s across the groups"):format(ap,ap==1 and""or"s"))
+end)
+end}
+
+ah:Toggle{
+Name="Advanced Auto Sell",
+Desc="sells by the per-group rules; replaces the simple auto sell while on",
+Default=false,Flag="AutoSellAdvanced",
+Callback=function(ap)S.autoSellAdv=ap end,
+}
+
+local ap=ah:Label"Nothing matches the advanced rules"
+
+local function advSellNow()
+local aq=ab.AdvancedCandidates(advOpts())
+if#aq==0 then return 0 end
+return ab.Sell(aq)
+end
+
+ah:Button{Name="Sell Now (Advanced)",Text="Sell",Callback=function()
+task.spawn(function()
+local aq=advSellNow()
+Notify(aq>0 and("Sold %d item%s"):format(aq,aq==1 and""or"s")
+or"Nothing matches the advanced rules")
+end)
+end}
+
+spawnLoop(function()
+while not _apelStopped do
+task.wait(3)
+pcall(function()
+local aq=ab.AdvancedCandidates(advOpts())
+local ar=0
+for as,au in ipairs(aq)do ar=ar+(tonumber(au.data.sellPrice)or 0)end
+ap:Set(#aq==0 and"Nothing matches the advanced rules"
+or("%d item%s matching · %d gold"):format(#aq,#aq==1 and""or"s",ar))
+end)
+
+if S.autoSellAdv and not Window:IsLoadingConfig()then
+pcall(advSellNow)
+end
+end
+end)
+
+
+
+ai:Dropdown{
 Name="Weapon By",
 Options={"Spell Power","Physical Damage"},
 Default="Spell Power",
 Flag="EquipBy",
-Callback=function(al)S.equipBy=al end,
+Callback=function(aq)S.equipBy=aq end,
 }
 
-ag:Dropdown{
+ai:Dropdown{
 Name="Armor By",
 Desc="Health is the tank pick; the other two scale your damage instead",
 Options={"Health","Spell Power","Physical Power"},
 Default="Health",
 Flag="EquipArmorBy",
-Callback=function(al)S.equipArmorBy=al end,
+Callback=function(aq)S.equipArmorBy=aq end,
 }
 
-ag:Toggle{
+ai:Toggle{
 Name="Auto Equip Best",
 Desc="swaps weapon, helmet and chest to the strongest you can wear at your level",
 Default=false,Flag="AutoEquipBest",
-Callback=function(al)S.autoEquipBest=al end,
+Callback=function(aq)S.autoEquipBest=aq end,
 }
 
-ag:Toggle{
+ai:Toggle{
 Name="Judge By Max Upgrades",
 Desc="compares what items will be when fully upgraded, not what they are now",
 Default=false,Flag="EquipByPotential",
-Callback=function(al)S.equipByPotential=al end,
+Callback=function(aq)S.equipByPotential=aq end,
 }
 
-ag:Slider{
+ai:Slider{
 Name="Only If Better By",
 Desc="how much stronger a candidate must be before it replaces what you wear",
 Default=0,Min=0,Max=100,Decimals=0,Suffix="%",
 Flag="EquipGainPct",
-Callback=function(al)S.equipGainPct=tonumber(al)or 0 end,
+Callback=function(aq)S.equipGainPct=tonumber(aq)or 0 end,
 }
 
-local al=ag:Label"Equipped: —"
+local aq=ai:Label"Equipped: —"
 
 
 
@@ -23515,53 +23862,53 @@ local al=ag:Label"Equipped: —"
 
 
 
-local function worthSwap(am,an,ao)
-if not am then return false end
-if an and an.key==am.key then return false end
-if not an then return true end
+local function worthSwap(ar,as,au)
+if not ar then return false end
+if as and as.key==ar.key then return false end
+if not as then return true end
 
-local ap=tonumber(S.equipGainPct)or 0
-if ap<=0 then return true end
+local av=tonumber(S.equipGainPct)or 0
+if av<=0 then return true end
 
-local aq=ab.Score(an,ao,S.equipByPotential)
-local ar=ab.Score(am,ao,S.equipByPotential)
-if aq<=0 then return true end
-return ar>=aq*(1+ap/100)
+local aw=ab.Score(as,au,S.equipByPotential)
+local ax=ab.Score(ar,au,S.equipByPotential)
+if aw<=0 then return true end
+return ax>=aw*(1+av/100)
 end
 
 local function equipBest()
-local am={}
-local an=S.equipByPotential==true
+local ar={}
+local as=S.equipByPotential==true
 
-local ao=ab.EQUIP_STATS[S.equipBy]or"spellPower"
-local ap,aq=ab.BestWeapon(S.equipBy,an)
-if worthSwap(ap,aq,ao)then
-ab.Equip(ap)
-am[#am+1]=ap.name
-end
-
-local ar=ab.ARMOR_STATS[S.equipArmorBy]or"health"
-for as,au in ipairs(ab.ARMOR_SLOTS)do
-local av,aw=ab.BestArmor(au,S.equipArmorBy,an)
-if worthSwap(av,aw,ar)then
+local au=ab.EQUIP_STATS[S.equipBy]or"spellPower"
+local av,aw=ab.BestWeapon(S.equipBy,as)
+if worthSwap(av,aw,au)then
 ab.Equip(av)
-am[#am+1]=av.name
+ar[#ar+1]=av.name
+end
+
+local ax=ab.ARMOR_STATS[S.equipArmorBy]or"health"
+for ay,az in ipairs(ab.ARMOR_SLOTS)do
+local aA,aB=ab.BestArmor(az,S.equipArmorBy,as)
+if worthSwap(aA,aB,ax)then
+ab.Equip(aA)
+ar[#ar+1]=aA.name
 end
 end
 
-if#am>0 then aa.InvalidateInventory()end
-return am
+if#ar>0 then aa.InvalidateInventory()end
+return ar
 end
 
-ag:Button{Name="Equip Best Now",Text="Equip",Callback=function()
+ai:Button{Name="Equip Best Now",Text="Equip",Callback=function()
 task.spawn(function()
-local am=equipBest()
-Notify(#am>0 and("Equipped "..table.concat(am,", "))
+local ar=equipBest()
+Notify(#ar>0 and("Equipped "..table.concat(ar,", "))
 or"Already wearing the best you own")
 end)
 end}
 
-ag:Button{Name="Swap Ability Set",Text="Swap",Callback=function()
+ai:Button{Name="Swap Ability Set",Text="Swap",Callback=function()
 ab.SwapAbilitySet()
 Notify"Ability set swapped"
 end}
@@ -23580,8 +23927,8 @@ aa.InvalidateInventory()
 pcall(equipBest)
 end
 
-for am,an in ipairs{"reloadInventory","updateLocalInventoryTable"}do
-ac.OnClient(an,function()task.spawn(equipNow)end)
+for ar,as in ipairs{"reloadInventory","updateLocalInventoryTable"}do
+ac.OnClient(as,function()task.spawn(equipNow)end)
 end
 
 spawnLoop(function()
@@ -23596,94 +23943,94 @@ spawnLoop(function()
 while not _apelStopped do
 task.wait(4)
 pcall(function()local
-am, an=ab.BestWeapon(S.equipBy)local
-ao, ap=ab.BestArmor("helmet",S.equipArmorBy)local
-aq, ar=ab.BestArmor("chest",S.equipArmorBy)
-al:Set(("Weapon: <b>%s</b>\nHelmet: %s   ·   Chest: %s"):format(
-an and an.name or"—",
-ap and ap.name or"—",
-ar and ar.name or"—"))
+ar, as=ab.BestWeapon(S.equipBy)local
+au, av=ab.BestArmor("helmet",S.equipArmorBy)local
+aw, ax=ab.BestArmor("chest",S.equipArmorBy)
+aq:Set(("Weapon: <b>%s</b>\nHelmet: %s   ·   Chest: %s"):format(
+as and as.name or"—",
+av and av.name or"—",
+ax and ax.name or"—"))
 end)
 end
 end)
 
 
 
-ah:Dropdown{
+aj:Dropdown{
 Name="Upgrade",
 Desc="Equipped pours gold into what you are wearing; All spreads it over everything unmaxed",
 Options={"Equipped","All"},
 Default="Equipped",
 Flag="UpgradeScope",
-Callback=function(an)S.upgradeScope=an end,
+Callback=function(as)S.upgradeScope=as end,
 }
 
-ah:Dropdown{
+aj:Dropdown{
 Name="Upgrade Stat",
 Desc="health cannot be upgraded on a weapon — the game refuses it",
 Options={"Spell Power","Physical Damage","Health"},
 Default="Spell Power",
 Flag="UpgradeStat",
-Callback=function(an)S.upgradeStat=ab.UPGRADE_STATS[an]or"spell"end,
+Callback=function(as)S.upgradeStat=ab.UPGRADE_STATS[as]or"spell"end,
 }
 
-ah:Dropdown{
+aj:Dropdown{
 Name="Upgrade Amount",
 Options={"1x","10x","Spend All"},
 Default="Spend All",
 Flag="UpgradeMode",
-Callback=function(an)
-S.upgradeMode=(an=="10x"and"10x")or(an=="Spend All"and"spendAll")or nil
+Callback=function(as)
+S.upgradeMode=(as=="10x"and"10x")or(as=="Spend All"and"spendAll")or nil
 end,
 }
 
-ah:Toggle{
+aj:Toggle{
 Name="Auto Upgrade",
 Desc="keeps pouring gold into your gear anywhere, town or dungeon",
 Default=false,Flag="AutoUpgrade",
-Callback=function(an)S.autoUpgrade=an end,
+Callback=function(as)S.autoUpgrade=as end,
 }
 
-local an=ah:Label"Nothing equipped"
+local as=aj:Label"Nothing equipped"
 
 
 local function upgradeNow()
-local ap=ab.UpgradeTargets(S.upgradeScope)
-if#ap==0 then return false,"nothing to upgrade"end
+local av=ab.UpgradeTargets(S.upgradeScope)
+if#av==0 then return false,"nothing to upgrade"end
 
-local aq,ar=0
-for as,au in ipairs(ap)do
+local aw,ax=0
+for ay,az in ipairs(av)do
 
 
-local av=S.upgradeStat or"spell"
-if av=="health"and au.type=="weapon"then av="spell"end
+local aA=S.upgradeStat or"spell"
+if aA=="health"and az.type=="weapon"then aA="spell"end
 
-local aw,ax=ab.Upgrade(au,av,S.upgradeMode)
-if aw then aq,ar=aq+1,ax else ar=ax end
+local aB,aC=ab.Upgrade(az,aA,S.upgradeMode)
+if aB then aw,ax=aw+1,aC else ax=aC end
 task.wait(0.35)
 aa.InvalidateInventory()
 
-if not aw and type(ax)=="string"and ax:find"need"then break end
+if not aB and type(aC)=="string"and aC:find"need"then break end
 end
 
-if aq>0 then
-return true,("%d item%s, last %s"):format(aq,aq==1 and""or"s",tostring(ar))
+if aw>0 then
+return true,("%d item%s, last %s"):format(aw,aw==1 and""or"s",tostring(ax))
 end
-return false,tostring(ar)
+return false,tostring(ax)
 end
 
-ah:Button{Name="Upgrade Now",Text="Upgrade",Callback=function()
+aj:Button{Name="Upgrade Now",Text="Upgrade",Callback=function()
 task.spawn(function()
-local ap,aq=upgradeNow()
-Notify(ap and("Upgraded — "..tostring(aq))or("Upgrade skipped — "..tostring(aq)))
+local av,aw=upgradeNow()
+Notify(av and("Upgraded — "..tostring(aw))or("Upgrade skipped — "..tostring(aw)))
 end)
 end}
 
 
 
-ah:Button{Name="Open Game Upgrade Menu",Text="Open",Callback=function()
-local ap,aq=ab.OpenBlacksmithUi()
-Notify(ap and("Blacksmith menu "..tostring(aq))or("Could not open — "..tostring(aq)))
+aj:Button{Name="Open Game Upgrade Menu",Text="Open",Callback=function()
+local av,aw=ab.OpenBlacksmithUi()
+Notify(av and("Blacksmith menu "..tostring(aw))or("Could not open — "..tostring(aw)))
 end}
 
 spawnLoop(function()
@@ -23693,20 +24040,20 @@ pcall(function()
 
 
 
-local ap={}
-for aq,ar in ipairs(ab.EquippedGear())do
-local as=tonumber(ar.data.currentUpgrade)or 0
-local au=tonumber(ar.data.maxUpgrades)or 0
-ap[#ap+1]=as>=au
-and("<b>%s</b> — maxed (%d/%d)"):format(ar.name,as,au)
+local av={}
+for aw,ax in ipairs(ab.EquippedGear())do
+local ay=tonumber(ax.data.currentUpgrade)or 0
+local az=tonumber(ax.data.maxUpgrades)or 0
+av[#av+1]=ay>=az
+and("<b>%s</b> — maxed (%d/%d)"):format(ax.name,ay,az)
 or("<b>%s</b> — %d/%d, next %d gold")
-:format(ar.name,as,au,ab.UpgradeCost(as))
+:format(ax.name,ay,az,ab.UpgradeCost(ay))
 end
-if#ap>0 then
-ap[#ap+1]=("Gold %d"):format(aa.Gold())
-an:Set(table.concat(ap,"\n"))
+if#av>0 then
+av[#av+1]=("Gold %d"):format(aa.Gold())
+as:Set(table.concat(av,"\n"))
 else
-an:Set"Nothing equipped"
+as:Set"Nothing equipped"
 end
 end)
 
@@ -23719,35 +24066,35 @@ end)
 
 
 
-ai:Dropdown{
+ak:Dropdown{
 Name="Spend Into",
 Options={"Spell Power","Physical Power","Stamina"},
 Default="Spell Power",
 Flag="SkillStat",
-Callback=function(ap)S.skillStat=ab.SKILL_STATS[ap]or"spellPower"end,
+Callback=function(av)S.skillStat=ab.SKILL_STATS[av]or"spellPower"end,
 }
 
-ai:Toggle{
+ak:Toggle{
 Name="Auto Spend Skill Points",
 Desc="spends every point you earn into the stat above",
 Default=false,Flag="AutoSkill",
-Callback=function(ap)S.autoSkill=ap end,
+Callback=function(av)S.autoSkill=av end,
 }
 
-local ap=ai:Label"Points: 0"
+local av=ak:Label"Points: 0"
 
-ai:Button{Name="Spend All Now",Text="Spend",Callback=function()
+ak:Button{Name="Spend All Now",Text="Spend",Callback=function()
 task.spawn(function()
-local aq=aa.SkillPoints()
-if aq<=0 then return Notify"No skill points to spend"end
-ab.SpendSkill(S.skillStat or"spellPower",aq)
-Notify(("Spent %d point%s"):format(aq,aq==1 and""or"s"))
+local aw=aa.SkillPoints()
+if aw<=0 then return Notify"No skill points to spend"end
+ab.SpendSkill(S.skillStat or"spellPower",aw)
+Notify(("Spent %d point%s"):format(aw,aw==1 and""or"s"))
 end)
 end}
 
 
 
-ai:Button{Name="Reset Skill Points",Text="Reset",Callback=function()
+ak:Button{Name="Reset Skill Points",Text="Reset",Callback=function()
 Window:Dialog{
 Title="Reset skill points?",
 Text="Every point goes back into the pool. Without a free reset the game charges you for it.",
@@ -23762,14 +24109,14 @@ spawnLoop(function()
 while not _apelStopped do
 task.wait(2)
 pcall(function()
-ap:Set(("Points: <b>%d</b>   ·   spell %s · physical %s · stamina %s"):format(
+av:Set(("Points: <b>%d</b>   ·   spell %s · physical %s · stamina %s"):format(
 aa.SkillPoints(),tostring(aa.Val("spellPower",0)),
 tostring(aa.Val("physicalPower",0)),tostring(aa.Val("stamina",0))))
 end)
 
 if S.autoSkill and not Window:IsLoadingConfig()then
-local aq=aa.SkillPoints()
-if aq>0 then pcall(ab.SpendSkill,S.skillStat or"spellPower",aq)end
+local aw=aa.SkillPoints()
+if aw>0 then pcall(ab.SpendSkill,S.skillStat or"spellPower",aw)end
 end
 end
 end)
@@ -23869,9 +24216,9 @@ if ae and not ag then return ae end
 
 local ah,ai={},{}
 for aj,ak in ipairs(ac.KEYS)do
-local al,an=aa.Invoke("getCaseConfig",ak)
-if al and type(an)=="table"and type(an.items)=="table"then
-ah[ak]=an
+local al,am=aa.Invoke("getCaseConfig",ak)
+if al and type(am)=="table"and type(am.items)=="table"then
+ah[ak]=am
 else
 ai[#ai+1]=ak
 end
@@ -23913,7 +24260,7 @@ return ag,false
 end
 for aj,ak in pairs(ai)do
 if type(ak)=="table"then
-for al,an in ipairs(ak)do ag[ac.Key(aj,an)]=true end
+for al,am in ipairs(ak)do ag[ac.Key(aj,am)]=true end
 end
 end
 return ag,true
@@ -23937,19 +24284,19 @@ for aj,ak in ipairs(ag)do ai[ac.Key(ak.type,ak.name)]=true end
 
 local aj
 for ak,al in ipairs(ac.KEYS)do
-local an=ah[al]
-local ap,aq=0,0
-for ar,as in ipairs((an and an.items)or{})do
-if ai[ac.Key(as.type,as.name)]then
-ap=ap+(tonumber(as.percent)or 0)
-aq=aq+1
+local am=ah[al]
+local an,ao=0,0
+for ap,aq in ipairs((am and am.items)or{})do
+if ai[ac.Key(aq.type,aq.name)]then
+an=an+(tonumber(aq.percent)or 0)
+ao=ao+1
 end
 end
-if aq>0 then
-local ar=tonumber(an.price)or 0
-if not aj or ap>aj.percent
-or(ap==aj.percent and ar<aj.price)then
-aj={key=al,percent=ap,price=ar,hits=aq}
+if ao>0 then
+local ap=tonumber(am.price)or 0
+if not aj or an>aj.percent
+or(an==aj.percent and ap<aj.price)then
+aj={key=al,percent=an,price=ap,hits=ao}
 end
 end
 end
@@ -23966,12 +24313,12 @@ if not ag then return{}end
 local ah={}
 for ai,aj in ipairs(ac.KEYS)do
 for ak,al in ipairs((ag[aj]and ag[aj].items)or{})do
-local an=ac.Key(al.type,al.name)
-if not ah[an]then
-ah[an]=true
-local ap=("%s · %s %s"):format(al.name,tostring(al.rarity),
+local am=ac.Key(al.type,al.name)
+if not ah[am]then
+ah[am]=true
+local an=("%s · %s %s"):format(al.name,tostring(al.rarity),
 ad[al.type]or tostring(al.type))
-af[ap]={name=al.name,type=al.type,rarity=al.rarity}
+af[an]={name=al.name,type=al.type,rarity=al.rarity}
 end
 end
 end
@@ -24018,14 +24365,14 @@ local al=aj.OnClientEvent:Connect(function(al)
 if ak==nil then ak=al or false end
 end)
 
-local an=pcall(function()ai:FireServer(ag)end)
-if not an then
+local am=pcall(function()ai:FireServer(ag)end)
+if not am then
 al:Disconnect()
 return nil,"s79"
 end
 
-local ap=os.clock()+(ah or 15)
-while ak==nil and os.clock()<ap and not _apelStopped do
+local an=os.clock()+(ah or 15)
+while ak==nil and os.clock()<an and not _apelStopped do
 task.wait(0.05)
 end
 al:Disconnect()
@@ -24082,22 +24429,22 @@ local ai,aj=LocalPlayer.Name,LocalPlayer.DisplayName
 
 local ak=LocalPlayer.Character
 if ak then
-for al,an in ipairs(ak:GetDescendants())do
-if an:IsA"BillboardGui"and an.Enabled then
-if ah[an]==nil then ah[an]=an.Enabled end
-an.Enabled=false
+for al,am in ipairs(ak:GetDescendants())do
+if am:IsA"BillboardGui"and am.Enabled then
+if ah[am]==nil then ah[am]=am.Enabled end
+am.Enabled=false
 end
 end
 end
 
 local al=LocalPlayer:FindFirstChild"PlayerGui"
 if al then
-for an,ap in ipairs(al:GetDescendants())do
-if ap:IsA"TextLabel"or ap:IsA"TextButton"then
-local aq=ap.Text
-if aq==ai or aq==aj then
-if ah[ap]==nil then ah[ap]=aq end
-ap.Text="Hidden"
+for am,an in ipairs(al:GetDescendants())do
+if an:IsA"TextLabel"or an:IsA"TextButton"then
+local ao=an.Text
+if ao==ai or ao==aj then
+if ah[an]==nil then ah[an]=ao end
+an.Text="Hidden"
 end
 end
 end
@@ -24115,34 +24462,34 @@ al:Toggle{
 Name="Noclip",
 Desc="walk through walls; collisions come back when you turn it off",
 Default=false,Flag="NoclipOn",
-Callback=function(an)
-S.noclip=an
-if not an then af.RestoreNoclip()end
+Callback=function(am)
+S.noclip=am
+if not am then af.RestoreNoclip()end
 end,
 }
 
 
-local an=ai.Perf
+local am=ai.Perf
 
-an:Toggle{
+am:Toggle{
 Name="Performance Mode",
 Desc="strips materials, textures and particles — rejoin to restore",
 Default=false,Flag="PerformanceMode",
-Callback=function(ap)
-S.perfMode=ap
+Callback=function(an)
+S.perfMode=an
 
 
-if ap then task.spawn(ab.Boost)end
+if an then task.spawn(ab.Boost)end
 end,
 }
 
-an:Toggle{
+am:Toggle{
 Name="Ultra Performance Mode",
 Desc="everything above plus 3D rendering off and a black screen",
 Default=false,Flag="UltraPerformanceMode",
-Callback=function(ap)
-S.ultraPerf=ap
-if ap then
+Callback=function(an)
+S.ultraPerf=an
+if an then
 task.spawn(function()
 ab.Set3D(false)
 ab.BuildScreen()
@@ -24159,15 +24506,15 @@ ab.Watch()
 
 
 
-local ap=aj:Label"Loading..."
+local an=aj:Label"Loading..."
 
 aj:Toggle{
 Name="Hide Name",
 Desc="blanks your own nameplate and every label in the interface that shows your nick",
 Default=false,Flag="HideName",
-Callback=function(aq)
-S.hideName=aq
-if aq then hideNames()else restoreNames()end
+Callback=function(ao)
+S.hideName=ao
+if ao then hideNames()else restoreNames()end
 end,
 }
 
@@ -24179,9 +24526,9 @@ task.wait(2)
 if S.hideName then pcall(hideNames)end
 
 pcall(function()
-local aq=ac.EquippedWeapon()
-local ar=aa.Items()
-ap:Set(table.concat({
+local ao=ac.EquippedWeapon()
+local ap=aa.Items()
+an:Set(table.concat({
 ("Level <b>%d</b>   ·   XP %s/%s"):format(aa.Level(),
 tostring(aa.Val("XP",0)),tostring(aa.Val("XPNeeded",0))),
 ("Gold %s   ·   Gems %s   ·   Points %d"):format(
@@ -24190,7 +24537,7 @@ tostring(aa.Gold()),tostring(aa.Gems()),aa.SkillPoints()),
 tostring(aa.Val("physicalPower",0)),tostring(aa.Val("spellPower",0)),
 tostring(aa.Val("stamina",0))),
 ("Weapon %s   ·   %d item%s in the bag"):format(
-aq and aq.name or"—",#ar,#ar==1 and""or"s"),
+ao and ao.name or"—",#ap,#ap==1 and""or"s"),
 },"\n"))
 end)
 end
@@ -24200,53 +24547,53 @@ end)
 
 ak:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
 Desc="nothing is posted while this is off",
-Callback=function(aq)S.webhookOn=aq end}
+Callback=function(ao)S.webhookOn=ao end}
 
 ak:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
-Flag="WebhookURL",Callback=function(aq)S.webhookUrl=tostring(aq or"")end}
+Flag="WebhookURL",Callback=function(ao)S.webhookUrl=tostring(ao or"")end}
 
 ak:Dropdown{
 Name="Ping On Rarity",
 Desc="ping only when the run dropped one of these; leave empty to ping every report",
 Options=(function()
-local aq={}
-for ar,as in ipairs(aa.RARITIES)do
-aq[#aq+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[as]or"#FFFFFF",as)
+local ao={}
+for ap,aq in ipairs(aa.RARITIES)do
+ao[#ao+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[aq]or"#FFFFFF",aq)
 end
-return aq
+return ao
 end)(),
 Multi=true,
 Flag="WebhookPingRarities",
-Callback=function(aq)
-local ar={}
-for as,au in pairs(aq or{})do
-if au then
-local av=tostring(as):gsub("<[^>]->","")
-ar[(av:gsub("^%s+",""):gsub("%s+$",""))]=true
+Callback=function(ao)
+local ap={}
+for aq,as in pairs(ao or{})do
+if as then
+local av=tostring(aq):gsub("<[^>]->","")
+ap[(av:gsub("^%s+",""):gsub("%s+$",""))]=true
 end
 end
-S.pingRarities=ar
+S.pingRarities=ap
 end,
 }
 
 ak:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
 Numeric=true,Flag="WebhookUserId",
-Callback=function(aq)S.webhookUserId=tostring(aq or"")end}
+Callback=function(ao)S.webhookUserId=tostring(ao or"")end}
 
 ak:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
-Callback=function(aq)S.webhookEveryone=aq end}
+Callback=function(ao)S.webhookEveryone=ao end}
 
 
 
 ak:Button{Name="Send Test Post",Text="Send",Callback=function()
 task.spawn(function()
 if tostring(S.webhookUrl or"")==""then return Notify"Paste a webhook URL first"end
-local aq,ar=ad.Test()
-if ar then
-Notify("Webhook failed: "..tostring(ar))
+local ao,ap=ad.Test()
+if ap then
+Notify("Webhook failed: "..tostring(ap))
 else
-Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(aq)..")")
-or("Webhook OK (HTTP "..tostring(aq)..") — posting is still off"))
+Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(ao)..")")
+or("Webhook OK (HTTP "..tostring(ao)..") — posting is still off"))
 end
 end)
 end}
@@ -24263,10 +24610,10 @@ ak:SubLabel"Send Test Post works even while Enable Webhook is off, so you can ch
 
 
 
-local aq=ai.Cosmetic
+local ao=ai.Cosmetic
 
-local ar,as
-local au=aq:Label"Loading the crate list..."
+local ap,aq
+local as=ao:Label"Loading the crate list..."
 
 
 
@@ -24290,24 +24637,24 @@ end
 
 local function describe()
 if#(S.cosmeticTargets or{})==0 then
-return au:Set"Pick one or more cosmetics to hunt"
+return as:Set"Pick one or more cosmetics to hunt"
 end
 
 local av,aw=pending()
 if#av==0 then
-return au:Set(("You already own all %d pick%s"):format(aw,aw==1 and""or"s"))
+return as:Set(("You already own all %d pick%s"):format(aw,aw==1 and""or"s"))
 end
 
 local ax=ae.BestFor(av)
 if not ax then
-return au:Set"Nothing you picked drops from the crates any more"
+return as:Set"Nothing you picked drops from the crates any more"
 end
 
 local ay={}
 for az=1,math.min(3,#av)do ay[az]=av[az].name end
 if#av>3 then ay[#ay+1]=("+%d more"):format(#av-3)end
 
-au:Set(("<b>%d left</b> · %s · %.3f%% a spin · %d gems\n%s"):format(
+as:Set(("<b>%d left</b> · %s · %.3f%% a spin · %d gems\n%s"):format(
 #av,ae.CASE_LABEL[ax.key]or ax.key,ax.percent,ax.price,
 table.concat(ay,", ")))
 end
@@ -24315,12 +24662,12 @@ end
 local function refreshCosmetics()
 ae.Invalidate()
 local av=ae.Pool()
-pcall(function()ar:SetOptions(av)end)
+pcall(function()ap:SetOptions(av)end)
 describe()
 return#av
 end
 
-ar=aq:Dropdown{
+ap=ao:Dropdown{
 Name="Cosmetics",
 Desc="tick everything you want; the hub spins whichever crate covers most of them",
 
@@ -24339,7 +24686,7 @@ task.spawn(describe)
 end,
 }
 
-aq:Button{Name="Refresh Cosmetic List",Text="Refresh",Callback=function()
+ao:Button{Name="Refresh Cosmetic List",Text="Refresh",Callback=function()
 task.spawn(function()
 local av=refreshCosmetics()
 Notify(av>0 and("%d cosmetic%s still up for grabs"):format(av,av==1 and""or"s")
@@ -24347,7 +24694,7 @@ or"No crate list here — the purchase remotes are missing")
 end)
 end}
 
-as=aq:Toggle{
+aq=ao:Toggle{
 Name="Auto Open Crates",
 Desc="spins the best crate for the picks above; a wrong roll is thrown away by rejoining",
 Default=false,Flag="CosmeticGetter",
@@ -24363,7 +24710,7 @@ end,
 
 local function stopHunt(av)
 S.cosmeticGet=false
-pcall(function()as:Set(false)end)
+pcall(function()aq:Set(false)end)
 
 Notify(av)
 end
@@ -24761,24 +25108,24 @@ return ai:JSONEncode(aa:GetConfig())
 end)
 if not aj then ac"Could not encode the config"return end
 local al=af..tostring(ae).."\n"..ak
-local an=httpRequest()
-local ap=setclipboard or toclipboard
+local am=httpRequest()
+local an=setclipboard or toclipboard
 
 task.spawn(function()
-local aq
-if an then
+local ao
+if am then
 pcall(function()
-local ar=an{Url="https://paste.rs/",Method="POST",
+local ap=am{Url="https://paste.rs/",Method="POST",
 Headers={["Content-Type"]="text/plain"},Body=al}
-local as=ar and(ar.Body or ar.body)
-if as then aq=as:match"(https://paste%.rs/%S+)"end
+local aq=ap and(ap.Body or ap.body)
+if aq then ao=aq:match"(https://paste%.rs/%S+)"end
 end)
 end
-if aq then
-if ap then ap(aq)end
-ac("Link copied:\n"..aq)
-elseif ap then
-ap(al)
+if ao then
+if an then an(ao)end
+ac("Link copied:\n"..ao)
+elseif an then
+an(al)
 ac"Upload failed, config copied to clipboard instead"
 else
 ac"This executor has no HTTP and no clipboard"
@@ -24807,22 +25154,22 @@ if not aj then ac"This executor has no HTTP"return end
 task.spawn(function()
 local ak,al=pcall(aj,{Url=ai,Method="GET",
 Headers={["User-Agent"]="ApelHub-ConfigImport"}})
-local an=ak and al and(al.Body or al.body)
-if not an or an==""then ac"Import failed: nothing came back"return end
-local ap=an:match"^%-%-%s*APELCFG:([^\r\n]+)"
-an=an:gsub("^%-%-[^\r\n]*\r?\n","")
-local aq,ar=pcall(function()
-return game:GetService"HttpService":JSONDecode(an)
+local am=ak and al and(al.Body or al.body)
+if not am or am==""then ac"Import failed: nothing came back"return end
+local an=am:match"^%-%-%s*APELCFG:([^\r\n]+)"
+am=am:gsub("^%-%-[^\r\n]*\r?\n","")
+local ao,ap=pcall(function()
+return game:GetService"HttpService":JSONDecode(am)
 end)
-if not(aq and type(ar)=="table"and type(ar.objects)=="table")then
+if not(ao and type(ap)=="table"and type(ap.objects)=="table")then
 ac"Import failed: not a valid config"
 return
 end
 
 
-aa:LoadConfig(ar)
-ac(("Imported %d settings%s"):format(#ar.objects,
-ap and(" from "..ap)or""))
+aa:LoadConfig(ap)
+ac(("Imported %d settings%s"):format(#ap.objects,
+an and(" from "..an)or""))
 end)
 end
 }
@@ -24910,30 +25257,30 @@ local aj="rbxassetid://60358188"
 
 
 local function upgradeCost(ak,al)
-local an=0
+local am=0
 if ak<24 then
-if ak==0 and al>0 then an=100 end
-local ap=100
+if ak==0 and al>0 then am=100 end
+local an=100
 
-for aq=1,math.min(23,al-1)do
-ap=ap*1.06+50
-if aq>=ak then an=an+math.floor(ap)end
+for ao=1,math.min(23,al-1)do
+an=an*1.06+50
+if ao>=ak then am=am+math.floor(an)end
 end
 end
-local ap=ak<24 and 24 or(ak>466 and 466 or ak)
-local aq=al<24 and 24 or(al>466 and 466 or al)
-an=an+(aq-ap)*(110*(aq+ap)-2445)
-ap=ak<466 and 466 or ak
-aq=al<466 and 466 or al
-an=an+(aq-ap)*100000
-return an
+local an=ak<24 and 24 or(ak>466 and 466 or ak)
+local ao=al<24 and 24 or(al>466 and 466 or al)
+am=am+(ao-an)*(110*(ao+an)-2445)
+an=ak<466 and 466 or ak
+ao=al<466 and 466 or al
+am=am+(ao-an)*100000
+return am
 end
 
 
 local function commas(ak)
 local al=tostring(math.floor(ak))
-local an=al:reverse():gsub("(%d%d%d)","%1 "):reverse()
-return(an:gsub("^%s+",""))
+local am=al:reverse():gsub("(%d%d%d)","%1 "):reverse()
+return(am:gsub("^%s+",""))
 end
 
 
@@ -24958,32 +25305,32 @@ local ak={"inventory","sellShop","blacksmith","tradingGui"}
 local function openMenu()
 local al=ad:FindFirstChild"PlayerGui"
 if not al then return nil,nil end
-for an,ap in ipairs(ak)do
-local aq=al:FindFirstChild(ap)
-local ar=aq and aq:FindFirstChild"itemStatFrame"
-if ar and ar.Visible then return aq,ar end
+for am,an in ipairs(ak)do
+local ao=al:FindFirstChild(an)
+local ap=ao and ao:FindFirstChild"itemStatFrame"
+if ap and ap.Visible then return ao,ap end
 end
 return nil,nil
 end
 
 
 local function readTooltip()local
-al, an=openMenu()
-if not an then return nil end
+al, am=openMenu()
+if not am then return nil end
 
-for ap,aq in ipairs{"weaponMain","armorMain","petMain"}do
-local ar=an:FindFirstChild(aq)
-if ar and ar.Visible then
-local as=ar:FindFirstChild"upgrades"
-local au,av=tostring(as and as.Text or""):match"(%d+)%s*/%s*(%d+)"
-if not au then return nil end
+for an,ao in ipairs{"weaponMain","armorMain","petMain"}do
+local ap=am:FindFirstChild(ao)
+if ap and ap.Visible then
+local aq=ap:FindFirstChild"upgrades"
+local as,av=tostring(aq and aq.Text or""):match"(%d+)%s*/%s*(%d+)"
+if not as then return nil end
 return{
-card=ar,
-name=tostring(ar:FindFirstChild"name"and ar.name.Text or"?"),
-done=tonumber(au),max=tonumber(av),
-phys=num(ar:FindFirstChild"physicalDamage"),
-spell=num(ar:FindFirstChild"spellPower"),
-health=num(ar:FindFirstChild"health"),
+card=ap,
+name=tostring(ap:FindFirstChild"name"and ap.name.Text or"?"),
+done=tonumber(as),max=tonumber(av),
+phys=num(ap:FindFirstChild"physicalDamage"),
+spell=num(ap:FindFirstChild"spellPower"),
+health=num(ap:FindFirstChild"health"),
 }
 end
 end
@@ -24995,48 +25342,48 @@ end
 return function()
 
 local al=(gethui and gethui())or ad:WaitForChild"PlayerGui"
-local an=al:FindFirstChild"ApelPredictor"
-if an then an:Destroy()end
+local am=al:FindFirstChild"ApelPredictor"
+if am then am:Destroy()end
 
-local ap=Instance.new"ScreenGui"
-ap.Name="ApelPredictor"
-ap.ResetOnSpawn=false
-ap.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-ap.DisplayOrder=50
-ap.Parent=al
+local an=Instance.new"ScreenGui"
+an.Name="ApelPredictor"
+an.ResetOnSpawn=false
+an.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
+an.DisplayOrder=50
+an.Parent=al
 
-local aq=Instance.new"Frame"
-aq.Name="panel"
-aq.BackgroundColor3=ae
-aq.BackgroundTransparency=0.1
-aq.BorderSizePixel=0
-aq.Visible=false
-aq.Size=UDim2.fromOffset(250,176)
-aq.Parent=ap
+local ao=Instance.new"Frame"
+ao.Name="panel"
+ao.BackgroundColor3=ae
+ao.BackgroundTransparency=0.1
+ao.BorderSizePixel=0
+ao.Visible=false
+ao.Size=UDim2.fromOffset(250,176)
+ao.Parent=an
 
-local ar=Instance.new"UICorner"
-ar.CornerRadius=UDim.new(0,6)
-ar.Parent=aq
+local ap=Instance.new"UICorner"
+ap.CornerRadius=UDim.new(0,6)
+ap.Parent=ao
 
-local as=Instance.new"UIStroke"
-as.Color=af
-as.Thickness=1
-as.Parent=aq
+local aq=Instance.new"UIStroke"
+aq.Color=af
+aq.Thickness=1
+aq.Parent=ao
 
-local au=Instance.new"Frame"
-au.BackgroundColor3=af
-au.BorderSizePixel=0
-au.Size=UDim2.new(1,0,0,26)
-au.Parent=aq
-local av=ar:Clone()
-av.Parent=au
+local as=Instance.new"Frame"
+as.BackgroundColor3=af
+as.BorderSizePixel=0
+as.Size=UDim2.new(1,0,0,26)
+as.Parent=ao
+local av=ap:Clone()
+av.Parent=as
 
 local aw=Instance.new"Frame"
 aw.BackgroundColor3=af
 aw.BorderSizePixel=0
 aw.Position=UDim2.new(0,0,1,-6)
 aw.Size=UDim2.new(1,0,0,6)
-aw.Parent=au
+aw.Parent=as
 
 local ax=Instance.new"TextLabel"
 ax.BackgroundTransparency=1
@@ -25048,13 +25395,13 @@ ax.Position=UDim2.fromOffset(10,0)
 ax.Size=UDim2.new(1,-20,1,0)
 ax.Text="Potential Predictor"
 ax.ZIndex=2
-ax.Parent=au
+ax.Parent=as
 
 local ay=Instance.new"Frame"
 ay.BackgroundTransparency=1
 ay.Position=UDim2.fromOffset(10,32)
 ay.Size=UDim2.new(1,-20,1,-42)
-ay.Parent=aq
+ay.Parent=ao
 
 local az=Instance.new"UIListLayout"
 az.Padding=UDim.new(0,4)
@@ -25220,7 +25567,7 @@ regConn(aS.MouseButton1Click:Connect(function()
 aH=not aH
 aS.Text=aH and"ON"or"OFF"
 aS.TextColor3=aH and Color3.new(1,1,1)or ah
-if not aH then aq.Visible=false end
+if not aH then ao.Visible=false end
 end))
 
 regConn(aU.FocusLost:Connect(function()
@@ -25235,10 +25582,10 @@ local aM
 
 local function refresh()
 buildSettings()
-if not aH then aq.Visible=false return end
+if not aH then ao.Visible=false return end
 
 local aN=readTooltip()
-if not aN then aq.Visible=false aM=nil return end
+if not aN then ao.Visible=false aM=nil return end
 
 
 local aO=tonumber(aI)
@@ -25272,14 +25619,14 @@ local aQ=2
 if aN.phys then aQ=aQ+1 end
 if aN.spell then aQ=aQ+1 end
 if aN.health then aQ=aQ+1 end
-aq.Size=UDim2.fromOffset(250,42+aQ*22)
+ao.Size=UDim2.fromOffset(250,42+aQ*22)
 end
 
 
 local aQ=aN.card.AbsolutePosition
 local aR=aN.card.AbsoluteSize
-aq.Position=UDim2.fromOffset(aQ.X+aR.X+8,aQ.Y)
-aq.Visible=true
+ao.Position=UDim2.fromOffset(aQ.X+aR.X+8,aQ.Y)
+ao.Visible=true
 end
 
 regConn(ac.Heartbeat:Connect(function()
@@ -25345,20 +25692,20 @@ end
 
 local function loadChoice()
 if not canFile()then return nil,nil end
-local al,an
+local al,am
 pcall(function()
 if not isfile(ak)then return end
-local ap=game:GetService"HttpService":JSONDecode(readfile(ak))
-if type(ap)~="table"then return end
-for aq,ar in ipairs(aj)do
-if ap.mode==ar then al=ar end
+local an=game:GetService"HttpService":JSONDecode(readfile(ak))
+if type(an)~="table"then return end
+for ao,ap in ipairs(aj)do
+if an.mode==ap then al=ap end
 end
-if type(ap.best)=="boolean"then an=ap.best end
+if type(an.best)=="boolean"then am=an.best end
 end)
-return al,an
+return al,am
 end
 
-local function saveChoice(al,an)
+local function saveChoice(al,am)
 if not canFile()then return end
 pcall(function()
 if type(isfolder)=="function"and type(makefolder)=="function"
@@ -25366,15 +25713,15 @@ and not isfolder"ApelHub"then
 makefolder"ApelHub"
 end
 writefile(ak,game:GetService"HttpService":JSONEncode{
-mode=al,best=an,
+mode=al,best=am,
 })
 end)
 end
 
 return function()
-local al,an=loadChoice()
-local ap=al or"Off"
-local aq=an~=false
+local al,am=loadChoice()
+local an=al or"Off"
+local ao=am~=false
 
 
 
@@ -25389,7 +25736,7 @@ local aq=an~=false
 
 
 
-local ar={"inventory","sellShop","blacksmith","tradingGui"}
+local ap={"inventory","sellShop","blacksmith","tradingGui"}
 
 
 
@@ -25402,10 +25749,10 @@ local ar={"inventory","sellShop","blacksmith","tradingGui"}
 
 
 
-local as=setmetatable({},{__mode="k"})
+local aq=setmetatable({},{__mode="k"})
 
-local function findGrid(au)
-for av,aw in ipairs(au:GetDescendants())do
+local function findGrid(as)
+for av,aw in ipairs(as:GetDescendants())do
 if aw:IsA"ScrollingFrame"then
 for ax,ay in ipairs(aw:GetChildren())do
 if ay:IsA"GuiObject"and ay:FindFirstChild"itemType"then
@@ -25417,23 +25764,23 @@ end
 return nil
 end
 
-local function gridIn(au)
-local av=as[au]
-if av and av.Parent and av:IsDescendantOf(au)then
+local function gridIn(as)
+local av=aq[as]
+if av and av.Parent and av:IsDescendantOf(as)then
 return av
 end
-local aw=findGrid(au)
-as[au]=aw
+local aw=findGrid(as)
+aq[as]=aw
 return aw
 end
 
 
 local function openMenus()
-local au=ac:FindFirstChild"PlayerGui"
+local as=ac:FindFirstChild"PlayerGui"
 local av={}
-if not au then return av end
-for aw,ax in ipairs(ar)do
-local ay=au:FindFirstChild(ax)
+if not as then return av end
+for aw,ax in ipairs(ap)do
+local ay=as:FindFirstChild(ax)
 if ay and(not ay:IsA"ScreenGui"or ay.Enabled)then
 local az=gridIn(ay)
 local aA=ay:FindFirstChild"mainBackground"
@@ -25452,8 +25799,8 @@ end
 
 
 
-local function keyOf(au)
-local av=au:FindFirstChild"itemType"
+local function keyOf(as)
+local av=as:FindFirstChild"itemType"
 if not av then return nil end
 local aw=av:FindFirstChild"uniqueItemNum"
 if not aw then return nil end
@@ -25461,11 +25808,11 @@ return tostring(av.Value).."_"..tostring(aw.Value)
 end
 
 local function itemIndex()
-local au={}
+local as={}
 for av,aw in ipairs(aa.Items())do
-au[aw.type.."_"..tostring(aw.num)]=aw
+as[aw.type.."_"..tostring(aw.num)]=aw
 end
-return au
+return as
 end
 
 
@@ -25478,7 +25825,7 @@ end
 
 
 
-local au={"physicalDamage","physicalPower"}
+local as={"physicalDamage","physicalPower"}
 
 local function statOf(av,aw)
 for ax,ay in ipairs(aw)do
@@ -25492,10 +25839,10 @@ end
 local function weightOf(av)
 if not av then return-1 end
 local aw=av.data or{}
-if ap=="Rarity"then return ai[av.rarity]or 0 end
-if ap=="Level"then return tonumber(aw.levelReq)or 0 end
-if ap=="Phys"then return statOf(aw,au)end
-if ap=="Spell"then return tonumber(aw.spellPower)or 0 end
+if an=="Rarity"then return ai[av.rarity]or 0 end
+if an=="Level"then return tonumber(aw.levelReq)or 0 end
+if an=="Phys"then return statOf(aw,as)end
+if an=="Spell"then return tonumber(aw.spellPower)or 0 end
 return 0
 end
 
@@ -25507,7 +25854,7 @@ local av
 local function applySort()
 local aw=openMenus()
 if#aw==0 then return end
-local ax=(ap~="Off")and itemIndex()or nil
+local ax=(an~="Off")and itemIndex()or nil
 for ay,az in ipairs(aw)do
 av(az.grid,ax)
 end
@@ -25522,7 +25869,7 @@ end
 local aw=false
 
 local function queueSort()
-if ap=="Off"or aw then return end
+if an=="Off"or aw then return end
 aw=true
 task.defer(function()
 aw=false
@@ -25533,7 +25880,7 @@ end
 av=function(ax,ay)
 if not ax then return end
 
-if ap=="Off"then
+if an=="Off"then
 
 
 for az,aA in ipairs(ax:GetChildren())do
@@ -25565,7 +25912,7 @@ end
 
 table.sort(az,function(aA,aB)
 if aA.w~=aB.w then
-if aq then return aA.w>aB.w end
+if ao then return aA.w>aB.w end
 return aA.w<aB.w
 end
 
@@ -25589,11 +25936,11 @@ local ax={}
 local function paint()
 for ay,az in pairs(ax)do
 for aA,aB in pairs(az.buttons)do
-local aC=(aA==ap)
+local aC=(aA==an)
 aB.TextColor3=aC and af or ag
 aB.BackgroundColor3=aC and ae or ad
 end
-if az.dir then az.dir.Text=aq and"best top"or"best last"end
+if az.dir then az.dir.Text=ao and"best top"or"best last"end
 end
 end
 
@@ -25670,8 +26017,8 @@ aN.Parent=aM
 aH[aJ]=aM
 
 regConn(aM.MouseButton1Click:Connect(function()
-ap=aJ
-saveChoice(ap,aq)
+an=aJ
+saveChoice(an,ao)
 paint()
 applySort()
 end))
@@ -25688,15 +26035,15 @@ aI.TextColor3=Color3.new(1,1,1)
 aI.AnchorPoint=Vector2.new(1,0.5)
 aI.Position=UDim2.new(1,-10,0.5,0)
 aI.Size=UDim2.fromOffset(64,20)
-aI.Text=aq and"best top"or"best last"
+aI.Text=ao and"best top"or"best last"
 aI.Parent=aB
 local aJ=Instance.new"UICorner"
 aJ.CornerRadius=UDim.new(0,4)
 aJ.Parent=aI
 
 regConn(aI.MouseButton1Click:Connect(function()
-aq=not aq
-saveChoice(ap,aq)
+ao=not ao
+saveChoice(an,ao)
 paint()
 applySort()
 end))
@@ -25723,7 +26070,7 @@ pcall(function()
 build()
 
 
-if ap~="Off"then applySort()end
+if an~="Off"then applySort()end
 end)
 task.wait(0.5)
 end
@@ -25772,13 +26119,13 @@ local ai=a.k()
 local aj=a.l()
 local ak=a.p()
 local al=a.q()
-local an=a.r()
-local ap=a.s()
-local aq=a.t()
-local ar=a.u()
+local am=a.r()
+local an=a.s()
+local ao=a.t()
+local ap=a.u()
 
-local as=a.G()
-local au=a.I()
+local aq=a.G()
+local as=a.I()
 local av=a.J()
 local aw=a.P()
 local ax=a.S()
@@ -25809,8 +26156,8 @@ af()
 
 
 
-local aM=as(aJ)
-au(aJ)
+local aM=aq(aJ)
+as(aJ)
 av(aJ)
 aw(aJ)
 ax(aJ)
@@ -25829,7 +26176,7 @@ aF()
 
 
 
-ak.Prefetch=an.Prefetch
+ak.Prefetch=am.Prefetch
 
 
 ak.WantReport=function()return S.webhookOn==true end
@@ -25845,15 +26192,15 @@ ak.OnOutcome=al.Note
 
 
 if aH then
-aq.Start()
+ao.Start()
 
 
 
-ar.Start()
+ap.Start()
 
 ak.Watch(
 function(aN)
-if S.webhookOn then pcall(an.Run,aN)end
+if S.webhookOn then pcall(am.Run,aN)end
 end,
 function()
 if aM then pcall(aM)end
@@ -25880,7 +26227,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="06.09 01:17:48",
+Build="07.09 03:45:11",
 S=S,
 Window=Window,
 Priority=a.j(),
@@ -25896,8 +26243,8 @@ Lobby=a.E(),
 
 
 Cases=a.U(),
-Character=ap,
-Webhook=an,
+Character=an,
+Webhook=am,
 Run=ak,
 }
 end
@@ -25923,8 +26270,8 @@ S.autoReplay=false
 S.autoSell,S.autoUpgrade=false,false
 S.autoJoin,S.autoRaid,S.autoStartLobby=false,false,false
 
-pcall(ap.Stop)
-pcall(ar.Restore)
+pcall(an.Stop)
+pcall(ap.Restore)
 end)
 
 ab.install(Window)
