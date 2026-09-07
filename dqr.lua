@@ -23192,43 +23192,151 @@ return ao
 end
 
 
-function ad.GroupNames(af)
-local ag=ad.GROUP_TYPES[af]
-if not ag then return{}end
-local ah,ai={},{}
-for aj,ak in ipairs(ab.Items())do
-if ag[ak.type]and not ah[ak.name]then
-ah[ak.name]=true
-ai[#ai+1]=ak.name
+
+
+
+
+
+
+
+
+
+
+
+
+local af=game:GetService"ReplicatedStorage"
+
+local ag={weapon="GetWeapons",helmet="GetHelmets",chest="GetChests"}
+
+
+
+local ah={}
+
+
+
+
+
+
+
+local function readCatalog(ai)
+if ai=="ability"then
+local aj=af:FindFirstChild"abilities"
+if not aj then return nil end
+
+
+
+
+
+
+
+
+
+local ak={}
+for al,am in ipairs(aj:GetChildren())do
+ak[#ak+1]=tostring(am.Name)
+end
+return ak
+end
+
+local aj=ag[ai]
+if not aj then return nil end
+local ak=af:FindFirstChild"Utility"
+local al=ak and ak:FindFirstChild"DataRequester"
+if not al then return nil end
+local am,an=pcall(require,al)
+if not am or type(an)~="table"or type(an[aj])~="function"then return nil end
+
+local ao,ap=pcall(an[aj])
+if not ao or type(ap)~="table"then return nil end
+local aq={}
+for ar,as in pairs(ap)do
+aq[#aq+1]=tostring((type(as)=="table"and as.name)or ar)
+end
+return aq
+end
+
+
+
+function ad.WarmCatalog(ai)
+local aj=false
+for ak,al in ipairs{"weapon","helmet","chest","ability"}do
+if ai or ah[al]==nil then
+local am=readCatalog(al)
+if am and#am>0 then
+ah[al]=am
+aj=true
 end
 end
-table.sort(ai)
-return ai
+end
+return aj
+end
+
+function ad.GroupNames(ai)
+local aj=ad.GROUP_TYPES[ai]
+if not aj then return{}end
+local ak,al={},{}
+local function add(am)
+am=tostring(am or"")
+if am~=""and not ak[am]then
+ak[am]=true
+al[#al+1]=am
+end
+end
+
+for am in pairs(aj)do
+for an,ao in ipairs(ah[am]or{})do add(ao)end
+end
+
+
+
+if#al==0 then
+for am,an in ipairs(ab.Items())do
+if aj[an.type]then add(an.name)end
+end
+end
+
+table.sort(al)
+return al
 end
 
 
 function ad.OwnedNames()
-local af,ag={},{}
-for ah,ai in ipairs(ab.Items())do
-if not af[ai.name]then af[ai.name]=true;ag[#ag+1]=ai.name end
+local ai,aj={},{}
+for ak,al in ipairs(ab.Items())do
+if not ai[al.name]then ai[al.name]=true;aj[#aj+1]=al.name end
 end
-table.sort(ag)
-return ag
-end
-
-
-
-
-
-function ad.Equip(af,ag)
-if ag then
-return(aa.Invoke("equipItem",af.type,af.num,ag))
-end
-return(aa.Invoke("equipItem",af.type,af.num))
+table.sort(aj)
+return aj
 end
 
-function ad.Unequip(af)
-return(aa.Invoke("unequipItem",af.type,af.num))
+
+
+
+function ad.AllNames()
+local ai,aj={},{}
+for ak,al in ipairs{"weapon","helmet","chest","ability"}do
+for am,an in ipairs(ah[al]or{})do
+if not ai[an]then ai[an]=true;aj[#aj+1]=an end
+end
+end
+if#aj==0 then return ad.OwnedNames()end
+table.sort(aj)
+return aj
+end
+
+
+
+
+
+function ad.Equip(ai,aj)
+if aj then
+return(aa.Invoke("equipItem",ai.type,ai.num,aj))
+end
+return(aa.Invoke("equipItem",ai.type,ai.num))
+end
+
+function ad.Unequip(ai)
+return(aa.Invoke("unequipItem",ai.type,ai.num))
 end
 
 
@@ -23249,50 +23357,50 @@ ad.ARMOR_SLOTS={"helmet","chest"}
 
 
 
-local function scoreOf(af,ag,ah)
-if ah then return ac.OfItem(af,ag)end
-return tonumber(af[ag])or 0
+local function scoreOf(ai,aj,ak)
+if ak then return ac.OfItem(ai,aj)end
+return tonumber(ai[aj])or 0
 end
 
-function ad.BestWeapon(af,ag)
-local ah=ad.EQUIP_STATS[af]or"spellPower"
-local ai=ab.Level()
-local aj,ak,al=(-1)
+function ad.BestWeapon(ai,aj)
+local ak=ad.EQUIP_STATS[ai]or"spellPower"
+local al=ab.Level()
+local am,an,ao=(-1)
 
-for am,an in ipairs(ab.Items())do
-if an.type=="weapon"then
-local ao=tonumber(an.data.levelReq)or 0
-local ap=scoreOf(an.data,ah,ag)
-if an.equipped then al=an end
-if ao<=ai and ap>aj then ak,aj=an,ap end
+for ap,aq in ipairs(ab.Items())do
+if aq.type=="weapon"then
+local ar=tonumber(aq.data.levelReq)or 0
+local as=scoreOf(aq.data,ak,aj)
+if aq.equipped then ao=aq end
+if ar<=al and as>am then an,am=aq,as end
 end
 end
-return ak,al,aj
-end
-
-
-
-function ad.BestArmor(af,ag,ah)
-local ai=ad.ARMOR_STATS[ag]or"health"
-local aj=ab.Level()
-local ak,al,am=(-1)
-
-for an,ao in ipairs(ab.Items())do
-if ao.type==af then
-local ap=tonumber(ao.data.levelReq)or 0
-local aq=scoreOf(ao.data,ai,ah)
-if ao.equipped then am=ao end
-if ap<=aj and aq>ak then al,ak=ao,aq end
-end
-end
-return al,am,ak
+return an,ao,am
 end
 
 
 
-function ad.Score(af,ag,ah)
-if not af or not ag then return 0 end
-return scoreOf(af.data,ag,ah)
+function ad.BestArmor(ai,aj,ak)
+local al=ad.ARMOR_STATS[aj]or"health"
+local am=ab.Level()
+local an,ao,ap=(-1)
+
+for aq,ar in ipairs(ab.Items())do
+if ar.type==ai then
+local as=tonumber(ar.data.levelReq)or 0
+local au=scoreOf(ar.data,al,ak)
+if ar.equipped then ap=ar end
+if as<=am and au>an then ao,an=ar,au end
+end
+end
+return ao,ap,an
+end
+
+
+
+function ad.Score(ai,aj,ak)
+if not ai or not aj then return 0 end
+return scoreOf(ai.data,aj,ak)
 end
 
 
@@ -23313,64 +23421,64 @@ ad.UPGRADE_STATS={
 
 
 
-function ad.UpgradeCost(af)
-af=math.max(0,math.floor(tonumber(af)or 0))
-if af==0 then return 100 end
-if af>466 then return 100000 end
-local ag=100
-for ah=1,af do
-if ag*1.06+50-ag>220 then
-ag=ag+220
+function ad.UpgradeCost(ai)
+ai=math.max(0,math.floor(tonumber(ai)or 0))
+if ai==0 then return 100 end
+if ai>466 then return 100000 end
+local aj=100
+for ak=1,ai do
+if aj*1.06+50-aj>220 then
+aj=aj+220
 else
-ag=ag*1.06+50
+aj=aj*1.06+50
 end
 end
-return math.floor(ag>100000 and 100000 or ag)
+return math.floor(aj>100000 and 100000 or aj)
 end
 
 
 
 
-function ad.AffordableUpgrades(af,ag,ah)
-local ai=tonumber(af.data.currentUpgrade)or 0
-local aj=(tonumber(af.data.maxUpgrades)or 0)-ai
-if ah then aj=math.min(aj,ah)end
+function ad.AffordableUpgrades(ai,aj,ak)
+local al=tonumber(ai.data.currentUpgrade)or 0
+local am=(tonumber(ai.data.maxUpgrades)or 0)-al
+if ak then am=math.min(am,ak)end
 
-local ak,al=tonumber(ag)or 0,0
-for am=0,aj-1 do
-local an=ad.UpgradeCost(ai+am)
-if an>ak then break end
-ak=ak-an
-al=al+1
+local an,ao=tonumber(aj)or 0,0
+for ap=0,am-1 do
+local aq=ad.UpgradeCost(al+ap)
+if aq>an then break end
+an=an-aq
+ao=ao+1
 end
-return al
-end
-
-function ad.Upgrade(af,ag,ah)
-local ai=tonumber(af.data.currentUpgrade)or 0
-local aj=(tonumber(af.data.maxUpgrades)or 0)-ai
-if aj<=0 then return false,"already maxed"end
-
-local ak,al=1
-if ah=="10x"then
-ak,al=10,"10x"
-elseif ah=="spendAll"then
-ak,al=aj,"spendAll"
+return ao
 end
 
-local am=ad.AffordableUpgrades(af,ab.Gold(),ak)
-if am<=0 then
-return false,("need %d gold"):format(ad.UpgradeCost(ai))
+function ad.Upgrade(ai,aj,ak)
+local al=tonumber(ai.data.currentUpgrade)or 0
+local am=(tonumber(ai.data.maxUpgrades)or 0)-al
+if am<=0 then return false,"already maxed"end
+
+local an,ao=1
+if ak=="10x"then
+an,ao=10,"10x"
+elseif ak=="spendAll"then
+an,ao=am,"spendAll"
 end
 
-aa.Fire("upgradeItem",af.type,af.num,ag,am,al)
+local ap=ad.AffordableUpgrades(ai,ab.Gold(),an)
+if ap<=0 then
+return false,("need %d gold"):format(ad.UpgradeCost(al))
+end
+
+aa.Fire("upgradeItem",ai.type,ai.num,aj,ap,ao)
 ab.InvalidateInventory()
-return true,("+%d %s"):format(am,ag)
+return true,("+%d %s"):format(ap,aj)
 end
 
 function ad.EquippedWeapon()
-for af,ag in ipairs(ab.Items())do
-if ag.type=="weapon"and ag.equipped then return ag end
+for ai,aj in ipairs(ab.Items())do
+if aj.type=="weapon"and aj.equipped then return aj end
 end
 return nil
 end
@@ -23383,35 +23491,35 @@ end
 
 
 
-local af={weapon=1,helmet=2,chest=3}
+local ai={weapon=1,helmet=2,chest=3}
 
 function ad.EquippedGear()
-local ag={}
-for ah,ai in ipairs(ab.Items())do
-if ai.equipped and af[ai.type]then ag[#ag+1]=ai end
-end
-table.sort(ag,function(ah,ai)return af[ah.type]<af[ai.type]end)
-return ag
-end
-
-
-function ad.UpgradeTargets(ag)
-local ah=ad.EquippedGear()
-if ag~="All"then return ah end
-
-local ai={}
 local aj={}
-for ak,al in ipairs(ah)do
-ai[#ai+1]=al
-aj[al]=true
-end
 for ak,al in ipairs(ab.Items())do
-if not aj[al]and not al.equipped and af[al.type]
-and(tonumber(al.data.maxUpgrades)or 0)>(tonumber(al.data.currentUpgrade)or 0)then
-ai[#ai+1]=al
+if al.equipped and ai[al.type]then aj[#aj+1]=al end
+end
+table.sort(aj,function(ak,al)return ai[ak.type]<ai[al.type]end)
+return aj
+end
+
+
+function ad.UpgradeTargets(aj)
+local ak=ad.EquippedGear()
+if aj~="All"then return ak end
+
+local al={}
+local am={}
+for an,ao in ipairs(ak)do
+al[#al+1]=ao
+am[ao]=true
+end
+for an,ao in ipairs(ab.Items())do
+if not am[ao]and not ao.equipped and ai[ao.type]
+and(tonumber(ao.data.maxUpgrades)or 0)>(tonumber(ao.data.currentUpgrade)or 0)then
+al[#al+1]=ao
 end
 end
-return ai
+return al
 end
 
 
@@ -23423,9 +23531,9 @@ ad.SKILL_STATS={
 "stamina",
 }
 
-function ad.SpendSkill(ag,ah)
-local ai=math.max(1,math.floor(tonumber(ah)or 1))
-return aa.Fire("spendSkillPoint",ag,ai)
+function ad.SpendSkill(aj,ak)
+local al=math.max(1,math.floor(tonumber(ak)or 1))
+return aa.Fire("spendSkillPoint",aj,al)
 end
 
 function ad.ResetSkills()
@@ -23553,7 +23661,7 @@ local al
 al=ag:Dropdown{
 Name="Hold List",
 Desc="items picked here are never sold, whatever the filters say",
-Options=ab.OwnedNames(),Multi=true,Search=true,CacheOptions=true,
+Options=ab.AllNames(),Multi=true,Search=true,CacheOptions=true,
 Flag="SellHold",
 Callback=function(am)
 local an={}
@@ -23604,12 +23712,18 @@ or"Nothing matches the sell filters")
 end)
 end}
 
+local function refillHold()
+local an=ab.AllNames()
+pcall(function()al:SetOptions(an)end)
+return#an
+end
+
 ag:Button{Name="Refresh Hold List",Text="Refresh",Callback=function()
 task.spawn(function()
 aa.InvalidateInventory()
-local an=ab.OwnedNames()
-pcall(function()al:SetOptions(an)end)
-Notify(("%d item name%s in your inventory"):format(#an,#an==1 and""or"s"))
+ab.WarmCatalog()
+local an=refillHold()
+Notify(("%d item name%s in the game"):format(an,an==1 and""or"s"))
 end)
 end}
 
@@ -23761,11 +23875,28 @@ return#aw
 end
 end
 
+local function refillGroups()
+local ap=0
+for aq,ar in ipairs(ao)do ap=ap+(ar()or 0)end
+return ap
+end
+
+
+
+
+
+task.spawn(function()
+if ab.WarmCatalog()then
+refillGroups()
+refillHold()
+end
+end)
+
 ah:Button{Name="Refresh Item Lists",Text="Refresh",Callback=function()
 task.spawn(function()
 aa.InvalidateInventory()
-local ap=0
-for aq,ar in ipairs(ao)do ap=ap+(ar()or 0)end
+ab.WarmCatalog()
+local ap=refillGroups()
 Notify(("%d item name%s across the groups"):format(ap,ap==1 and""or"s"))
 end)
 end}
@@ -26227,7 +26358,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="07.09 03:45:11",
+Build="08.09 01:38:26",
 S=S,
 Window=Window,
 Priority=a.j(),
