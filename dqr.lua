@@ -23638,7 +23638,7 @@ end,
 ag:Slider{
 Name="Sell Below Level",
 Desc="sells items whose level requirement is under this — set it to your own level to dump outgrown gear",
-Default=1,Min=1,Max=250,Decimals=0,
+Default=1,Min=1,Max=300,Decimals=0,
 Flag="SellBelowLevel",
 Callback=function(al)S.sellBelowLevel=al end,
 }
@@ -23861,7 +23861,7 @@ else
 as:Slider{
 Name="Sell Below Level",
 Desc="only sell gear you have outgrown — 0 turns it off",
-Default=0,Min=0,Max=150,Decimals=0,
+Default=0,Min=0,Max=300,Decimals=0,
 Flag="SellAdvLvl"..aq.title,
 Callback=function(aw)ar.maxLevel=aw end,
 }
@@ -26358,7 +26358,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="08.09 01:38:26",
+Build="08.09 01:46:01",
 S=S,
 Window=Window,
 Priority=a.j(),
