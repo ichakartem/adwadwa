@@ -671,7 +671,10 @@ Util=tabs.Misc:Section("Utility",{Side="Left"}),
 
 
 
-Cosmetic=tabs.Misc:Section("Cosmetic Getter",{Side="Right"}),
+
+
+
+Cosmetic=tabs.Misc:Section("Cosmetic Getter",{Side="Right",Scope="lobby"}),
 
 
 
@@ -24362,23 +24365,36 @@ end
 ae._CosmeticGetterStop=stop
 
 
-local ai=ab:WaitForChild"remotes"
-local aj=ai:WaitForChild"awardCaseCosmetic"
-local ak=ai:WaitForChild"purchaseCase"
-local al=ai:WaitForChild"casePurchaseResult"
-local am=ai:WaitForChild"getPlayerCosmetics"
-local an=ai:WaitForChild"getCaseConfig"
-local ao=ai:WaitForChild"getCaseCosmetics"
 
 
 
-local ap=ai:FindFirstChild"addCosmeticLocal"
 
 
-local aq=ai:FindFirstChild"alertPlayer"
-local as=ab:WaitForChild"Utility"
 
-local av,aw=pcall(require,as:WaitForChild"AssetRequester")
+local ai=ab:WaitForChild("remotes",5)
+
+local function want(aj)
+return ai and ai:WaitForChild(aj,5)or nil
+end
+
+local aj=want"awardCaseCosmetic"
+local ak=want"purchaseCase"
+local al=want"casePurchaseResult"
+local am=want"getPlayerCosmetics"
+local an=want"getCaseConfig"
+local ao=want"getCaseCosmetics"
+
+
+
+local ap=ai and ai:FindFirstChild"addCosmeticLocal"
+
+
+local aq=ai and ai:FindFirstChild"alertPlayer"
+local as=ab:WaitForChild("Utility",5)
+
+local av,aw=pcall(function()
+return require(as:WaitForChild("AssetRequester",5))
+end)
 if not av then aw=nil end
 
 
@@ -24442,7 +24458,7 @@ local aB={
 
 local aC={}
 do
-local aD,aE=pcall(require,as:WaitForChild"DataRequester")
+local aD,aE=pcall(function()return require(as:WaitForChild("DataRequester",5))end)
 local aF,aG=false
 if aD and type(aE)=="table"and aE.GetCosmetics then aF,aG=pcall(aE.GetCosmetics)end
 if aF and type(aG)=="table"then
@@ -24771,6 +24787,11 @@ local aY={}
 
 
 function aY.Open()
+
+if not(aj and ak and al)then
+Notify"Cosmetic Getter works in the lobby only"
+return
+end
 if ae._CosmeticGetterStop then pcall(ae._CosmeticGetterStop)end
 ah=false
 ag={}
@@ -25819,8 +25840,7 @@ local aa=a.n()
 local ab=a.b()
 local ac=a.R()
 local ad=a.r()
-local ae=a.s()
-local af=a.U()a.l()
+local ae=a.s()a.l()
 
 
 
@@ -25828,84 +25848,84 @@ local af=a.U()a.l()
 
 
 
-local ag={}
+local af={}
 
 local function restoreNames()
-for ah,ai in pairs(ag)do
+for ag,ah in pairs(af)do
 pcall(function()
-if not ah.Parent then return end
-if type(ai)=="boolean"then ah.Enabled=ai else ah.Text=ai end
+if not ag.Parent then return end
+if type(ah)=="boolean"then ag.Enabled=ah else ag.Text=ah end
 end)
 end
-table.clear(ag)
+table.clear(af)
 end
 
 local function hideNames()
-local ah,ai=LocalPlayer.Name,LocalPlayer.DisplayName
+local ag,ah=LocalPlayer.Name,LocalPlayer.DisplayName
 
-local aj=LocalPlayer.Character
+local ai=LocalPlayer.Character
+if ai then
+for aj,ak in ipairs(ai:GetDescendants())do
+if ak:IsA"BillboardGui"and ak.Enabled then
+if af[ak]==nil then af[ak]=ak.Enabled end
+ak.Enabled=false
+end
+end
+end
+
+local aj=LocalPlayer:FindFirstChild"PlayerGui"
 if aj then
 for ak,al in ipairs(aj:GetDescendants())do
-if al:IsA"BillboardGui"and al.Enabled then
-if ag[al]==nil then ag[al]=al.Enabled end
-al.Enabled=false
-end
-end
-end
-
-local ak=LocalPlayer:FindFirstChild"PlayerGui"
-if ak then
-for al,am in ipairs(ak:GetDescendants())do
-if am:IsA"TextLabel"or am:IsA"TextButton"then
-local an=am.Text
-if an==ah or an==ai then
-if ag[am]==nil then ag[am]=an end
-am.Text="Hidden"
+if al:IsA"TextLabel"or al:IsA"TextButton"then
+local am=al.Text
+if am==ag or am==ah then
+if af[al]==nil then af[al]=am end
+al.Text="Hidden"
 end
 end
 end
 end
 end
 
-return function(ah)
-local ai=ah.Stats
-local aj=ah.Hook
+return function(ag)
+local ah=ag.Stats
+local ai=ag.Hook
 
 
-local ak=ah.Util
+local aj=ag.Util
 
-ak:Toggle{
+aj:Toggle{
 Name="Noclip",
 Desc="walk through walls; collisions come back when you turn it off",
 Default=false,Flag="NoclipOn",
-Callback=function(al)
-S.noclip=al
-if not al then ae.RestoreNoclip()end
+Callback=function(ak)
+S.noclip=ak
+if not ak then ae.RestoreNoclip()end
 end,
 }
 
 
-local al=ah.Perf
+local ak=ag.Perf
 
-al:Toggle{
+ak:Toggle{
 Name="Performance Mode",
 Desc="strips materials, textures and particles — rejoin to restore",
 Default=false,Flag="PerformanceMode",
-Callback=function(am)
-S.perfMode=am
+Callback=function(al)
+S.perfMode=al
 
 
-if am then task.spawn(ab.Boost)end
+if al then task.spawn(ab.Boost)end
 end,
 }
 
-al:Toggle{
+ak:Toggle{
 Name="Ultra Performance Mode",
 Desc="everything above plus 3D rendering off and a black screen",
 Default=false,Flag="UltraPerformanceMode",
-Callback=function(am)
-S.ultraPerf=am
-if am then
+Callback=function(al)
+S.ultraPerf=al
+if al then
 task.spawn(function()
 ab.Set3D(false)
 ab.BuildScreen()
@@ -25922,15 +25942,15 @@ ab.Watch()
 
 
 
-local am=ai:Label"Loading..."
+local al=ah:Label"Loading..."
 
-ai:Toggle{
+ah:Toggle{
 Name="Hide Name",
 Desc="blanks your own nameplate and every label in the interface that shows your nick",
 Default=false,Flag="HideName",
-Callback=function(an)
-S.hideName=an
-if an then hideNames()else restoreNames()end
+Callback=function(am)
+S.hideName=am
+if am then hideNames()else restoreNames()end
 end,
 }
 
@@ -25942,9 +25962,9 @@ task.wait(2)
 if S.hideName then pcall(hideNames)end
 
 pcall(function()
-local an=ac.EquippedWeapon()
-local ao=aa.Items()
-am:Set(table.concat({
+local am=ac.EquippedWeapon()
+local an=aa.Items()
+al:Set(table.concat({
 ("Level <b>%d</b>   ·   XP %s/%s"):format(aa.Level(),
 tostring(aa.Val("XP",0)),tostring(aa.Val("XPNeeded",0))),
 ("Gold %s   ·   Gems %s   ·   Points %d"):format(
@@ -25953,7 +25973,7 @@ tostring(aa.Gold()),tostring(aa.Gems()),aa.SkillPoints()),
 tostring(aa.Val("physicalPower",0)),tostring(aa.Val("spellPower",0)),
 tostring(aa.Val("stamina",0))),
 ("Weapon %s   ·   %d item%s in the bag"):format(
-an and an.name or"—",#ao,#ao==1 and""or"s"),
+am and am.name or"—",#an,#an==1 and""or"s"),
 },"\n"))
 end)
 end
@@ -25961,60 +25981,60 @@ end)
 
 
 
-aj:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
+ai:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
 Desc="nothing is posted while this is off",
-Callback=function(an)S.webhookOn=an end}
+Callback=function(am)S.webhookOn=am end}
 
-aj:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
-Flag="WebhookURL",Callback=function(an)S.webhookUrl=tostring(an or"")end}
+ai:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
+Flag="WebhookURL",Callback=function(am)S.webhookUrl=tostring(am or"")end}
 
-aj:Dropdown{
+ai:Dropdown{
 Name="Ping On Rarity",
 Desc="ping only when the run dropped one of these; leave empty to ping every report",
 Options=(function()
-local an={}
-for ao,ap in ipairs(aa.RARITIES)do
-an[#an+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[ap]or"#FFFFFF",ap)
+local am={}
+for an,ao in ipairs(aa.RARITIES)do
+am[#am+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[ao]or"#FFFFFF",ao)
 end
-return an
+return am
 end)(),
 Multi=true,
 Flag="WebhookPingRarities",
-Callback=function(an)
-local ao={}
-for ap,aq in pairs(an or{})do
-if aq then
-local as=tostring(ap):gsub("<[^>]->","")
-ao[(as:gsub("^%s+",""):gsub("%s+$",""))]=true
+Callback=function(am)
+local an={}
+for ao,ap in pairs(am or{})do
+if ap then
+local aq=tostring(ao):gsub("<[^>]->","")
+an[(aq:gsub("^%s+",""):gsub("%s+$",""))]=true
 end
 end
-S.pingRarities=ao
+S.pingRarities=an
 end,
 }
 
-aj:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
+ai:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
 Numeric=true,Flag="WebhookUserId",
-Callback=function(an)S.webhookUserId=tostring(an or"")end}
+Callback=function(am)S.webhookUserId=tostring(am or"")end}
 
-aj:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
-Callback=function(an)S.webhookEveryone=an end}
+ai:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
+Callback=function(am)S.webhookEveryone=am end}
 
 
 
-aj:Button{Name="Send Test Post",Text="Send",Callback=function()
+ai:Button{Name="Send Test Post",Text="Send",Callback=function()
 task.spawn(function()
 if tostring(S.webhookUrl or"")==""then return Notify"Paste a webhook URL first"end
-local an,ao=ad.Test()
-if ao then
-Notify("Webhook failed: "..tostring(ao))
+local am,an=ad.Test()
+if an then
+Notify("Webhook failed: "..tostring(an))
 else
-Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(an)..")")
-or("Webhook OK (HTTP "..tostring(an)..") — posting is still off"))
+Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(am)..")")
+or("Webhook OK (HTTP "..tostring(am)..") — posting is still off"))
 end
 end)
 end}
 
-aj:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
+ai:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
 
 
 
@@ -26024,21 +26044,33 @@ aj:SubLabel"Send Test Post works even while Enable Webhook is off, so you can ch
 
 
 
-local an=ah.Cosmetic
 
-an:SubLabel"Opens a separate window: pick any number of cosmetics, the hub spins the crate that covers them best. A wrong roll is refused, so it costs no gems."
 
-an:Button{
+
+
+
+
+
+
+if IN_LOBBY then
+local am=ag.Cosmetic
+
+am:SubLabel"Opens a separate window: pick any number of cosmetics, the hub spins the crate that covers them best. A wrong roll is refused, so it costs no gems."
+
+am:Button{
 Name="Cosmetic Getter",
 Text="Open",
 Callback=function()local
-ao=pcall(af.Open)
-if not ao then
+an=pcall(function()a.U()
+.Open()
+end)
+if not an then
 Notify"Cosmetic Getter failed to open"
 
 end
 end,
 }
+end
 end end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
 
 
@@ -27706,7 +27738,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="08.09 21:37:11",
+Build="08.09 22:43:52",
 S=S,
 Window=Window,
 Priority=a.j(),
@@ -27722,9 +27754,6 @@ Lobby=a.E(),
 
 
 Cases=a.ac(),
-
-
-CosmeticGetter=a.U(),
 Character=an,
 Webhook=am,
 Run=ak,
