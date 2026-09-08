@@ -929,10 +929,13 @@ end end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=_
 
 local b={}
 b.enabled=false
-function b.Init()end
-function b.Log()end
+function b.Bridge()end
+function b.Death()end
 function b.Dump()return""end
 function b.Flush()end
+function b.Init()end
+function b.Log()end
+function b.Timing()end
 return b end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
 
@@ -27777,7 +27780,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="08.09 23:11:45",
+Build="09.09 02:45:23",
 S=S,
 Window=Window,
 Priority=a.j(),
