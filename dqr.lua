@@ -2997,12 +2997,12 @@ end
 if r then
 local x=q and(u-q).Magnitude or math.huge
 if x>15 then
-r(("s82"):format(
+r(("s81"):format(
 p,
 w.Position.X,w.Position.Y,w.Position.Z,
 u.X,u.Y,u.Z,
 x==math.huge and-1 or x,
-hasGroundUnder(u)and"s83"or"s84"))
+hasGroundUnder(u)and"s82"or"s83"))
 end
 q=u
 end
@@ -3763,7 +3763,7 @@ orbitFor={"lava walker","lava mage","deity of the volcano"},
 
 
 
-dodgeNamed={"rockfall","s142"},
+dodgeNamed={"rockfall","s141"},
 
 
 
@@ -4242,7 +4242,7 @@ if y and not bossPresent()then return nil end
 local A=c.Value"radius"
 
 w={
-name=A and"s143"or"s144",
+name=A and"s142"or"s143",
 cleanOnly=c.Value"cleanOnly"==true,
 leash=c.Value"leash",
 
@@ -4791,7 +4791,7 @@ LPH_ATTRIBUTES(VM(NONE))
 if typeof(p)~="Instance"or not p:IsA"BasePart"then return"-"end
 local q=n[p]
 local r=(type(q)=="table"and q.born)and(os.clock()-q.born)or-1
-local s=isCylinder(p)and"s85"or"s86"
+local s=isCylinder(p)and"s84"or"s85"
 
 
 
@@ -4800,9 +4800,9 @@ local s=isCylinder(p)and"s85"or"s86"
 
 local u=""
 if r<0 then
-u=p.Parent and"s87"or"s88"
+u=p.Parent and"s86"or"s87"
 end
-return("s89"):format(
+return("s88"):format(
 p.Parent and p.Parent.Name or"?",p.Name,s,
 p.Size.X,p.Size.Y,p.Size.Z,r,u)
 end
@@ -5220,7 +5220,7 @@ p=V.Position,
 safe=W==nil,
 name=W and("%s/%s"):format(
 (W.Parent and W.Parent.Name)or(W.name and tostring(W.name))or"?",
-W.Name or"s90")or nil,
+W.Name or"s89")or nil,
 })
 if#K>L then table.remove(K)end
 end
@@ -5260,7 +5260,7 @@ if ab.name and not Z[ab.name]then Z[ab.name]=0 end
 if ab.name then Z[ab.name]=Z[ab.name]+1 end
 end
 end
-if Y==0 then return"s91"end
+if Y==0 then return"s90"end
 if X==0 then
 
 
@@ -5271,7 +5271,7 @@ and LocalPlayer.Character:FindFirstChild"HumanoidRootPart"
 local ab="?"
 if aa then
 local ac=d.NearestZones(aa.Position,1)
-ab=(type(ac)=="table"and ac[1])or"s92"
+ab=(type(ac)=="table"and ac[1])or"s91"
 end
 
 
@@ -5303,10 +5303,10 @@ end
 end
 end
 if ae then
-ac=("s93"):format(ae,ad)
+ac=("s92"):format(ae,ad)
 end
 end
-return("s94")
+return("s93")
 :format(V or 1.5,Y,ab,ac)
 end
 local aa={}
@@ -5371,10 +5371,10 @@ if not al or ar<al then al=ar end
 end
 end
 end
-if al then ai=("s95"):format(al)end
+if al then ai=("s94"):format(al)end
 end
 end
-return("s96"..ai)
+return("s95"..ai)
 :format(V or 1.5,X,Y,_ or 0,table.concat(aa,", "),ab,ac,
 ad,ae,ae>0.01 and(ad/ae)or 0)
 end
@@ -6264,7 +6264,7 @@ if typeof(al)~="CFrame"or typeof(am)~="Vector3"then return end
 u[#u+1]={
 cf=al,size=am,cylinder=ar or false,
 flat=ap or 0,vert=aq or 0,
-name=ao or"s97",expires=os.clock()+(an or 1),
+name=ao or"s96",expires=os.clock()+(an or 1),
 }
 end
 
@@ -6538,16 +6538,16 @@ local am={}
 
 function d.CoverReport()
 LPH_ATTRIBUTES(VM(NONE))
-if#am==0 then return"s98"end
+if#am==0 then return"s97"end
 local an,ao=os.clock(),{}
 for ap=#am,1,-1 do
 local aq=am[ap]
-ao[#ao+1]=("s99"):format(
+ao[#ao+1]=("s98"):format(
 aq.name,an-aq.born,
-aq.left and("s100"):format(aq.left)or"s101")
+aq.left and("s99"):format(aq.left)or"s100")
 if#ao>=5 then break end
 end
-return("s102"):format(#am,table.concat(ao," ;; "))
+return("s101"):format(#am,table.concat(ao," ;; "))
 end
 
 local function watchCover(an)
@@ -6647,8 +6647,8 @@ local W=V>0 and(V/D)or 0
 if W>an then ap,an,ao=aq,W,V end
 end
 end
-if not ap then return"s103"end
-return("s104"):format(
+if not ap then return"s102"end
+return("s103"):format(
 tostring(ap.Parent and ap.Parent.Name).."/"..tostring(ap.Name),
 an,ao)
 end
@@ -6676,7 +6676,7 @@ end)
 
 local ar={}
 for V,W in ipairs(aq)do
-ar[#ar+1]=("s105"):format(
+ar[#ar+1]=("s104"):format(
 ao-W.t,W.gap,W.name,W.size,W.mat,tostring(W.taken),tostring(W.covered))
 end
 return ar
@@ -6742,7 +6742,7 @@ if au<10 then return end
 local av=V.Position+as*(au*0.5)
 aq=W
 d.Foresee(CFrame.new(av,av+as),Vector3.new(an,6,au),
-ap,"s106",0,0,false)
+ap,"s105",0,0,false)
 if b.enabled then
 
 end
@@ -7162,13 +7162,13 @@ local aE=av and(av.Position.Y-ay.Position.Y)>40
 local aF=-9
 if av then aF=ay.CFrame.LookVector:Dot(av.CFrame.LookVector)end
 
-aw[#aw+1]=("s107"):format(
+aw[#aw+1]=("s106"):format(
 ay.Position.Y,aC,
-az and az.Name or"s108",aA,
-domeMoves(ay)and"s109"or"s110",
+az and az.Name or"s107",aA,
+domeMoves(ay)and"s108"or"s109",
 aF,
-aD and"s83"or"s84",
-aE and"s111"or"s3")
+aD and"s82"or"s83",
+aE and"s110"or"s3")
 end
 end
 return aw
@@ -8448,10 +8448,10 @@ if _.Y>Z then
 local aW=d.GroundAt(_.X,_.Z,Y+30)
 if aW and aW.Y<=Z then
 _=aW
-aQ=aR.."s112"
+aQ=aR.."s111"
 else
 _=Vector3.new(_.X,Z,_.Z)
-aQ=aR.."s113"
+aQ=aR.."s112"
 end
 end
 
@@ -8475,7 +8475,7 @@ LPH_ATTRIBUTES(VM(NONE))
 if not e then return aR end
 aS=aS or 6
 sweepGhosts()
-if d.IsSafe(aR,aS)then return pick("s114",aR)end
+if d.IsSafe(aR,aS)then return pick("s113",aR)end
 
 local aT=c.Active()
 local function permitted(aU)
@@ -8501,12 +8501,12 @@ for aU=aG,aH,aG do
 for aV,aW in ipairs(ringPoints(aR,aU))do
 local Y=onGround(aW)
 if d.IsSafe(Y,aS)and hasFloor(Y)and permitted(Y)then
-return pick("s115",Y)
+return pick("s114",Y)
 end
 end
 end
 
-if aP and os.clock()-aO<0.35 then return pick("s116",aP)end
+if aP and os.clock()-aO<0.35 then return pick("s115",aP)end
 
 
 
@@ -8516,7 +8516,7 @@ for aU,aV in ipairs{20,45,80}do
 local aW=aR+Vector3.new(0,aV,0)
 if d.IsSafe(aW,aS)and permitted(aW)then
 aP,aO=aW,os.clock()
-return pick("s117",aW)
+return pick("s116",aW)
 end
 end
 end
@@ -8538,7 +8538,7 @@ end
 local aU=shelterSpot(aT,aR,aS)
 if aU then
 aP,aO=aU,os.clock()
-return pick("s118",aU)
+return pick("s117",aU)
 end
 
 local aV=aT and aT.cleanOnly
@@ -8558,7 +8558,7 @@ end
 end
 
 aP,aO=aW,os.clock()
-return pick("s119",aW)
+return pick("s118",aW)
 end
 
 
@@ -8674,7 +8674,7 @@ function d.SafePointAround(aX,aY)
 LPH_ATTRIBUTES(VM(NONE))
 
 
-if not e then return pick("s120",aY.from or aX,true)end
+if not e then return pick("s119",aY.from or aX,true)end
 local aZ=aY.from
 local a_,a0=aY.min,aY.max
 local a1=aY.margin or 6
@@ -8985,7 +8985,7 @@ local bg,bh=math.huge
 for bi,bj in ipairs(bd)do
 if d.ZoneAt(bj,bf)==nil then
 if d.IsSafe(bj,a1)and _.allow(bj)then
-return pick("s121",bj,true)
+return pick("s120",bj,true)
 end
 local bk=threatAt(bj,a1)
 if bk<bg then bh,bg=bj,bk end
@@ -9004,7 +9004,7 @@ if bh then
 
 
 
-return pick(("s122"):format(bf),bh,false)
+return pick(("s121"):format(bf),bh,false)
 end
 end
 
@@ -9034,7 +9034,7 @@ elseif tooCloseToMob(bf)then
 note(bf,"mob")
 elseif not d.IsSafe(bf,a1)then
 elseif _.allow(bf)then
-return pick("s123",bf,true)
+return pick("s122",bf,true)
 else
 note(bf,"spare")
 a4[#a4+1]={p=bf,d=be.d}
@@ -9047,7 +9047,7 @@ note(bf,"dirty")
 elseif not hasFloor(bf)then
 note(bf,"nofloor")
 else
-return pick("s124",bf,true)
+return pick("s123",bf,true)
 end
 end
 
@@ -9069,7 +9069,7 @@ if bh.p and bf<160 then
 bf=bf+1
 if _.hardAllow(bh.p)and not tooCloseToMob(bh.p)
 and d.IsSafe(bh.p,be)then
-return pick("s125",bh.p,true)
+return pick("s124",bh.p,true)
 end
 end
 end
@@ -9092,12 +9092,12 @@ local bi=threatAt(bh.p,a1)
 if bi<be then bf,be=bh.p,bi end
 end
 end
-if bf then return pick("s126",bf,false)end
+if bf then return pick("s125",bf,false)end
 end
 
 
 local bd=shelterSpot(_,aZ,a1)
-if bd then return pick("s118",bd,true)end
+if bd then return pick("s117",bd,true)end
 
 
 
@@ -9111,7 +9111,7 @@ if bd then return pick("s118",bd,true)end
 
 for be,bf in ipairs(_ and _.groundOnly and{}or{30,55,85,115})do
 local bg=Vector3.new(aZ.X,aX.Y+bf,aZ.Z)
-if d.IsSafe(bg,a1)then return pick("s127",bg,true)end
+if d.IsSafe(bg,a1)then return pick("s126",bg,true)end
 end
 
 
@@ -9171,7 +9171,7 @@ end
 
 
 
-return pick("s128",bf,false)
+return pick("s127",bf,false)
 end
 
 
@@ -9295,7 +9295,7 @@ math.max(math.abs(a4.Z)-a5.Z,0)).Magnitude
 local a7=v[a2]
 a1[#a1+1]={
 gap=a6,
-text=("s129"):format(
+text=("s128"):format(
 tostring(a2.Parent and a2.Parent.Name or"?"),tostring(a2.Name),
 tostring(a2.Size),a6,
 (a7 and a7.speed)or 0,
@@ -9386,7 +9386,7 @@ local a2=os.clock()
 for a3,a4 in ipairs(u)do
 if a4.expires>a2 then
 local a5=(a4.cf.Position-a_).Magnitude
-if a5<=a0 then a1[#a1+1]=("s130"):format(a4.name,a5)end
+if a5<=a0 then a1[#a1+1]=("s129"):format(a4.name,a5)end
 end
 end
 
@@ -9401,7 +9401,7 @@ end
 end
 
 table.sort(a1)
-return#a1>0 and table.concat(a1," ")or"s131"
+return#a1>0 and table.concat(a1," ")or"s130"
 end
 
 
@@ -9430,7 +9430,7 @@ local a2={}
 local function add(a3,a4,a5,a6)
 local a7=Vector3.new(a_.X-a4.X,0,a_.Z-a4.Z).Magnitude
 local a8=math.max(a5.X,a5.Z)*0.5+(a6 or 0)
-a2[#a2+1]=("s132"):format(
+a2[#a2+1]=("s131"):format(
 a3,a7,a8,a_.Y-a4.Y)
 end
 
@@ -9545,7 +9545,7 @@ ad.state.dodgeAt=os.clock()
 if ag then
 ad.state.dodgeStand,ae=ag,ag
 if ad.log then
-ad.log(("s141"):format(
+ad.log(("s140"):format(
 ag.X,ag.Y,ag.Z,(ag-ad.pos).Magnitude,
 aa.Describe(ad.here or ae),aa.Count()))
 end
@@ -9690,7 +9690,7 @@ local aI=aa.ZoneAt(aF,al)
 local aJ=aI
 and(tostring(aI.Parent and aI.Parent.Name or"?")
 .."/"..tostring(aI.Name))
-or"s134"
+or"s133"
 as[aJ]=(as[aJ]or 0)+1
 end
 
@@ -9786,8 +9786,8 @@ local av={}
 for aw,ax in pairs(au)do
 av[#av+1]=("%s x%d"):format(aw,ax)
 end
-aj.log(("s135"):format(
-as,ar and"s136"or"s137",
+aj.log(("s134"):format(
+as,ar and"s135"or"s136",
 #av>0 and table.concat(av,", ")or"-"))
 end
 
@@ -9804,7 +9804,7 @@ end
 if not ar and aj.escape then
 ar=aj.escape()
 if ar and aj.log then
-aj.log"s138"
+aj.log"s137"
 end
 end
 
@@ -9924,7 +9924,7 @@ ah=ag+ai.Unit*af
 end
 
 
-ab.Where(ad.Carrying()and"s75"or"s76")
+ab.Where(ad.Carrying()and"s74"or"s75")
 ab.Pin(ah,ah+Vector3.new(0,0,1))
 return true
 end
@@ -10028,7 +10028,7 @@ end
 
 
 local ak=ah.point or aj.Position
-ab.Where"s133"
+ab.Where"s132"
 ab.Pin(ak,ak+Vector3.new(0,0,1))
 return true
 end
@@ -10093,19 +10093,19 @@ if typeof(aj)=="CFrame"then
 
 
 
-mark(aj,Vector3.new(15,15,15),1.1,"s173")
+mark(aj,Vector3.new(15,15,15),1.1,"s172")
 end
 
 elseif ah=="Second Boss Rock Fall"then
 
 if typeof(ai)=="CFrame"then
-mark(ai,Vector3.new(42,42,42),2.2,"s142")
+mark(ai,Vector3.new(42,42,42),2.2,"s141")
 end
 
 elseif ah=="First Boss Sky Shot"then
 
 if typeof(ai)=="Vector3"then
-mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"s174")
+mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"s173")
 end
 end
 end))
@@ -10147,13 +10147,13 @@ if ag=="CFrame"or ag=="Vector3"then
 local ah=(ag=="CFrame")and ad.Position or ad
 local ai=af and(ah-af).Magnitude or nil
 return("%s %.0f,%.0f,%.0f%s"):format(ag,ah.X,ah.Y,ah.Z,
-ai and("s158"):format(ai)or"")
+ai and("s157"):format(ai)or"")
 end
 
 if ag=="Instance"then
 local ah=""
 if ad:IsA"BasePart"then
-ah=("s159"):format(
+ah=("s158"):format(
 ad.Position.X,ad.Position.Y,ad.Position.Z,tostring(ad.Size))
 elseif ad:IsA"Model"then
 local ai,aj=pcall(function()return ad:GetPivot().Position end)
@@ -10222,7 +10222,7 @@ local function foresee(ae,af)
 if typeof(af)~="CFrame"then return end
 local ag=ad[tostring(ae):lower()]
 if not ag then return end
-ab.Foresee(af,ag.size,ag.life,"s160"..tostring(ae),0,0,false)
+ab.Foresee(af,ag.size,ag.life,"s159"..tostring(ae),0,0,false)
 
 end
 
@@ -10281,7 +10281,7 @@ as=as.Unit
 local av=math.min(af.Z,au+20)
 local aw=Vector3.new(af.X,af.Y,av)
 local ax=CFrame.new(ar+as*(av*0.5),ar+as*100)
-ab.Foresee(ax,aw,ag,"s161",0,0,false)
+ab.Foresee(ax,aw,ag,"s160",0,0,false)
 end))
 end
 
@@ -10846,7 +10846,7 @@ end
 
 
 function ad.SendRequest(af)
-if type(af)~="string"or af==""then return false,nil,"s162"end
+if type(af)~="string"or af==""then return false,nil,"s161"end
 return aa.InvokeMulti("sendJoinRequest",(af:gsub("^%s+",""):gsub("%s+$","")))
 end
 
@@ -16587,13 +16587,13 @@ au=nil
 end
 
 function aa.Build()
-if aw then return false,"s72"end
+if aw then return false,"s71"end
 local aA=LocalPlayer.Character
 and LocalPlayer.Character:FindFirstChild"HumanoidRootPart"
-if not aA then return false,"s73"end
+if not aA then return false,"s72"end
 
 local aB=floorUnder(aA.Position)
-if not aB then return false,"s74"end
+if not aB then return false,"s73"end
 
 
 
@@ -17014,7 +17014,7 @@ function aa.Ready()return an end
 function aa.Building()return ao end
 
 function aa.Stats()
-return("s171"):format(#ag,#ah,al)
+return("s170"):format(#ag,#ah,al)
 end
 
 
@@ -17171,7 +17171,7 @@ end)
 ao=false
 if not aD then
 an=false
-if type(dbg)=="function"then dbg("s172"..tostring(aE))end
+if type(dbg)=="function"then dbg("s171"..tostring(aE))end
 end
 end)
 end
@@ -17875,7 +17875,7 @@ bf=probe(bd+bh[1],be+bh[2],a8.Y-ak)
 if bf then bd,be=bd+bh[1],be+bh[2]break end
 end
 end
-if not bf then return false,"s145"end
+if not bf then return false,"s144"end
 
 local bg,bh=bd,be
 gPut(bd,be,bf)
@@ -17958,7 +17958,7 @@ if bp and bk>bp then break end
 if os.clock()-bm>ao then
 task.wait()
 bm=os.clock()
-if _apelStopped then return false,"s146"end
+if _apelStopped then return false,"s145"end
 end
 end
 
@@ -18078,7 +18078,7 @@ end
 
 
 if bc<ap and az>=ap and at(cellOf(a8.X),cellOf(a8.Z))then
-return false,("s147"):format(bc)
+return false,("s146"):format(bc)
 end
 
 aw,az,ax,ay=b,bc,ba,bb
@@ -18095,7 +18095,7 @@ LPH_ATTRIBUTES(VM(NONE))return aB end
 
 function ab.Stats()
 LPH_ATTRIBUTES(VM(NONE))
-return("s148"):format(
+return("s147"):format(
 az,aC,aD,al*ac)
 end
 
@@ -18588,10 +18588,10 @@ function ab.Path(a9,b)
 LPH_ATTRIBUTES(VM(NONE))
 aM=b
 aN=(Vector3.new(b.X,0,b.Z)-Vector3.new(a9.X,0,a9.Z)).Magnitude
-if not aA then return nil,"s149"end
+if not aA then return nil,"s148"end
 
 local ba,bb=nearestCell(a9,4)
-if not ba then aJ=os.clock()aO="s150"return nil,aO end
+if not ba then aJ=os.clock()aO="s149"return nil,aO end
 local bc,bd=nearestCell(b,8)
 
 
@@ -18605,7 +18605,7 @@ local bc,bd=nearestCell(b,8)
 local be=false
 if not bc then
 aJ=os.clock()
-aO="s151"
+aO="s150"
 ab.Grow()
 
 local bf,bg,bh=math.huge
@@ -18623,7 +18623,7 @@ end
 local bf=astar(ba,bb,bc,bd)
 if not bf then
 aJ=os.clock()
-aO="s152"
+aO="s151"
 ab.Grow()
 return nil,aO
 end
@@ -18646,7 +18646,7 @@ local bi=(#bf-1)*ac
 if bh>12 and bi>bh*1.6 then
 
 end
-return bg,be and"s153"or"ok"
+return bg,be and"s152"or"ok"
 end
 
 function ab.Step(a9,b)
@@ -18693,8 +18693,8 @@ aH,aI=nil,nil
 return b,"direct"
 end
 if not aA then
-if ab.Clear(a9,b)then return b,"s154"end
-return nil,"s149"
+if ab.Clear(a9,b)then return b,"s153"end
+return nil,"s148"
 end
 
 local function advance()
@@ -18804,9 +18804,9 @@ if not bc or#bc==0 then
 
 
 if ab.Clear(a9,b)then
-return b,ba and"s155"or"s156"
+return b,ba and"s154"or"s155"
 end
-return nil,"s157"
+return nil,"s156"
 end
 aH,aI,aG=bc,b,1
 advance()
@@ -18845,7 +18845,7 @@ tick()local
 ba=pcall(function()
 local ba=LocalPlayer and LocalPlayer.Character
 local bb=ba and ba:FindFirstChild"HumanoidRootPart"
-if not bb then error"s73"end
+if not bb then error"s72"end
 refreshFilter()
 local bc,bd=flood(bb.Position,b)
 if not bc then error(bd)end
@@ -19007,11 +19007,11 @@ local an,ao
 function ac.Running()return ag~=nil end
 
 function ac.Stats()
-if not ag then return"s164"end
-return("s165")
+if not ag then return"s163"end
+return("s164")
 :format(aj,ak,al,am,
-an and("s100"):format(an)or"-",
-ao and("s100"):format(ao)or"-")
+an and("s99"):format(an)or"-",
+ao and("s99"):format(ao)or"-")
 end
 
 local function onSignal(ap)
@@ -19038,23 +19038,23 @@ al=al+1
 
 local ay=CFrame.new(aw)*CFrame.Angles(0,0,math.pi/2)
 aa.Foresee(ay,Vector3.new(0.5,ax*2,ax*2),
-av,"s166",0,af,true)
+av,"s165",0,af,true)
 return
 end
 
 local aw,ax=ap.cframe,ap.size
 if typeof(aw)~="CFrame"or typeof(ax)~="Vector3"then return end
 ak=ak+1
-aa.Foresee(aw,ax,av,"s167",0,af,false)
+aa.Foresee(aw,ax,av,"s166",0,af,false)
 end
 
 function ac.Start()
-if ag then return true,"s168"end
+if ag then return true,"s167"end
 
 local ap,aq=pcall(function()
 local ap=ab:WaitForChild("Utility",5)
 local aq=ap and ap:FindFirstChild"BridgeNet2"
-if not aq then error"s169"end
+if not aq then error"s168"end
 local ar=require(aq)
 ah=ar.ReferenceBridge"precastHitbox"
 ai=ar.ReferenceIdentifier"action"
@@ -19069,7 +19069,7 @@ return false,tostring(aq)
 end
 aj,ak,al,am=0,0,0,0
 an,ao=nil,nil
-return true,"s170"
+return true,"s169"
 end
 
 function ac.Stop()
@@ -19696,7 +19696,7 @@ local bk="s3"
 local function noteBranch(bl)
 LPH_ATTRIBUTES(VM(NONE))
 bb[bl]=(bb[bl]or 0)+1
-if bl~="s59"then
+if bl~="s58"then
 bk=bl
 
 
@@ -20743,7 +20743,7 @@ end
 end
 end
 bv.best=J
-bv.picked=L and"s60"or(N and"s61"or"s62")
+bv.picked=L and"s59"or(N and"s60"or"s61")
 bv.at=L or N
 return L or N
 end
@@ -20765,7 +20765,7 @@ S.speedOn=false
 
 local by,bz=ah.Start()
 if not by then
-warn("s63"..tostring(bz))
+warn("s62"..tostring(bz))
 end
 
 
@@ -20966,8 +20966,8 @@ T=(Vector3.new(U.X,0,U.Z)
 -Vector3.new(Q.Position.X,0,Q.Position.Z)).Magnitude
 end
 end
-("s64")
-:format(P-O,R and"s65"or"s66",T,M,L)
+("s63")
+:format(P-O,R and"s64"or"s65",T,M,L)
 
 
 
@@ -21072,9 +21072,9 @@ end
 
 local Y
 if X>=aT then
-Y=("s67"):format(X,aU)
+Y=("s66"):format(X,aU)
 elseif#u>=aV then
-Y=("s68"):format(#u,aW)
+Y=("s67"):format(#u,aW)
 end
 if Y then
 V=false
@@ -21739,7 +21739,7 @@ if Z and Z>bV then bV=Z end
 
 
 
-if bR then noteBranch"s59"end
+if bR then noteBranch"s58"end
 
 
 bj=bj%128+1
@@ -21948,7 +21948,7 @@ if not bR then bH=nil end
 if bP then
 br,H,bF,bC=bP,bN,bN,bO
 bZ=true
-if bR then noteBranch"s69"end
+if bR then noteBranch"s68"end
 bH,E,F=nil,nil,nil
 elseif E then
 
@@ -22432,7 +22432,7 @@ elseif b0 then
 y,z=nil,nil
 else
 br,H,bZ=y,x,true
-if bR then noteBranch"s70"end
+if bR then noteBranch"s69"end
 if ai.enabled and(bN-j)>2 then
 j=bN
 
@@ -22496,7 +22496,7 @@ b0=nil
 end
 if b0 then
 br,H=b0,bN
-if bR then noteBranch"s71"end
+if bR then noteBranch"s70"end
 elseif bR then
 br=nil
 if ai.enabled and(bN-a9)>1 then
@@ -22933,7 +22933,7 @@ local ak=pcall(function()
 if af:IsA"ScreenGui"then af.Enabled=true end
 aj.Visible=true
 end)
-return ak,ak and"s139"or"could not open"
+return ak,ak and"s138"or"could not open"
 end
 
 
@@ -24311,316 +24311,1601 @@ end end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={
 
 
 
-local aa=a.m()a.l()
 
 
-local ab=game:GetService"TeleportService"
-
-local ac={}
-
-
-
-ac.KEYS={"rare","epic","legendary"}
-
-ac.CASE_LABEL={
-rare="Rare Case",
-epic="Epic Case",
-legendary="Legendary Case",
-}
+local aa=game:GetService"Players"
+local ab=game:GetService"ReplicatedStorage"
+game:GetService"RunService"
+local ac=aa.LocalPlayer a.l()
 
 
 
-local ad={
-armors="armor",
-weapons="weapon",
-enchants="enchant",
-titles="title",
-}
-
-local ae
-local af={}
 
 
 
-function ac.Configs(ag)
-if ae and not ag then return ae end
 
-local ah,ai={},{}
-for aj,ak in ipairs(ac.KEYS)do
-local al,am=aa.Invoke("getCaseConfig",ak)
-if al and type(am)=="table"and type(am.items)=="table"then
-ah[ak]=am
-else
-ai[#ai+1]=ak
+
+local function elevate()
+if setthreadidentity then pcall(setthreadidentity,8)end
 end
-end
-
-if#ai>0 then
-
-end
-
-
-
-if not next(ah)then return nil end
-
-ae=ah
-return ae
-end
-
-function ac.Invalidate()
-ae=nil
-end
+elevate()
 
 
 
 
 
 
-
-function ac.Key(ag,ah)
-return tostring(ag).."/"..tostring(ah)
-end
+local ad=false
 
 
-function ac.Owned()
+
+
+local ae=(getgenv and getgenv())or _G
+ae._CosmeticGetter=ae._CosmeticGetter or{armed=false,picks={},hooked=false,selfCall=false}
+local af=ae._CosmeticGetter
+
+
+af.selfCall=false
+af.picks=af.picks or{}
+
 local ag={}
-local ah,ai=aa.Invoke"getPlayerCosmetics"
-if not ah or type(ai)~="table"then
+local ah=false
 
-return ag,false
+
+
+local function stop()
+ah=true
+af.armed=false
+for ai,aj in ipairs(ag)do pcall(function()aj:Disconnect()end)end
+ag={}
 end
-for aj,ak in pairs(ai)do
-if type(ak)=="table"then
-for al,am in ipairs(ak)do ag[ac.Key(aj,am)]=true end
+ae._CosmeticGetterStop=stop
+
+
+local ai=ab:WaitForChild"remotes"
+local aj=ai:WaitForChild"awardCaseCosmetic"
+local ak=ai:WaitForChild"purchaseCase"
+local al=ai:WaitForChild"casePurchaseResult"
+local am=ai:WaitForChild"getPlayerCosmetics"
+local an=ai:WaitForChild"getCaseConfig"
+local ao=ai:WaitForChild"getCaseCosmetics"
+
+
+
+local ap=ai:FindFirstChild"addCosmeticLocal"
+
+
+local aq=ai:FindFirstChild"alertPlayer"
+local as=ab:WaitForChild"Utility"
+
+local av,aw=pcall(require,as:WaitForChild"AssetRequester")
+if not av then aw=nil end
+
+
+
+
+if not af.hooked and hookmetamethod and getnamecallmethod then
+af.hooked=true
+local ax=newcclosure or function(ax)return ax end
+local ay
+ay=hookmetamethod(game,"__namecall",ax(function(az,...)
+
+
+
+
+
+
+
+if af.selfCall and az==aj and getnamecallmethod()=="FireServer"then
+return ay(az,...)
+end
+if af.armed and az==aj and getnamecallmethod()=="FireServer"then local
+aA, aB, aC=...
+local aD=af.picks
+
+
+
+
+if aD and aD[aA]then
+return ay(az,...)
+end
+local aE
+for aF,aG in pairs(aD or{})do
+if aF~=aA then aE=aG break end
+end
+if aE then
+return ay(az,aE.name,aE.type,aC)
 end
 end
-return ag,true
-end
-
-
-
-
-
-
-
-
-
-
-function ac.BestFor(ag)
-local ah=ac.Configs()
-if not ah then return nil end
-
-local ai={}
-for aj,ak in ipairs(ag)do ai[ac.Key(ak.type,ak.name)]=true end
-
-local aj
-for ak,al in ipairs(ac.KEYS)do
-local am=ah[al]
-local an,ao=0,0
-for ap,aq in ipairs((am and am.items)or{})do
-if ai[ac.Key(aq.type,aq.name)]then
-an=an+(tonumber(aq.percent)or 0)
-ao=ao+1
-end
-end
-if ao>0 then
-local ap=tonumber(am.price)or 0
-if not aj or an>aj.percent
-or(an==aj.percent and ap<aj.price)then
-aj={key=al,percent=an,price=ap,hits=ao}
-end
-end
-end
-return aj
-end
-
-
-
-function ac.Pool()
-local ag=ac.Configs()
-af={}
-if not ag then return{}end
-
-local ah={}
-for ai,aj in ipairs(ac.KEYS)do
-for ak,al in ipairs((ag[aj]and ag[aj].items)or{})do
-local am=ac.Key(al.type,al.name)
-if not ah[am]then
-ah[am]=true
-local an=("%s · %s %s"):format(al.name,tostring(al.rarity),
-ad[al.type]or tostring(al.type))
-af[an]={name=al.name,type=al.type,rarity=al.rarity}
-end
-end
-end
-
-local ai={}
-for aj in pairs(af)do ai[#ai+1]=aj end
-table.sort(ai)
-return ai
-end
-
-
-
-function ac.Item(ag)
-if not ag or ag==""then return nil end
-local ah=af[ag]
-if ah then return ah end
-
-
-
-ac.Pool()
-return af[ag]
-end
-
-
-
-function ac.Ready()
-local ag=LocalPlayer:FindFirstChild"leaderstats"
-if not ag or not ag:FindFirstChild"Gems"then return false end
-return aa.Get"purchaseCase"~=nil and aa.Get"casePurchaseResult"~=nil
-end
-
-
-
-
-
-
-function ac.Buy(ag,ah)
-local ai=aa.Get"purchaseCase"
-local aj=aa.Get"casePurchaseResult"
-if not ai or not aj then return nil,"s78"end
-
-local ak
-local al=aj.OnClientEvent:Connect(function(al)
-if ak==nil then ak=al or false end
-end)
-
-local am=pcall(function()ai:FireServer(ag)end)
-if not am then
-al:Disconnect()
-return nil,"s79"
-end
-
-local an=os.clock()+(ah or 15)
-while ak==nil and os.clock()<an and not _apelStopped do
-task.wait(0.05)
-end
-al:Disconnect()
-
-if ak==nil then return nil,"s80"end
-if type(ak)~="table"then return nil,"s81"end
-return ak
-end
-
-
-
-function ac.Award(ag)
-return aa.Fire("awardCaseCosmetic",ag.cosmetic,ag.cosmeticType,ag.transactionId)
-end
-
-
-
-function ac.Rejoin()
-return(pcall(function()
-ab:Teleport(game.PlaceId,LocalPlayer)
+return ay(az,...)
 end))
 end
 
-return ac end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
+local ax={
+common=Color3.fromRGB(152,152,152),
+uncommon=Color3.fromRGB(91,194,80),
+rare=Color3.fromRGB(75,77,195),
+epic=Color3.fromRGB(146,70,159),
+legendary=Color3.fromRGB(244,154,9),
+}
+local ay={common=1,uncommon=2,rare=3,epic=4,legendary=5}
+local az={"rare","epic","legendary"}
+local aA={"common","uncommon","rare","epic","legendary"}
+
+local aB={
+{key="armors",title="Armors"},
+{key="weapons",title="Weapons"},
+{key="enchants",title="Enchants"},
+{key="titles",title="Titles"},
+}
+
+local aC={}
+do
+local aD,aE=pcall(require,as:WaitForChild"DataRequester")
+local aF,aG=false
+if aD and type(aE)=="table"and aE.GetCosmetics then aF,aG=pcall(aE.GetCosmetics)end
+if aF and type(aG)=="table"then
+for aH,aI in pairs(aG)do
+if type(aI)=="table"then
+for aJ,aM in pairs(aI)do
+if type(aM)=="table"then
+aC[#aC+1]={
+name=tostring(aM.name or aJ),
+type=tostring(aM.cosmeticType or aH),
+rarity=string.lower(tostring(aM.rarity or"common")),
+imageId=tostring(aM.imageId or""),
+}
+end
+end
+end
+end
+end
+end
+
+table.sort(aC,function(aD,aE)
+if aD.type~=aE.type then return aD.type<aE.type end
+local aF,aG=ay[aD.rarity]or 0,ay[aE.rarity]or 0
+if aF~=aG then return aF>aG end
+return aD.name<aE.name
+end)
+
+
+
+
+local aD=Color3.fromRGB(26,26,26)
+local aE=Color3.fromRGB(44,43,43)
+local aF=Color3.fromRGB(62,62,62)
+local aG=Color3.fromRGB(42,40,40)
+local aH=Color3.fromRGB(226,132,19)
+local aI=Color3.fromRGB(255,255,255)
+local aJ=Color3.fromRGB(168,168,168)
+local aM=Color3.fromRGB(128,128,128)
+local aN=Color3.fromRGB(120,220,150)
+local aO=Color3.fromRGB(237,66,69)
+Color3.fromRGB(62,62,62)
+
+
+
+
+
+
+local aP=0.20
+local aQ=0.40
+local aR=0.50
+local aS=0.30
+
+local function new(aT,aU,aV)
+local aW=Instance.new(aT)
+for aX,aY in pairs(aU or{})do
+if aX~="Parent"then aW[aX]=aY end
+end
+for aX,aY in ipairs(aV or{})do aY.Parent=aW end
+if aU and aU.Parent then aW.Parent=aU.Parent end
+return aW
+end
+
+local function corner(aT)return new("UICorner",{CornerRadius=UDim.new(0,aT or 6)})end
+
+local function stroke(aT,aU,aV)
+return new("UIStroke",{
+Color=aT or Color3.fromRGB(70,70,82),
+Thickness=aU or 1,
+Transparency=aV or 0,
+ApplyStrokeMode=Enum.ApplyStrokeMode.Border,
+})
+end
+
+
+
+
+
+
+
+
+
+
+
+local aT={}
+
+
+local function loadOwned()
+local aU,aV=pcall(function()return am:InvokeServer()end)
+if not aU or type(aV)~="table"then return false end
+local aW={}
+for aX,aY in pairs(aV)do
+if type(aY)=="table"then
+for aZ,a_ in pairs(aY)do aW[tostring(a_)]=true end
+end
+end
+aT=aW
+return true
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local aU,aV={},{}
+
+
+local function loadCase(aW)
+if aU[aW]==nil then
+local aX,aY=pcall(function()return an:InvokeServer(aW)end)
+aU[aW]=(aX and type(aY)=="table")and aY or false
+end
+if aV[aW]==nil then
+local aX,aY=pcall(function()return ao:InvokeServer(aW)end)
+aV[aW]=(aX and type(aY)=="table")and aY or false
+end
+return aU[aW],aV[aW]
+end
+
+
+
+
+
+local function bestCaseFor(aW)
+local aX,aY,aZ=0,0
+for a_,a0 in ipairs(az)do
+local a1,a2=loadCase(a0)
+if a1 and a2 and type(a1.weights)=="table"then
+local a3,a4={},{}
+for a5,a6 in ipairs(a2)do
+if type(a6)=="table"then
+a3[a6.rarity]=(a3[a6.rarity]or 0)+1
+a4[a6.name]=true
+end
+end
+local a5,a6=0,0
+for a7,a8 in pairs(aW)do
+local a9=a1.weights[a8.rarity]
+local b=a3[a8.rarity]
+if a9 and b and b>0 and a4[a7]then
+a5=a5+a9/b
+a6=a6+1
+end
+end
+if a6>0 and a5>aX then
+aZ,aX,aY=a0,a5,a6
+end
+end
+end
+return aZ,aX,aY
+end
+
+
+
+
+
+
+
+local aW=ac.Name.."/Assets"
+
+
+
+local function fetchAsset(aX)
+local aY=ab:FindFirstChild(aW)
+local aZ=aY and aY:FindFirstChild(aX.name)
+if aZ then return aZ end
+if aw and aw.RequestAsset then
+pcall(function()
+aw.RequestAsset("cosmetics",aX.type,aX.name):await()
+end)
+end
+aY=ab:FindFirstChild(aW)
+return aY and aY:FindFirstChild(aX.name)or nil
+end
+
+
+
+
+
+
+
+
+
+local aX
+if ad then
+local aY=ac:WaitForChild"PlayerGui":FindFirstChild"mainInterface"
+local aZ=aY and aY:FindFirstChild"shop"
+aZ=aZ and aZ:FindFirstChild"cosmetics"
+aZ=aZ and aZ:FindFirstChild"featuredArmorCosmeticShop1"
+local a_=aZ and aZ:FindFirstChild"ViewportFrame"
+local a0=a_ and a_:FindFirstChild"Dummy"
+if a0 then
+aX=a0:Clone()
+local a1={}
+for a2,a3 in ipairs(aX:GetDescendants())do
+if a3:IsA"Motor6D"then
+if a3.Part0 then a1[a3.Part0]=true end
+if a3.Part1 then a1[a3.Part1]=true end
+end
+end
+for a2,a3 in ipairs(aX:GetChildren())do
+local a4=a3:IsA"BasePart"and not a1[a3]
+if a4 or a3:IsA"Model"or a3:IsA"Accessory"then
+pcall(function()a3:Destroy()end)
+end
+end
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function rigAttachments(aY)
+local aZ={}
+for a_,a0 in ipairs(aY:GetDescendants())do
+if a0:IsA"Attachment"and aZ[a0.Name]==nil then aZ[a0.Name]=a0 end
+end
+return aZ
+end
+
+
+local function wearOnRig(aY)
+if not aX then return nil,0 end
+local aZ=aX:Clone()
+local a_=rigAttachments(aZ)
+local a0=0
+
+for a1,a2 in ipairs(aY:GetChildren())do
+if a2:IsA"Model"or a2:IsA"Accessory"then
+local a3=a2:Clone()
+local a4=a3:FindFirstChild"Handle"
+local a5=a4 and a4:FindFirstChildOfClass"Attachment"
+local a6=a5 and a_[a5.Name]
+if a4 and a5 and a6 then
+
+
+local a7=a6.WorldCFrame*a5.CFrame:Inverse()
+local a8=a7*a4.CFrame:Inverse()
+for a9,b in ipairs(a3:GetDescendants())do
+if b:IsA"BasePart"then b.CFrame=a8*b.CFrame end
+end
+a0=a0+1
+end
+a3.Parent=aZ
+end
+end
+
+for a1,a2 in ipairs(aZ:GetDescendants())do
+if a2:IsA"BasePart"then a2.Anchored=true;a2.CanCollide=false end
+end
+return aZ,a0
+end
+
+local function loneModel(aY)
+local aZ=Instance.new"Model"
+aZ.Name=aY.Name
+for a_,a0 in ipairs(aY:GetChildren())do a0:Clone().Parent=aZ end
+local a_=0
+for a0,a1 in ipairs(aZ:GetDescendants())do
+if a1:IsA"BasePart"then
+a1.Anchored=true
+a1.CanCollide=false
+a_=a_+1
+end
+end
+if a_==0 then aZ:Destroy();return nil end
+return aZ
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function aimRig(aY,aZ)
+aZ:PivotTo(CFrame.new(0,0,0))
+local a_=Instance.new"Camera"
+a_.Parent=aY
+aY.CurrentCamera=a_
+a_.CFrame=CFrame.new(Vector3.new(0,1,-5),Vector3.new(0,0,0))
+return true
+end
+
+local function aimLone(aY,aZ)
+local a_,a0,a1=pcall(function()return aZ:GetBoundingBox()end)
+if not a_ or typeof(a0)~="CFrame"or typeof(a1)~="Vector3"then return false end
+local a2=math.max(a1.X,a1.Y,a1.Z)
+if a2<=0 or a2>200 then return false end
+aZ:PivotTo(CFrame.new(0,0,0))
+local a3=Instance.new"Camera"
+a3.Parent=aY
+aY.CurrentCamera=a3
+
+
+local a4=a2*0.85+1
+a3.CFrame=CFrame.new(Vector3.new(0,a2*0.05,-a4),Vector3.new(0,0,0))
+return true
+end
+
+local aY={}
+
+
+
+function aY.Open()
+if ae._CosmeticGetterStop then pcall(ae._CosmeticGetterStop)end
+ah=false
+ag={}
+ae._CosmeticGetterStop=stop
+
+local aZ=ac:WaitForChild"PlayerGui"
+
+
+
+
+
+for a_,a0 in ipairs{aZ,game:GetService"CoreGui",gethui and gethui()or nil}do
+for a1,a2 in ipairs{"ApelCosmeticGetter","ApelCratePreview"}do
+local a3=a0 and a0:FindFirstChild(a2)
+while a3 do
+pcall(function()a3:Destroy()end)
+pcall(function()a3.Parent=nil end)
+a3=a0:FindFirstChild(a2)
+if a3 and a3.Parent==a0 then break end
+end
+end
+end
+
+local a_=new("ScreenGui",{
+Name="ApelCosmeticGetter",
+ResetOnSpawn=false,
+IgnoreGuiInset=true,
+ZIndexBehavior=Enum.ZIndexBehavior.Sibling,
+DisplayOrder=1200,
+Parent=aZ,
+})
+
+
+
+
+
+
+
+
+
+local a0=new("Frame",{
+Name="root",
+Size=UDim2.fromOffset(760,470),
+Position=UDim2.new(0.5,-380,0.5,-235),
+BackgroundColor3=aD,
+BackgroundTransparency=aP,
+BorderSizePixel=0,
+Active=true,
+Draggable=true,
+Parent=a_,
+},{corner(6)})
+
+
+local a1=new("Frame",{
+Name="header",
+Size=UDim2.new(1,0,0,30),
+BackgroundColor3=aE,
+BackgroundTransparency=aQ,
+BorderSizePixel=0,
+Parent=a0,
+},{corner(6)})
+
+new("Frame",{
+Size=UDim2.new(1,0,0,1),
+Position=UDim2.new(0,0,1,-1),
+BackgroundColor3=aF,
+BorderSizePixel=0,
+Parent=a1,
+})
+
+new("Frame",{
+Size=UDim2.fromOffset(14,14),
+Position=UDim2.fromOffset(9,8),
+BackgroundColor3=aH,
+BorderSizePixel=0,
+Parent=a1,
+},{corner(7)})
+
+new("TextLabel",{
+Size=UDim2.fromOffset(200,30),
+Position=UDim2.fromOffset(30,0),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=13,
+RichText=true,
+TextColor3=aI,
+TextXAlignment=Enum.TextXAlignment.Left,
+Text='Cosmetic <font color="#E28413">Getter</font>',
+Parent=a1,
+})
+
+local a2=new("TextLabel",{
+Name="count",
+Size=UDim2.fromOffset(240,30),
+Position=UDim2.new(1,-274,0,0),
+BackgroundTransparency=1,
+Font=Enum.Font.Gotham,
+TextSize=11,
+TextColor3=aJ,
+TextXAlignment=Enum.TextXAlignment.Right,
+Text="",
+Parent=a1,
+})
+
+local a3=new("TextButton",{
+Size=UDim2.fromOffset(22,18),
+Position=UDim2.new(1,-28,0,6),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=12,
+TextColor3=aJ,
+Text="X",
+Parent=a1,
+})
+
+a3.Activated:Connect(function()
+stop()
+pcall(function()a_:Destroy()end)
+end)
+
+
+local a4=new("Frame",{
+Name="rail",
+Size=UDim2.new(0,134,1,-30),
+Position=UDim2.fromOffset(0,30),
+BackgroundTransparency=1,
+Parent=a0,
+})
+
+new("TextLabel",{
+Size=UDim2.new(1,-20,0,18),
+Position=UDim2.fromOffset(12,10),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=aI,
+TextXAlignment=Enum.TextXAlignment.Left,
+Text="COSMETIC TYPE",
+Parent=a4,
+})
+
+
+
+local a5={type="armors",rarity={},search="",picks={},nPicks=0,case=nil}
+
+local a6,a7={},{}
+local a8,a9,b
+
+for ba,bb in ipairs(aB)do
+local bc=new("TextButton",{
+Size=UDim2.new(1,-20,0,22),
+Position=UDim2.fromOffset(10,34+(ba-1)*25),
+BackgroundColor3=aH,
+BackgroundTransparency=1,
+BorderSizePixel=0,
+Font=Enum.Font.Gotham,
+TextSize=12,
+TextColor3=aJ,
+TextXAlignment=Enum.TextXAlignment.Left,
+Text="  "..bb.title,
+Parent=a4,
+},{corner(4)})
+a6[bb.key]=bc
+bc.Activated:Connect(function()
+a5.type=bb.key
+a8()
+end)
+end
+
+
+local ba=new("Frame",{
+Name="body",
+Size=UDim2.new(1,-134,1,-30),
+Position=UDim2.fromOffset(134,30),
+BackgroundTransparency=1,
+Parent=a0,
+})
+
+local bb=new("TextLabel",{
+Name="pageTitle",
+Size=UDim2.new(1,-24,0,20),
+Position=UDim2.fromOffset(0,8),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=14,
+TextColor3=aI,
+TextXAlignment=Enum.TextXAlignment.Left,
+Text="Armors",
+Parent=ba,
+})
+
+
+
+local function sectionHead(bc,bd,be)
+new("TextLabel",{
+Size=UDim2.fromOffset(12,14),
+Position=UDim2.fromOffset(0,bd),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=aJ,
+Text="-",
+Parent=ba,
+})
+local bf=new("TextLabel",{
+Size=UDim2.fromOffset(200,14),
+Position=UDim2.fromOffset(14,bd),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=12,
+TextColor3=aI,
+TextXAlignment=Enum.TextXAlignment.Left,
+Text=bc,
+Parent=ba,
+})
+bf.Size=UDim2.fromOffset(bf.TextBounds.X+8,14)
+new("Frame",{
+Size=UDim2.new(1,-(bf.Position.X.Offset+bf.Size.X.Offset+24),0,1),
+Position=UDim2.fromOffset(bf.Position.X.Offset+bf.Size.X.Offset,bd+7),
+BackgroundColor3=aF,
+BorderSizePixel=0,
+Parent=ba,
+})
+end
+
+sectionHead("Filter",36)
+
+local bc=new("TextBox",{
+Name="search",
+Size=UDim2.fromOffset(200,24),
+Position=UDim2.fromOffset(0,56),
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
+BorderSizePixel=0,
+Font=Enum.Font.Gotham,
+TextSize=12,
+TextColor3=aI,
+PlaceholderText="Search",
+PlaceholderColor3=aM,
+ClearTextOnFocus=false,
+Text="",
+Parent=ba,
+},{corner(4),new("UIPadding",{PaddingLeft=UDim.new(0,9)})})
+
+for bd,be in ipairs(aA)do
+local bf=new("TextButton",{
+Size=UDim2.fromOffset(74,24),
+Position=UDim2.fromOffset(208+(bd-1)*78,56),
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
+BorderSizePixel=0,
+Font=Enum.Font.GothamBold,
+TextSize=10,
+TextColor3=ax[be],
+Text=be:upper(),
+Parent=ba,
+},{corner(4)})
+a7[be]=bf
+bf.Activated:Connect(function()
+a5.rarity[be]=(not a5.rarity[be])or nil
+a8()
+end)
+end
+
+sectionHead("Items",92)
+
+
+local bd=136
+local be=ad and 150 or 40
+
+local bf=new("ScrollingFrame",{
+Name="grid",
+Size=UDim2.new(1,-24,1,-226),
+Position=UDim2.fromOffset(0,110),
+BackgroundColor3=aF,
+BackgroundTransparency=aR,
+BorderSizePixel=0,
+CanvasSize=UDim2.new(),
+AutomaticCanvasSize=Enum.AutomaticSize.Y,
+ScrollBarThickness=4,
+ScrollBarImageColor3=aM,
+ScrollingDirection=Enum.ScrollingDirection.Y,
+Parent=ba,
+},{
+corner(5),
+new("UIGridLayout",{
+CellSize=UDim2.fromOffset(bd,be),
+CellPadding=UDim2.fromOffset(6,6),
+SortOrder=Enum.SortOrder.LayoutOrder,
+}),
+new("UIPadding",{
+PaddingLeft=UDim.new(0,8),PaddingRight=UDim.new(0,8),
+PaddingTop=UDim.new(0,8),PaddingBottom=UDim.new(0,8),
+}),
+})
+
+sectionHead("Auto roll",0)
+for bg,bh in ipairs(ba:GetChildren())do
+if(bh:IsA"TextLabel"and bh.Text=="Auto roll")
+or(bh:IsA"TextLabel"and bh.Text=="-"and bh.Position==UDim2.fromOffset(0,0))
+or(bh:IsA"Frame"and bh.Position.Y.Offset==7 and bh.Position.Y.Scale==0 and bh.Size.Y.Offset==1)then
+bh.Position=UDim2.new(0,bh.Position.X.Offset,1,-104+bh.Position.Y.Offset)
+end
+end
+
+local bg=new("Frame",{
+Name="rollCard",
+Size=UDim2.new(1,-24,0,66),
+Position=UDim2.new(0,0,1,-80),
+BackgroundColor3=aF,
+BackgroundTransparency=aR,
+BorderSizePixel=0,
+Parent=ba,
+},{corner(5)})
+
+local bh=new("TextLabel",{
+Name="picked",
+Size=UDim2.new(1,-220,0,18),
+Position=UDim2.fromOffset(12,10),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=13,
+TextColor3=aJ,
+TextXAlignment=Enum.TextXAlignment.Left,
+TextTruncate=Enum.TextTruncate.AtEnd,
+Text="Nothing selected",
+Parent=bg,
+})
+
+local bi=new("TextLabel",{
+Name="status",
+Size=UDim2.new(1,-220,0,30),
+Position=UDim2.fromOffset(12,30),
+BackgroundTransparency=1,
+Font=Enum.Font.Gotham,
+TextSize=11,
+TextColor3=aJ,
+TextXAlignment=Enum.TextXAlignment.Left,
+TextYAlignment=Enum.TextYAlignment.Top,
+TextWrapped=true,
+Text="Pick a cosmetic, then press Start.",
+Parent=bg,
+})
+
+local function status(bj,bk)
+bi.Text=bj
+bi.TextColor3=bk or aJ
+end
+
+local bj=new("TextButton",{
+Name="roll",
+Size=UDim2.fromOffset(184,42),
+Position=UDim2.new(1,-196,0,12),
+BackgroundColor3=aH,
+BorderSizePixel=0,
+Font=Enum.Font.GothamBold,
+TextSize=13,
+TextColor3=Color3.fromRGB(26,26,26),
+Text="Start Auto Roll",
+Parent=bg,
+},{corner(5)})
+
+
+
+local bk={}
+local bl=0
+
+
+function b(bm)
+if not bm.box then return end
+local bn=bm.item
+local bo=bm.frame:FindFirstChildOfClass"UIStroke"
+if aT[bn.name]then
+bm.tick.Text="✓"
+bm.tick.TextColor3=aN
+bm.box.BackgroundTransparency=1
+bm.title.TextColor3=aN
+if bo then bo.Color=aN;bo.Transparency=0.35;bo.Thickness=1 end
+elseif a5.picks[bn.name]then
+bm.tick.Text="✓"
+bm.tick.TextColor3=Color3.fromRGB(26,26,26)
+bm.box.BackgroundColor3=aH
+bm.box.BackgroundTransparency=0
+bm.title.TextColor3=aI
+if bo then bo.Color=aH;bo.Transparency=0;bo.Thickness=1 end
+else
+bm.tick.Text=""
+bm.box.BackgroundColor3=aG
+bm.box.BackgroundTransparency=0.15
+bm.title.TextColor3=aI
+if bo then bo.Color=ax[bn.rarity]or aJ;bo.Transparency=0.4;bo.Thickness=1 end
+end
+end
+
+local function refreshPicked()
+local bm={}
+for bn in pairs(a5.picks)do bm[#bm+1]=bn end
+table.sort(bm)
+a5.nPicks=#bm
+if#bm==0 then
+bh.Text="Nothing selected"
+bh.TextColor3=aJ
+elseif#bm==1 then
+local bn=a5.picks[bm[1] ]
+bh.Text=("%s  ·  %s  ·  %s"):format(bn.name,bn.type,bn.rarity)
+bh.TextColor3=ax[bn.rarity]or aI
+else
+bh.Text=("%d selected  ·  %s"):format(#bm,table.concat(bm,", "))
+bh.TextColor3=aI
+end
+end
+
+local function selectItem(bm,bn)
+
+if aT[bm.name]then
+status(("You already own %s."):format(bm.name),aN)
+return
+end
+if a5.picks[bm.name]then
+a5.picks[bm.name]=nil
+else
+a5.picks[bm.name]=bm
+end
+b(bn)
+refreshPicked()
+a9()
+end
+
+local function makeCard(bm,bn)
+local bo=ax[bm.rarity]or aI
+local bp=new("TextButton",{
+Name="card-"..bm.name,
+LayoutOrder=bn,
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
+BorderSizePixel=0,
+AutoButtonColor=false,
+Text="",
+ClipsDescendants=true,
+Parent=bf,
+},{corner(6),stroke(bo,1)})
+
+if not ad then
+
+
+local bq=new("Frame",{
+Name="box",
+Size=UDim2.fromOffset(13,13),
+Position=UDim2.fromOffset(8,13),
+BackgroundColor3=aG,
+BackgroundTransparency=0.15,
+BorderSizePixel=0,
+Parent=bp,
+},{corner(3),stroke(aJ,1,0.5)})
+
+local br=new("TextLabel",{
+Name="tick",
+Size=UDim2.fromScale(1,1),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=Color3.fromRGB(26,26,26),
+Text="",
+Parent=bq,
+})
+
+local bs=new("TextLabel",{
+Name="title",
+Size=UDim2.new(1,-34,1,0),
+Position=UDim2.fromOffset(28,0),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=aI,
+TextWrapped=true,
+Text=bm.name,
+Parent=bp,
+})
+
+local bt={
+item=bm,frame=bp,box=bq,tick=br,title=bs,
+built=true,queued=false,
+}
+
+bp.Activated:Connect(function()selectItem(bm,bt)end)
+bk[#bk+1]=bt
+b(bt)
+return bt
+end
+
+local bq=new("Frame",{
+Name="well",
+Size=UDim2.fromOffset(bd-12,96),
+Position=UDim2.fromOffset(6,6),
+BackgroundColor3=Color3.fromRGB(28,28,33),
+BorderSizePixel=0,
+ClipsDescendants=true,
+Parent=bp,
+},{corner(4)})
+
+local br=new("ViewportFrame",{
+Name="vp",
+Size=UDim2.fromScale(1,1),
+BackgroundTransparency=1,
+Ambient=Color3.fromRGB(190,190,190),
+LightColor=Color3.fromRGB(255,255,255),
+LightDirection=Vector3.new(-0.4,-1,-0.6),
+Visible=false,
+Parent=bq,
+})
+
+local bs=new("ImageLabel",{
+Name="img",
+Size=UDim2.fromScale(0.94,0.94),
+Position=UDim2.fromScale(0.03,0.03),
+BackgroundTransparency=1,
+ScaleType=Enum.ScaleType.Fit,
+Image="",
+Visible=false,
+Parent=bq,
+})
+
+local bt=new("TextLabel",{
+Name="spin",
+Size=UDim2.fromScale(1,1),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=aJ,
+Text="…",
+Parent=bq,
+})
+
+new("TextLabel",{
+Name="title",
+Size=UDim2.new(1,-8,0,40),
+Position=UDim2.fromOffset(4,106),
+BackgroundTransparency=1,
+Font=Enum.Font.GothamBold,
+TextSize=11,
+TextColor3=aI,
+TextWrapped=true,
+TextYAlignment=Enum.TextYAlignment.Top,
+Text=bm.name,
+Parent=bp,
+})
+
+local bu={item=bm,frame=bp,vp=br,img=bs,spin=bt,built=false,queued=false}
+bp.Activated:Connect(function()selectItem(bm,bu)end)
+bk[#bk+1]=bu
+return bu
+end
+
+
+
+
+
+
+local function fillFlat(bm)
+local bn=bm.item
+if bn.type=="titles"then
+bm.spin.Text=bn.name
+bm.spin.TextSize=13
+bm.spin.TextWrapped=true
+bm.spin.TextColor3=ax[bn.rarity]or aI
+bm.built=true
+return true
+end
+if bn.imageId~=""then
+bm.img.Image=bn.imageId
+bm.img.Visible=true
+bm.spin.Visible=false
+bm.built=true
+return true
+end
+return false
+end
+
+local function fillModel(bm)
+local bn=bm.item
+local bo=fetchAsset(bn)
+
+
+
+
+
+
+
+elevate()
+if ah or not bm.frame.Parent then return end
+if not bo then
+bm.spin.Text="no model"
+bm.spin.TextColor3=aO
+return
+end
+
+
+
+local bp,bq=false
+if bn.type=="armors"then
+local br,bs=wearOnRig(bo)
+if br and bs>0 then
+bq,bp=br,true
+elseif br then
+br:Destroy()
+end
+end
+if not bq then bq=loneModel(bo)end
+if not bq then
+bm.spin.Text="empty"
+bm.spin.TextColor3=aO
+return
+end
+
+bq.Parent=bm.vp
+if(bp and aimRig(bm.vp,bq))or((not bp)and aimLone(bm.vp,bq))then
+bm.spin.Visible=false
+bm.vp.Visible=true
+else
+bq:Destroy()
+bm.spin.Text="cannot render"
+bm.spin.TextColor3=aO
+end
+end
+
+local bm=false
+local bn={}
+local bo=false
+
+
+
+
+
+
+
+local function inView(bp)
+local bq=bp.frame.AbsolutePosition.Y-bf.AbsolutePosition.Y
+return bq>-(be+8)and bq<bf.AbsoluteSize.Y+be
+end
+
+local function unload(bp)
+if not bp.built or not bp.vp then return end
+bp.built=false
+bp.vp.Visible=false
+pcall(function()bp.vp:ClearAllChildren()end)
+if bp.item.imageId==""and bp.item.type~="titles"then
+bp.spin.Visible=true
+bp.spin.Text="…"
+bp.spin.TextColor3=aJ
+end
+end
+
+local function pump(bp)
+if bo then return end
+bo=true
+task.spawn(function()
+elevate()
+while not ah and bp==bl do
+local bq=table.remove(bn,1)
+if not bq then break end
+if bq.frame.Parent and inView(bq)and not bq.built then local
+br=pcall(fillModel,bq)
+elevate()
+if not br then
+bq.spin.Text="failed"
+bq.spin.TextColor3=aO
+if not bm then
+bm=true
+
+end
+end
+bq.built=true
+task.wait()
+elevate()
+end
+end
+bo=false
+end)
+end
+
+local function refreshVisible()
+if ah or not ad then return end
+local bp=bl
+for bq,br in ipairs(bk)do
+if not br.frame.Parent then
+
+elseif inView(br)then
+if not br.built and not br.queued then
+br.queued=true
+bn[#bn+1]=br
+end
+elseif br.built then
+unload(br)
+br.queued=false
+end
+end
+pump(bp)
+end
+
+
+
+local function startLoader(bp)
+if not ad then return end
+for bq,br in ipairs(bk)do fillFlat(br)end
+task.defer(function()
+elevate()
+if bp==bl then refreshVisible()end
+end)
+end
+
+ag[#ag+1]=bf:GetPropertyChangedSignal"CanvasPosition":Connect(refreshVisible)
+
+function a8()
+bl=bl+1
+for bp,bq in ipairs(bk)do pcall(function()bq.frame:Destroy()end)end
+bk={}
+bn={}
+
+
+
+for bp,bq in pairs(a6)do
+local br=(bp==a5.type)
+bq.BackgroundTransparency=br and 0 or 1
+bq.TextColor3=br and Color3.fromRGB(26,26,26)or aJ
+bq.Font=br and Enum.Font.GothamBold or Enum.Font.Gotham
+if br then bb.Text=bq.Text:gsub("^%s+","")end
+end
+local bp=next(a5.rarity)~=nil
+for bq,br in pairs(a7)do
+local bs=(not bp)or a5.rarity[bq]
+br.BackgroundTransparency=bs and 0 or 0.55
+br.TextTransparency=bs and 0 or 0.5
+end
+
+local bq=a5.search:lower()
+local br=0
+for bs,bt in ipairs(aC)do
+local bu=bt.type==a5.type
+local bv=(not bp)or a5.rarity[bt.rarity]
+local bw=bq==""or bt.name:lower():find(bq,1,true)~=nil
+if bu and bv and bw then
+br=br+1
+makeCard(bt,br)
+end
+end
+
+local bs=0
+for bt,bu in ipairs(bk)do
+b(bu)
+if aT[bu.item.name]then bs=bs+1 end
+end
+a2.Text=("%d shown of %d  ·  %d owned"):format(br,#aC,bs)
+startLoader(bl)
+end
+
+bc:GetPropertyChangedSignal"Text":Connect(function()
+a5.search=bc.Text
+a8()
+end)
+
+
+local bp=0
+
+
+
+local bq=0
+
+function a9()
+bq=bq+1
+local br=bq
+a5.case=nil
+if a5.nPicks==0 then
+status("Pick one or more cosmetics, then press Start.",aJ)
+return
+end
+status("Working out the best crate...",aJ)
+task.spawn(function()
+elevate()
+local bs,bt,bu=bestCaseFor(a5.picks)
+if ah or br~=bq then return end
+a5.case=bs
+if not bs then
+status("None of the picks are in a crate pool right now.",aO)
+elseif bu<a5.nPicks then
+status(("%s crate - %.3f%% per roll, covers %d of %d picks. Press Start."):format(
+bs:upper(),bt,bu,a5.nPicks),aI)
+else
+status(("%s crate - %.3f%% per roll. Press Start."):format(bs:upper(),bt),aI)
+end
+end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local br=false
+local bs
+
+
+
+
+
+
+
+
+
+local function setRollButton()
+if br then
+bj.Text="Stop"
+bj.BackgroundColor3=aO
+bj.TextColor3=Color3.fromRGB(255,255,255)
+else
+bj.Text="Start Auto Roll"
+bj.BackgroundColor3=aH
+bj.TextColor3=Color3.fromRGB(22,22,22)
+end
+end
+
+
+
+
+local bt=0.35
+
+local function rollLoop()
+task.spawn(function()
+elevate()
+local bu=0
+while br and not ah and af.armed and next(af.picks or{})do
+bu=bu+1
+
+
+local bv,bw
+bw=al.OnClientEvent:Connect(function(bx)
+if type(bx)=="table"and bv==nil then bv=bx end
+end)
+ak:FireServer(a5.case)
+
+
+
+
+local bx=0
+while bv==nil and bx<6 and br and not ah do
+bx=bx+task.wait()
+end
+pcall(function()bw:Disconnect()end)
+elevate()
+
+if bv==nil then
+bs="Server did not answer the purchase - stopped."
+break
+end
+if not bv.success then
+bs="Server refused: "..tostring(bv.message)
+break
+end
+
+
+
+
+
+
+local by=af.picks[bv.cosmetic]~=nil
+local bz,bA=bv.cosmetic,bv.cosmeticType
+if not by then
+for bB,bC in pairs(af.picks)do
+if bB~=bv.cosmetic then bz,bA=bC.name,bC.type break end
+end
+end
+af.selfCall=true
+aj:FireServer(bz,bA,bv.transactionId)
+af.selfCall=false
+
+bp=bu
+status(("Roll %d - rolled %s%s"):format(
+bu,tostring(bv.cosmetic),by and"   <<< MATCH, waiting for the award"or""),
+by and aN or aH)
+
+if by then
+
+
+af.picks[bv.cosmetic]=nil
+a5.picks[bv.cosmetic]=nil
+aT[bv.cosmetic]=true
+task.defer(function()
+elevate()
+if ah then return end
+for bB,bC in ipairs(bk)do
+if bC.item.name==bv.cosmetic then b(bC)end
+end
+refreshPicked()
+end)
+if not next(af.picks)then
+bs=("Got %s on roll %d - all picks done."):format(tostring(bv.cosmetic),bu)
+break
+end
+end
+task.wait(bt)
+elevate()
+end
+
+br=false
+task.defer(function()
+elevate()
+if ah or not a_.Parent then return end
+setRollButton()
+if bs then status(bs,bs:find"Hit "and aN or aH)end
+bs=nil
+end)
+end)
+end
+
+bj.Activated:Connect(function()
+if br then
+br=false
+bs="Stopped."
+return
+end
+if not af.hooked then
+status("No hookmetamethod in this executor - auto roll would burn gems, refusing.",aO)
+return
+end
+if a5.nPicks==0 then
+status("Pick at least one cosmetic first.",aH)
+return
+end
+if not a5.case then
+status("Still working out which crate to spin - one moment.",aH)
+return
+end
+
+
+
+local bu={}
+for bv,bw in pairs(a5.picks)do bu[bv]=bw end
+af.picks=bu
+af.armed=true
+bp=0
+br=true
+setRollButton()
+status(("Rolling %s crate for %d pick%s..."):format(
+a5.case:upper(),a5.nPicks,a5.nPicks==1 and""or"s"),aH)
+rollLoop()
+end)
+
+
+
+
+
+
+
+
+if aq then
+ag[#ag+1]=aq.OnClientEvent:Connect(function(bu)
+if ah or type(bu)~="string"then return end
+if not bu:lower():find"previous crate awarded"then return end
+task.defer(function()
+elevate()
+if ah or not a_.Parent then return end
+br=false
+setRollButton()
+status("STOPPED: the server closed the previous deal itself ("..bu..") - that one cost gems.",aO)
+end)
+end)
+end
+
+
+if ap then
+ag[#ag+1]=ap.OnClientEvent:Connect(function(...)
+if ah or not af.armed then return end
+local bu=af.picks or{}
+local bv
+for bw,bx in ipairs{...}do
+if type(bx)=="string"and bu[bx]then bv=bx break end
+if type(bx)=="table"then
+for by,bz in pairs(bx)do
+if type(bz)=="string"and bu[bz]then bv=bz break end
+end
+if bv then break end
+end
+end
+if not bv then return end
+bu[bv]=nil
+a5.picks[bv]=nil
+aT[bv]=true
+if not next(bu)then af.armed=false end
+task.defer(function()
+elevate()
+if ah or not a_.Parent then return end
+for bw,bx in ipairs(bk)do
+if bx.item.name==bv then b(bx)end
+end
+refreshPicked()
+if not next(bu)then
+br=false
+setRollButton()
+status(("Obtained %s after %d rolls. All picks done."):format(bv,bp),aN)
+else
+status(("Obtained %s after %d rolls. Still hunting %d more."):format(
+bv,bp,a5.nPicks),aN)
+end
+end)
+end)
+end
+
+
+setRollButton()
+a8()
+
+
+
+task.spawn(function()
+elevate()
+if loadOwned()and not ah then
+
+
+
+a8()
+end
+end)
+
+if#aC==0 then
+status("Cosmetic catalog is empty - are you in the lobby?",aO)
+elseif not af.hooked then
+status("No hookmetamethod in this executor - auto roll would burn gems, it is disabled.",aO)
+
+
+end
+
+end
+
+return aY end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.n()
 local ab=a.b()
 local ac=a.R()
 local ad=a.r()
-local ae=a.U()
-local af=a.s()
-local ag=a.l()
+local ae=a.s()
+local af=a.U()a.l()
 
 
 
 
 
 
-local ah={}
+
+local ag={}
 
 local function restoreNames()
-for ai,aj in pairs(ah)do
+for ah,ai in pairs(ag)do
 pcall(function()
-if not ai.Parent then return end
-if type(aj)=="boolean"then ai.Enabled=aj else ai.Text=aj end
+if not ah.Parent then return end
+if type(ai)=="boolean"then ah.Enabled=ai else ah.Text=ai end
 end)
 end
-table.clear(ah)
+table.clear(ag)
 end
 
 local function hideNames()
-local ai,aj=LocalPlayer.Name,LocalPlayer.DisplayName
+local ah,ai=LocalPlayer.Name,LocalPlayer.DisplayName
 
-local ak=LocalPlayer.Character
+local aj=LocalPlayer.Character
+if aj then
+for ak,al in ipairs(aj:GetDescendants())do
+if al:IsA"BillboardGui"and al.Enabled then
+if ag[al]==nil then ag[al]=al.Enabled end
+al.Enabled=false
+end
+end
+end
+
+local ak=LocalPlayer:FindFirstChild"PlayerGui"
 if ak then
 for al,am in ipairs(ak:GetDescendants())do
-if am:IsA"BillboardGui"and am.Enabled then
-if ah[am]==nil then ah[am]=am.Enabled end
-am.Enabled=false
-end
-end
-end
-
-local al=LocalPlayer:FindFirstChild"PlayerGui"
-if al then
-for am,an in ipairs(al:GetDescendants())do
-if an:IsA"TextLabel"or an:IsA"TextButton"then
-local ao=an.Text
-if ao==ai or ao==aj then
-if ah[an]==nil then ah[an]=ao end
-an.Text="Hidden"
+if am:IsA"TextLabel"or am:IsA"TextButton"then
+local an=am.Text
+if an==ah or an==ai then
+if ag[am]==nil then ag[am]=an end
+am.Text="Hidden"
 end
 end
 end
 end
 end
 
-return function(ai)
-local aj=ai.Stats
-local ak=ai.Hook
+return function(ah)
+local ai=ah.Stats
+local aj=ah.Hook
 
 
-local al=ai.Util
+local ak=ah.Util
 
-al:Toggle{
+ak:Toggle{
 Name="Noclip",
 Desc="walk through walls; collisions come back when you turn it off",
 Default=false,Flag="NoclipOn",
-Callback=function(am)
-S.noclip=am
-if not am then af.RestoreNoclip()end
+Callback=function(al)
+S.noclip=al
+if not al then ae.RestoreNoclip()end
 end,
 }
 
 
-local am=ai.Perf
+local al=ah.Perf
 
-am:Toggle{
+al:Toggle{
 Name="Performance Mode",
 Desc="strips materials, textures and particles — rejoin to restore",
 Default=false,Flag="PerformanceMode",
-Callback=function(an)
-S.perfMode=an
+Callback=function(am)
+S.perfMode=am
 
 
-if an then task.spawn(ab.Boost)end
+if am then task.spawn(ab.Boost)end
 end,
 }
 
-am:Toggle{
+al:Toggle{
 Name="Ultra Performance Mode",
 Desc="everything above plus 3D rendering off and a black screen",
 Default=false,Flag="UltraPerformanceMode",
-Callback=function(an)
-S.ultraPerf=an
-if an then
+Callback=function(am)
+S.ultraPerf=am
+if am then
 task.spawn(function()
 ab.Set3D(false)
 ab.BuildScreen()
@@ -24637,15 +25922,15 @@ ab.Watch()
 
 
 
-local an=aj:Label"Loading..."
+local am=ai:Label"Loading..."
 
-aj:Toggle{
+ai:Toggle{
 Name="Hide Name",
 Desc="blanks your own nameplate and every label in the interface that shows your nick",
 Default=false,Flag="HideName",
-Callback=function(ao)
-S.hideName=ao
-if ao then hideNames()else restoreNames()end
+Callback=function(an)
+S.hideName=an
+if an then hideNames()else restoreNames()end
 end,
 }
 
@@ -24657,9 +25942,9 @@ task.wait(2)
 if S.hideName then pcall(hideNames)end
 
 pcall(function()
-local ao=ac.EquippedWeapon()
-local ap=aa.Items()
-an:Set(table.concat({
+local an=ac.EquippedWeapon()
+local ao=aa.Items()
+am:Set(table.concat({
 ("Level <b>%d</b>   ·   XP %s/%s"):format(aa.Level(),
 tostring(aa.Val("XP",0)),tostring(aa.Val("XPNeeded",0))),
 ("Gold %s   ·   Gems %s   ·   Points %d"):format(
@@ -24668,7 +25953,7 @@ tostring(aa.Gold()),tostring(aa.Gems()),aa.SkillPoints()),
 tostring(aa.Val("physicalPower",0)),tostring(aa.Val("spellPower",0)),
 tostring(aa.Val("stamina",0))),
 ("Weapon %s   ·   %d item%s in the bag"):format(
-ao and ao.name or"—",#ap,#ap==1 and""or"s"),
+an and an.name or"—",#ao,#ao==1 and""or"s"),
 },"\n"))
 end)
 end
@@ -24676,60 +25961,60 @@ end)
 
 
 
-ak:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
+aj:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
 Desc="nothing is posted while this is off",
-Callback=function(ao)S.webhookOn=ao end}
+Callback=function(an)S.webhookOn=an end}
 
-ak:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
-Flag="WebhookURL",Callback=function(ao)S.webhookUrl=tostring(ao or"")end}
+aj:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
+Flag="WebhookURL",Callback=function(an)S.webhookUrl=tostring(an or"")end}
 
-ak:Dropdown{
+aj:Dropdown{
 Name="Ping On Rarity",
 Desc="ping only when the run dropped one of these; leave empty to ping every report",
 Options=(function()
-local ao={}
-for ap,aq in ipairs(aa.RARITIES)do
-ao[#ao+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[aq]or"#FFFFFF",aq)
+local an={}
+for ao,ap in ipairs(aa.RARITIES)do
+an[#an+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[ap]or"#FFFFFF",ap)
 end
-return ao
+return an
 end)(),
 Multi=true,
 Flag="WebhookPingRarities",
-Callback=function(ao)
-local ap={}
-for aq,as in pairs(ao or{})do
-if as then
-local av=tostring(aq):gsub("<[^>]->","")
-ap[(av:gsub("^%s+",""):gsub("%s+$",""))]=true
+Callback=function(an)
+local ao={}
+for ap,aq in pairs(an or{})do
+if aq then
+local as=tostring(ap):gsub("<[^>]->","")
+ao[(as:gsub("^%s+",""):gsub("%s+$",""))]=true
 end
 end
-S.pingRarities=ap
+S.pingRarities=ao
 end,
 }
 
-ak:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
+aj:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
 Numeric=true,Flag="WebhookUserId",
-Callback=function(ao)S.webhookUserId=tostring(ao or"")end}
+Callback=function(an)S.webhookUserId=tostring(an or"")end}
 
-ak:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
-Callback=function(ao)S.webhookEveryone=ao end}
+aj:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
+Callback=function(an)S.webhookEveryone=an end}
 
 
 
-ak:Button{Name="Send Test Post",Text="Send",Callback=function()
+aj:Button{Name="Send Test Post",Text="Send",Callback=function()
 task.spawn(function()
 if tostring(S.webhookUrl or"")==""then return Notify"Paste a webhook URL first"end
-local ao,ap=ad.Test()
-if ap then
-Notify("Webhook failed: "..tostring(ap))
+local an,ao=ad.Test()
+if ao then
+Notify("Webhook failed: "..tostring(ao))
 else
-Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(ao)..")")
-or("Webhook OK (HTTP "..tostring(ao)..") — posting is still off"))
+Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(an)..")")
+or("Webhook OK (HTTP "..tostring(an)..") — posting is still off"))
 end
 end)
 end}
 
-ak:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
+aj:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
 
 
 
@@ -24739,196 +26024,21 @@ ak:SubLabel"Send Test Post works even while Enable Webhook is off, so you can ch
 
 
 
+local an=ah.Cosmetic
 
+an:SubLabel"Opens a separate window: pick any number of cosmetics, the hub spins the crate that covers them best. A wrong roll is refused, so it costs no gems."
 
-local ao=ai.Cosmetic
+an:Button{
+Name="Cosmetic Getter",
+Text="Open",
+Callback=function()local
+ao=pcall(af.Open)
+if not ao then
+Notify"Cosmetic Getter failed to open"
 
-local ap,aq
-local as=ao:Label"Loading the crate list..."
-
-
-
-local function pending()
-local av,aw={},0
-local ax=ae.Owned()
-for ay,az in ipairs(S.cosmeticTargets or{})do
-local aA=ae.Item(az)
-if aA then
-if ax[ae.Key(aA.type,aA.name)]then
-aw=aw+1
-else
-av[#av+1]=aA
-end
-end
-end
-return av,aw
-end
-
-
-
-local function describe()
-if#(S.cosmeticTargets or{})==0 then
-return as:Set"Pick one or more cosmetics to hunt"
-end
-
-local av,aw=pending()
-if#av==0 then
-return as:Set(("You already own all %d pick%s"):format(aw,aw==1 and""or"s"))
-end
-
-local ax=ae.BestFor(av)
-if not ax then
-return as:Set"Nothing you picked drops from the crates any more"
-end
-
-local ay={}
-for az=1,math.min(3,#av)do ay[az]=av[az].name end
-if#av>3 then ay[#ay+1]=("+%d more"):format(#av-3)end
-
-as:Set(("<b>%d left</b> · %s · %.3f%% a spin · %d gems\n%s"):format(
-#av,ae.CASE_LABEL[ax.key]or ax.key,ax.percent,ax.price,
-table.concat(ay,", ")))
-end
-
-local function refreshCosmetics()
-ae.Invalidate()
-local av=ae.Pool()
-pcall(function()ap:SetOptions(av)end)
-describe()
-return#av
-end
-
-ap=ao:Dropdown{
-Name="Cosmetics",
-Desc="tick everything you want; the hub spins whichever crate covers most of them",
-
-
-
-Options={},Multi=true,Search=true,CacheOptions=true,
-Flag="CosmeticTargets",
-Callback=function(av)
-local aw={}
-for ax,ay in pairs(av or{})do if ay then aw[#aw+1]=ax end end
-table.sort(aw)
-S.cosmeticTargets=aw
-
-
-task.spawn(describe)
-end,
-}
-
-ao:Button{Name="Refresh Cosmetic List",Text="Refresh",Callback=function()
-task.spawn(function()
-local av=refreshCosmetics()
-Notify(av>0 and("%d cosmetic%s still up for grabs"):format(av,av==1 and""or"s")
-or"No crate list here — the purchase remotes are missing")
-end)
-end}
-
-aq=ao:Toggle{
-Name="Auto Open Crates",
-Desc="spins the best crate for the picks above; a wrong roll is thrown away by rejoining",
-Default=false,Flag="CosmeticGetter",
-Callback=function(av)
-S.cosmeticGet=av
-
-
-if av and not S.autoExecTP then
-Notify"Turn on Auto Execute on Teleport, or the hub will not come back after a rejoin"
 end
 end,
 }
-
-local function stopHunt(av)
-S.cosmeticGet=false
-pcall(function()aq:Set(false)end)
-
-Notify(av)
-end
-
-local function huntStep()
-if#(S.cosmeticTargets or{})==0 then return stopHunt"Pick a cosmetic first"end
-
-
-
-if not ae.Ready()then
-
-return
-end
-
-local av,aw=pending()
-if#av==0 then
-refreshCosmetics()
-return stopHunt(("Got everything you picked — %d cosmetic%s"):format(aw,aw==1 and""or"s"))
-end
-
-
-
-ae.Invalidate()
-local ax=ae.BestFor(av)
-if not ax then
-return stopHunt"Nothing you picked drops from the crates any more"
-end
-
-local ay=aa.Gems()
-if ay<ax.price then
-return stopHunt(("%s costs %d gems, you have %d")
-:format(ae.CASE_LABEL[ax.key]or ax.key,ax.price,ay))
-end
-
-local az={}
-for aA,aB in ipairs(av)do az[#az+1]=aB.type.."/"..aB.name end
-
-
-local aA,aB=ae.Buy(ax.key)
-if not aA then return stopHunt("Crate spin failed: "..tostring(aB))end
-if not aA.success then
-return stopHunt("Crate spin refused: "..tostring(aA.message))
-end
-
-
-
-
-local aC=false
-for aD,aE in ipairs(av)do
-if aA.cosmetic==aE.name and aA.cosmeticType==aE.type then aC=true break end
-end
-
-if aC then
-
-
-
-ae.Award(aA)
-
-Notify(("Got %s — %d pick%s left"):format(aA.cosmetic,#av-1,#av-1==1 and""or"s"))
-task.wait(1)
-refreshCosmetics()
-return
-end
-
-
-if not ae.Rejoin()then
-return stopHunt"Teleport refused — hunt stopped"
-end
-end
-
-local av=false
-spawnLoop(function()
-while not _apelStopped do
-task.wait(1)
-if S.cosmeticGet and not av then
-av=true
-local aw,ax=pcall(huntStep)
-av=false
-if not aw then ag.Log("s58",tostring(ax))end
-end
-end
-end)
-
-task.spawn(function()
-refreshCosmetics()
-
-end)
 end end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
 
 
@@ -26206,7 +27316,245 @@ end)
 task.wait(0.5)
 end
 end)
-end end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end end
+end end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end do local function __modImpl()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local aa=a.m()a.l()
+
+
+local ab=game:GetService"TeleportService"
+
+local ac={}
+
+
+
+ac.KEYS={"rare","epic","legendary"}
+
+ac.CASE_LABEL={
+rare="Rare Case",
+epic="Epic Case",
+legendary="Legendary Case",
+}
+
+
+
+local ad={
+armors="armor",
+weapons="weapon",
+enchants="enchant",
+titles="title",
+}
+
+local ae
+local af={}
+
+
+
+function ac.Configs(ag)
+if ae and not ag then return ae end
+
+local ah,ai={},{}
+for aj,ak in ipairs(ac.KEYS)do
+local al,am=aa.Invoke("getCaseConfig",ak)
+if al and type(am)=="table"and type(am.items)=="table"then
+ah[ak]=am
+else
+ai[#ai+1]=ak
+end
+end
+
+if#ai>0 then
+
+end
+
+
+
+if not next(ah)then return nil end
+
+ae=ah
+return ae
+end
+
+function ac.Invalidate()
+ae=nil
+end
+
+
+
+
+
+
+
+function ac.Key(ag,ah)
+return tostring(ag).."/"..tostring(ah)
+end
+
+
+function ac.Owned()
+local ag={}
+local ah,ai=aa.Invoke"getPlayerCosmetics"
+if not ah or type(ai)~="table"then
+
+return ag,false
+end
+for aj,ak in pairs(ai)do
+if type(ak)=="table"then
+for al,am in ipairs(ak)do ag[ac.Key(aj,am)]=true end
+end
+end
+return ag,true
+end
+
+
+
+
+
+
+
+
+
+
+function ac.BestFor(ag)
+local ah=ac.Configs()
+if not ah then return nil end
+
+local ai={}
+for aj,ak in ipairs(ag)do ai[ac.Key(ak.type,ak.name)]=true end
+
+local aj
+for ak,al in ipairs(ac.KEYS)do
+local am=ah[al]
+local an,ao=0,0
+for ap,aq in ipairs((am and am.items)or{})do
+if ai[ac.Key(aq.type,aq.name)]then
+an=an+(tonumber(aq.percent)or 0)
+ao=ao+1
+end
+end
+if ao>0 then
+local ap=tonumber(am.price)or 0
+if not aj or an>aj.percent
+or(an==aj.percent and ap<aj.price)then
+aj={key=al,percent=an,price=ap,hits=ao}
+end
+end
+end
+return aj
+end
+
+
+
+function ac.Pool()
+local ag=ac.Configs()
+af={}
+if not ag then return{}end
+
+local ah={}
+for ai,aj in ipairs(ac.KEYS)do
+for ak,al in ipairs((ag[aj]and ag[aj].items)or{})do
+local am=ac.Key(al.type,al.name)
+if not ah[am]then
+ah[am]=true
+local an=("%s · %s %s"):format(al.name,tostring(al.rarity),
+ad[al.type]or tostring(al.type))
+af[an]={name=al.name,type=al.type,rarity=al.rarity}
+end
+end
+end
+
+local ai={}
+for aj in pairs(af)do ai[#ai+1]=aj end
+table.sort(ai)
+return ai
+end
+
+
+
+function ac.Item(ag)
+if not ag or ag==""then return nil end
+local ah=af[ag]
+if ah then return ah end
+
+
+
+ac.Pool()
+return af[ag]
+end
+
+
+
+function ac.Ready()
+local ag=LocalPlayer:FindFirstChild"leaderstats"
+if not ag or not ag:FindFirstChild"Gems"then return false end
+return aa.Get"purchaseCase"~=nil and aa.Get"casePurchaseResult"~=nil
+end
+
+
+
+
+
+
+function ac.Buy(ag,ah)
+local ai=aa.Get"purchaseCase"
+local aj=aa.Get"casePurchaseResult"
+if not ai or not aj then return nil,"s77"end
+
+local ak
+local al=aj.OnClientEvent:Connect(function(al)
+if ak==nil then ak=al or false end
+end)
+
+local am=pcall(function()ai:FireServer(ag)end)
+if not am then
+al:Disconnect()
+return nil,"s78"
+end
+
+local an=os.clock()+(ah or 15)
+while ak==nil and os.clock()<an and not _apelStopped do
+task.wait(0.05)
+end
+al:Disconnect()
+
+if ak==nil then return nil,"s79"end
+if type(ak)~="table"then return nil,"s80"end
+return ak
+end
+
+
+
+function ac.Award(ag)
+return aa.Fire("awardCaseCosmetic",ag.cosmetic,ag.cosmeticType,ag.transactionId)
+end
+
+
+
+function ac.Rejoin()
+return(pcall(function()
+ab:Teleport(game.PlaceId,LocalPlayer)
+end))
+end
+
+return ac end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end end
 
 
 
@@ -26358,7 +27706,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="08.09 01:46:01",
+Build="08.09 21:37:11",
 S=S,
 Window=Window,
 Priority=a.j(),
@@ -26373,7 +27721,10 @@ Items=a.R(),
 Lobby=a.E(),
 
 
-Cases=a.U(),
+Cases=a.ac(),
+
+
+CosmeticGetter=a.U(),
 Character=an,
 Webhook=am,
 Run=ak,
