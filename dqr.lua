@@ -25631,76 +25631,115 @@ local function rollLoop()
 task.spawn(function()
 elevate()
 local bu=0
+
+
+
+
+
+
+
+local bv=bt
+local bw=0
 while br and not ah and af.armed and next(af.picks or{})do
 bu=bu+1
 
 
-local bv,bw
-bw=al.OnClientEvent:Connect(function(bx)
-if type(bx)=="table"and bv==nil then bv=bx end
+local bx,by
+by=al.OnClientEvent:Connect(function(bz)
+if type(bz)=="table"and bx==nil then bx=bz end
 end)
 ak:FireServer(a5.case)
 
 
 
 
-local bx=0
-while bv==nil and bx<6 and br and not ah do
-bx=bx+task.wait()
+local bz=0
+while bx==nil and bz<6 and br and not ah do
+bz=bz+task.wait()
 end
-pcall(function()bw:Disconnect()end)
+pcall(function()by:Disconnect()end)
 elevate()
 
-if bv==nil then
-bs="Server did not answer the purchase - stopped."
+
+
+if bx==nil then
+bw=bw+1
+if bw>=3 then
+bs="Server stopped answering purchases."
 break
 end
-if not bv.success then
-bs="Server refused: "..tostring(bv.message)
+bv=math.min(bv*2,5)
+bu=bu-1
+status(("No answer from the server, waiting %.1fs..."):format(bv),aH)
+task.wait(bv)
+elevate()
+continue
+end
+bw=0
+
+if not bx.success then
+local bA=tostring(bx.message or"")
+local bB=bA:lower()
+
+
+
+if bB:find"slow"or bB:find"wait"or bB:find"cooldown"
+or bB:find"too fast"or bB:find"try again"then
+bv=math.min(bv*2,5)
+bu=bu-1
+status(("Server asked to slow down, waiting %.1fs (roll %d)"):format(bv,bu),aH)
+task.wait(bv)
+elevate()
+continue
+end
+bs="Server refused: "..bA
 break
 end
 
 
+if bv>bt then bv=math.max(bt,bv*0.7)end
 
 
 
 
-local by=af.picks[bv.cosmetic]~=nil
-local bz,bA=bv.cosmetic,bv.cosmeticType
-if not by then
-for bB,bC in pairs(af.picks)do
-if bB~=bv.cosmetic then bz,bA=bC.name,bC.type break end
+
+
+local bA=af.picks[bx.cosmetic]~=nil
+local bB,bC=bx.cosmetic,bx.cosmeticType
+if not bA then
+for bD,bE in pairs(af.picks)do
+if bD~=bx.cosmetic then bB,bC=bE.name,bE.type break end
 end
 end
 af.selfCall=true
-aj:FireServer(bz,bA,bv.transactionId)
+aj:FireServer(bB,bC,bx.transactionId)
 af.selfCall=false
 
 bp=bu
 status(("Roll %d - rolled %s%s"):format(
-bu,tostring(bv.cosmetic),by and"   <<< MATCH, waiting for the award"or""),
-by and aN or aH)
+bu,tostring(bx.cosmetic),bA and"   <<< MATCH, waiting for the award"or""),
+bA and aN or aH)
 
-if by then
+if bA then
 
 
-af.picks[bv.cosmetic]=nil
-a5.picks[bv.cosmetic]=nil
-aT[bv.cosmetic]=true
+af.picks[bx.cosmetic]=nil
+a5.picks[bx.cosmetic]=nil
+aT[bx.cosmetic]=true
 task.defer(function()
 elevate()
 if ah then return end
-for bB,bC in ipairs(bk)do
-if bC.item.name==bv.cosmetic then b(bC)end
+for bD,bE in ipairs(bk)do
+if bE.item.name==bx.cosmetic then b(bE)end
 end
 refreshPicked()
 end)
 if not next(af.picks)then
-bs=("Got %s on roll %d - all picks done."):format(tostring(bv.cosmetic),bu)
+bs=("Got %s on roll %d - all picks done."):format(tostring(bx.cosmetic),bu)
 break
 end
 end
-task.wait(bt)
+task.wait(bv)
 elevate()
 end
 
@@ -27738,7 +27777,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="08.09 22:43:52",
+Build="08.09 23:11:45",
 S=S,
 Window=Window,
 Priority=a.j(),
