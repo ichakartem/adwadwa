@@ -22,7 +22,7 @@ ConfigFolder="ApelHub",
 
 
 
-Debug=true,
+Debug=false,
 }end function a.a():typeof(__modImpl())local b=a.cache.a if not b then b={c=__modImpl()}a.cache.a=b end return b.c end end do local function __modImpl()
 
 
@@ -622,10 +622,6 @@ Joiner=Window:Page"Joiner",
 Items=Window:Page"Items",
 Char=Window:Page"Character",
 Misc=Window:Page"Misc",
-
-
-
-Test=Window:Page"Test",
 Settings=Window:Page"UI Settings",
 Info=Window:Page("Information",{Hidden=true,Searchable=false}),
 }
@@ -682,7 +678,6 @@ Cosmetic=tabs.Misc:Section("Cosmetic Getter",{Side="Right",Scope="lobby"}),
 
 
 
-Test=tabs.Test:Section("Walk Farm",{Side="Left"}),
 
 SettingsSection=tabs.Settings:Section("Interface",{Side="Left",Collapsible=false}),
 SettingsSection2=tabs.Settings:Section("Window",{Side="Right",Collapsible=false}),
@@ -932,217 +927,15 @@ end,
 }
 end end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
 
-
-
-
-
-
-
-
-
-local b={enabled=false}
-
-local c="ApelHub/DQR_debug.txt"
-
-
-
-
-
-
-
-
-
-
-local d=4194304
-local e="ApelHub/DQR_debug.prev.txt"
-
-
-
-local function canWrite()
-return type(writefile)=="function"and type(isfile)=="function"
-end
-
-function b.Init(f)
-b.enabled=f==true
-if not b.enabled or not canWrite()then return end
-pcall(function()
-if type(isfolder)=="function"and type(makefolder)=="function"and not isfolder"ApelHub"then
-makefolder"ApelHub"
-end
-if isfile(c)and type(readfile)=="function"then
-local g=readfile(c)
-if#g>d then
-writefile(e,g)
-writefile(c,"")
-end
-end
-end)
-b.Log("=== start · place",game.PlaceId,"· job",tostring(game.JobId):sub(1,8))
-end
-
-
-
-
-
-
-
-local f,g={},0
-
-local function flush()
-if#f==0 then return end
-local h=table.concat(f)
-table.clear(f)
-pcall(function()
-if type(appendfile)=="function"then
-appendfile(c,h)
-else
-local i=isfile(c)and readfile(c)or""
-writefile(c,i..h)
-end
-end)
-end
-
-function b.Flush()flush()end
-
-
-
-
-
-
-
-
-
-local h="ApelHub/DQR_deaths.txt"
-
-
-
-local i="ApelHub/DQR_bridge.txt"
-
-
-
-local j="ApelHub/DQR_timing.txt"
-
-function b.Death(k)
-if not b.enabled or not canWrite()then return end
-pcall(function()
-local l=os.date"[%d.%m %H:%M:%S] "..tostring(k).."\n"
-if type(appendfile)=="function"then
-appendfile(h,l)
-else
-local m=isfile(h)and readfile(h)or""
-writefile(h,m..l)
-end
-end)
-end
-
-
-
-
-
-
-
-
-function b.Bridge(k)
-if not b.enabled or not canWrite()then return end
-pcall(function()
-local l=os.date"[%d.%m %H:%M:%S] "..tostring(k).."\n"
-if type(appendfile)=="function"then
-appendfile(i,l)
-else
-local m=isfile(i)and readfile(i)or""
-writefile(i,m..l)
-end
-end)
-end
-
-function b.Timing(k)
-if not b.enabled or not canWrite()then return end
-pcall(function()
-local l=os.date"[%H:%M:%S] "..tostring(k).."\n"
-if type(appendfile)=="function"then
-appendfile(j,l)
-else
-local m=isfile(j)and readfile(j)or""
-writefile(j,m..l)
-end
-end)
-end
-
-
-
-
-
-
-
-
-
-
-
-local k,l,m=0,0
-local n=5
-
-local function push(o)
-f[#f+1]=("[%s] %s\n"):format(os.date"%H:%M:%S",o)
-end
-
-local function collapse(o)
-if o==m then
-k=k+1
-if os.clock()-l<n then return false end
-push(("    ↑ повторилось %d раз за %.0f с, продолжается"):format(k,os.clock()-l))
-k,l=0,os.clock()
-return true
-end
-if k>0 then
-push(("    ↑ повторилось %d раз за %.1f с"):format(k,os.clock()-l))
-end
-m,k,l=o,0,os.clock()
-push(o)
-return true
-end
-
-function b.Log(...)
-if not b.enabled or not canWrite()then return end
-local o={}
-for p,q in ipairs{...}do o[#o+1]=tostring(q)end
-if not collapse(table.concat(o," "))then return end
-
-
-
-local p=os.clock()
-if#f>=40 or p-g>1 then
-g=p
-flush()
-end
-end
-
-function b.Dump(o,p,q)
-p=p or 0
-q=q or""
-local r=typeof(o)
-
-if r=="Instance"then
-local s={}
-for u,v in ipairs(o:GetChildren())do
-s[#s+1]=v.Name.."("..v.ClassName
-..(v:IsA"ValueBase"and("="..tostring(v.Value))or"")..")"
-end
-return("Instance<%s '%s'>{%s}"):format(o.ClassName,o.Name,table.concat(s,", "))
-end
-
-if r=="table"then
-if p>3 then return"{...}"end
-local s={}
-for u,v in pairs(o)do
-s[#s+1]=("%s  %s = %s"):format(q,tostring(u),b.Dump(v,p+1,q.."  "))
-end
-if#s==0 then return"{}"end
-return"{\n"..table.concat(s,",\n").."\n"..q.."}"
-end
-
-return tostring(o)
-end
-
+local b={}
+b.enabled=false
+function b.Bridge()end
+function b.Death()end
+function b.Dump()return""end
+function b.Flush()end
+function b.Init()end
+function b.Log()end
+function b.Timing()end
 return b end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
 
@@ -3210,12 +3003,12 @@ end
 if r then
 local x=q and(u-q).Magnitude or math.huge
 if x>15 then
-r(("ПЕРЕНОС [%s] %.0f,%.0f,%.0f -> %.0f,%.0f,%.0f | прыжок %.0f | пол под целью %s"):format(
+r(("s81"):format(
 p,
 w.Position.X,w.Position.Y,w.Position.Z,
 u.X,u.Y,u.Z,
 x==math.huge and-1 or x,
-hasGroundUnder(u)and"есть"or"НЕТ"))
+hasGroundUnder(u)and"s82"or"s83"))
 end
 q=u
 end
@@ -3308,6 +3101,9 @@ end
 
 return d end function a.s():typeof(__modImpl())local b=a.cache.s if not b then b={c=__modImpl()}a.cache.s=b end return b.c end end do local function __modImpl()
 
+local b={}
+function b.Start()end
+return b end function a.t():typeof(__modImpl())local b=a.cache.t if not b then b={c=__modImpl()}a.cache.t=b end return b.c end end do local function __modImpl()
 
 
 
@@ -3320,97 +3116,15 @@ return d end function a.s():typeof(__modImpl())local b=a.cache.s if not b then b
 
 
 
-local b=a.l()
+
+local b=a.o()a.l()
+
 
 local c={}
 
-local d=2.5
-local e=90
-local f=600
-local g=1
-
-local h={}
-local i=false
 
 
-local function ours(j)
-local k=j:GetFullName()
-return k:find("Apel",1,true)~=nil
-or(LocalPlayer and k:find(LocalPlayer.Name,1,true)~=nil)
-end
-
-function c.Start()
-if i then return end
-i=true
-
-regConn(workspace.DescendantAdded:Connect(function(j)
-if not j:IsA"BasePart"then return end
-h[#h+1]={at=os.clock(),part=j}
-if#h>f then table.remove(h,1)end
-end))
-
-spawnLoop(function()
-local j
-while not _apelStopped do
-task.wait(0.05)
-
-local k=LocalPlayer and LocalPlayer.Character
-local l=k and k:FindFirstChildOfClass"Humanoid"
-local m=k and k:FindFirstChild"HumanoidRootPart"
-if not l or not m then
-j=nil
-else
-local n=l.Health
-if j and n<j-g then
-local o=os.clock()
-local p={}
-for q,r in ipairs(h)do
-local s=r.part
-if o-r.at<=d and s.Parent and not ours(s)then
-local u=(s.Position-m.Position).Magnitude
-if u<=e then
-p[#p+1]=("%s [%.2fс, %.1fx%.1fx%.1f, %s, d=%.0f]")
-:format(s:GetFullName(),o-r.at,
-s.Size.X,s.Size.Y,s.Size.Z,s.Material.Name,u)
-end
-end
-end
-b.Log(("СЛЕЖКА: удар -%.0f hp | появилось за %.1fс: %s")
-:format(j-n,d,
-#p>0 and("\n    "..table.concat(p,"\n    "))or"НИЧЕГО"))
-end
-j=n
-end
-
-
-local n=os.clock()
-while h[1]and n-h[1].at>d do table.remove(h,1)end
-end
-end)
-end
-
-return c end function a.t():typeof(__modImpl())local b=a.cache.t if not b then b={c=__modImpl()}a.cache.t=b end return b.c end end do local function __modImpl()
-
-
-
-
-
-
-
-
-
-
-
-
-
-local b=a.o()
-local c=a.l()
-
-local d={}
-
-
-
-local e={pirate=
+local d={pirate=
 {{"room5","barrier"}},
 }
 
@@ -3428,82 +3142,80 @@ local e={pirate=
 
 
 
-local f={ghastly=
+local e={ghastly=
 {"Anchor2_Circle"},
 }
 
 
-local g={}
+local f={}
 
-local function pathTo(h)
-local i=workspace:FindFirstChild"dungeon"
-for j,k in ipairs(h)do
-if not i then return nil end
-i=i:FindFirstChild(k)
+local function pathTo(g)
+local h=workspace:FindFirstChild"dungeon"
+for i,j in ipairs(g)do
+if not h then return nil end
+h=h:FindFirstChild(j)
 end
-return i
+return h
 end
 
 
 
 
-local h
+local g
 
-local function openDecor(i)
-local j
-for k,l in pairs(f)do
-if i:find(k,1,true)then j=l break end
+local function openDecor(h)
+local i
+for j,k in pairs(e)do
+if h:find(j,1,true)then i=k break end
 end
-if not j then return end
+if not i then return end
 
 
-for k in pairs(g)do
-if k.Parent and k.CanCollide then k.CanCollide=false end
+for j in pairs(f)do
+if j.Parent and j.CanCollide then j.CanCollide=false end
 end
-if h==i then return end
-h=i
+if g==h then return end
+g=h
 
-local k=0
-for l,m in ipairs(workspace:GetDescendants())do
-if m:IsA"BasePart"and m.CanCollide then
-for n,o in ipairs(j)do
-if m.Name:find(o,1,true)then
-g[m]=true
-m.CanCollide=false
-k=k+1
+local j=0
+for k,l in ipairs(workspace:GetDescendants())do
+if l:IsA"BasePart"and l.CanCollide then
+for m,n in ipairs(i)do
+if l.Name:find(n,1,true)then
+f[l]=true
+l.CanCollide=false
+j=j+1
 break
 end
 end
 end
 end
-if k>0 then
-c.Log(("БАРЬЕР: снял коллизию с %d украшений (%s) — они стоят в проходе")
-:format(k,table.concat(j,", ")))
+if j>0 then
+
 end
 end
 
 local function openOnce()
-local i=tostring(b.Name()or""):lower()
-openDecor(i)
+local h=tostring(b.Name()or""):lower()
+openDecor(h)
 
-local j
-for k,l in pairs(e)do
-if i:find(k,1,true)then j=l break end
+local i
+for j,k in pairs(d)do
+if h:find(j,1,true)then i=k break end
 end
-if not j then return end
+if not i then return end
 
-for k,l in ipairs(j)do
-local m=pathTo(l)
-if m and m:IsA"BasePart"and m.CanCollide then
-g[m]=true
-m.CanCollide=false
-c.Log(("БАРЬЕР: снял коллизию с %s (%.0fx%.0fx%.0f)")
-:format(m:GetFullName(),m.Size.X,m.Size.Y,m.Size.Z))
+for j,k in ipairs(i)do
+local l=pathTo(k)
+if l and l:IsA"BasePart"and l.CanCollide then
+f[l]=true
+l.CanCollide=false
+
 end
 end
 end
 
-function d.Start()
+function c.Start()
 
 
 
@@ -3518,15 +3230,15 @@ end
 end)
 end
 
-function d.Restore()
-for i in pairs(g)do
-pcall(function()if i.Parent then i.CanCollide=true end end)
+function c.Restore()
+for h in pairs(f)do
+pcall(function()if h.Parent then h.CanCollide=true end end)
 end
-table.clear(g)
-h=nil
+table.clear(f)
+g=nil
 end
 
-return d end function a.u():typeof(__modImpl())local b=a.cache.u if not b then b={c=__modImpl()}a.cache.u=b end return b.c end end do local function __modImpl()
+return c end function a.u():typeof(__modImpl())local b=a.cache.u if not b then b={c=__modImpl()}a.cache.u=b end return b.c end end do local function __modImpl()
 
 
 
@@ -4115,7 +3827,7 @@ orbitFor={"lava walker","lava mage","deity of the volcano"},
 
 
 
-dodgeNamed={"rockfall","камень"},
+dodgeNamed={"rockfall","s141"},
 
 
 
@@ -4594,7 +4306,7 @@ if y and not bossPresent()then return nil end
 local A=c.Value"radius"
 
 w={
-name=A and"рейд · арена"or"Aquatic Temple · первый босс",
+name=A and"s142"or"s143",
 cleanOnly=c.Value"cleanOnly"==true,
 leash=c.Value"leash",
 
@@ -4704,15 +4416,45 @@ end
 
 
 
-local f={}
 
-local function sight(g,h,i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function isTelegraphName(f)
 LPH_ATTRIBUTES(VM(NONE))
-if not b.enabled then return end
-local j=g.."|"..h
-if f[j]then return end
-f[j]=true
-b.Log(("ZONE %s: %s %s"):format(g,h,i or""))
+local g=tostring(f):lower()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return g:find("hitbox",1,true)~=nil
+or g:find("precast",1,true)~=nil
+or g:find("hitindicator",1,true)~=nil
 end
 
 
@@ -4722,9 +4464,6 @@ end
 
 
 
-local function isTelegraphName(g)
-LPH_ATTRIBUTES(VM(NONE))
-local h=tostring(g):lower()
 
 
 
@@ -4736,34 +4475,7 @@ local h=tostring(g):lower()
 
 
 
-
-
-
-
-return h:find("hitbox",1,true)~=nil
-or h:find("precast",1,true)~=nil
-or h:find("hitindicator",1,true)~=nil
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local g={
+local f={
 poisonBomb=13,
 iceBomb=20,
 explosiveBomb=18,
@@ -4881,20 +4593,20 @@ explosiveBomb=18,
 
 
 
-local function hazardRadius(h,i)
+local function hazardRadius(g,h)
 LPH_ATTRIBUTES(VM(NONE))
-local j=h:FindFirstChildWhichIsA"UnionOperation"
-if j then
-local k=j.Size
+local i=g:FindFirstChildWhichIsA"UnionOperation"
+if i then
+local j=i.Size
 
 
 
-if math.min(k.X,k.Y,k.Z)<2 then
-local l=math.max(k.X,k.Y,k.Z)
-if l>4 then return l*0.5 end
+if math.min(j.X,j.Y,j.Z)<2 then
+local k=math.max(j.X,j.Y,j.Z)
+if k>4 then return k*0.5 end
 end
 end
-return i
+return h
 end
 
 
@@ -4940,22 +4652,14 @@ end
 
 
 
-local h=1.365
+local g=1.365
 
 
 
 
 
 
-local i=4
-
-
-
-
-
-
-
-local j=0.3
+local h=4
 
 
 
@@ -4963,6 +4667,7 @@ local j=0.3
 
 
 
+local i=0.3
 
 
 
@@ -4970,7 +4675,14 @@ local j=0.3
 
 
 
-local k={
+
+
+
+
+
+
+
+local j={
 outwardblastsize=0.15,
 }
 
@@ -4989,7 +4701,7 @@ outwardblastsize=0.15,
 
 
 
-local l={
+local k={
 crossbeam=0.9,
 }
 
@@ -5012,7 +4724,7 @@ crossbeam=0.9,
 
 
 
-local m={
+local l={
 silkblast=5.5,
 
 
@@ -5080,96 +4792,96 @@ northernwarriorcirclestrike=1.5,
 
 
 
+local m={}
+
+
+local function dangerLifeFor(n)
+LPH_ATTRIBUTES(VM(NONE))
+local o=l[tostring(n.Name):lower()]
+if o then return o end
+local p=n.Parent
+return p and l[tostring(p.Name):lower()]or nil
+end
+
+local function dangerDelayFor(n)
+LPH_ATTRIBUTES(VM(NONE))
+local o=k[tostring(n.Name):lower()]
+if o then return o end
+local p=n.Parent
+return p and k[tostring(p.Name):lower()]or nil
+end
+
+local function ghostLifeFor(n)
+LPH_ATTRIBUTES(VM(NONE))
+local o=tostring(n or""):lower()
+for p,q in pairs(j)do
+if o:find(p,1,true)then return q end
+end
+return i
+end
+
 local n={}
 
 
-local function dangerLifeFor(o)
-LPH_ATTRIBUTES(VM(NONE))
-local p=m[tostring(o.Name):lower()]
-if p then return p end
-local q=o.Parent
-return q and m[tostring(q.Name):lower()]or nil
-end
 
-local function dangerDelayFor(o)
-LPH_ATTRIBUTES(VM(NONE))
-local p=l[tostring(o.Name):lower()]
-if p then return p end
-local q=o.Parent
-return q and l[tostring(q.Name):lower()]or nil
-end
 
-local function ghostLifeFor(o)
-LPH_ATTRIBUTES(VM(NONE))
-local p=tostring(o or""):lower()
-for q,r in pairs(k)do
-if p:find(q,1,true)then return r end
-end
-return j
-end
+
+
+
+
+
+
+
+
 
 local o={}
 
-
-
-
-
-
-
-
-
-
-
-
-
-local p={}
-
-function d.Note(q,r)
+function d.Note(p,q)
 LPH_ATTRIBUTES(VM(NONE))
-p[q]=r
+o[p]=q
 end
 
 function d.NotesText()
 LPH_ATTRIBUTES(VM(NONE))
-local q={}
-for r,s in pairs(p)do q[#q+1]=("%s=%s"):format(r,tostring(s))end
-table.sort(q)
-return#q>0 and table.concat(q," ")or"-"
+local p={}
+for q,r in pairs(o)do p[#p+1]=("%s=%s"):format(q,tostring(r))end
+table.sort(p)
+return#p>0 and table.concat(p," ")or"-"
 end
 
 
-function d.PartInfo(q)
+function d.PartInfo(p)
 LPH_ATTRIBUTES(VM(NONE))
-if typeof(q)~="Instance"or not q:IsA"BasePart"then return"-"end
-local r=o[q]
-local s=(type(r)=="table"and r.born)and(os.clock()-r.born)or-1
-local u=isCylinder(q)and"цилиндр"or"блок"
+if typeof(p)~="Instance"or not p:IsA"BasePart"then return"-"end
+local q=n[p]
+local r=(type(q)=="table"and q.born)and(os.clock()-q.born)or-1
+local s=isCylinder(p)and"s84"or"s85"
 
 
 
 
 
 
-local v=""
-if s<0 then
-v=q.Parent and" [нет в зонах]"or" [деталь уничтожена игрой]"
+local u=""
+if r<0 then
+u=p.Parent and"s86"or"s87"
 end
-return("%s/%s %s %.1fx%.1fx%.1f возраст %.2fс%s"):format(
-q.Parent and q.Parent.Name or"?",q.Name,u,
-q.Size.X,q.Size.Y,q.Size.Z,s,v)
+return("s88"):format(
+p.Parent and p.Parent.Name or"?",p.Name,s,
+p.Size.X,p.Size.Y,p.Size.Z,r,u)
 end
 
-function d.TimeToHit(q)
+function d.TimeToHit(p)
 LPH_ATTRIBUTES(VM(NONE))
-local r=o[q]
-if type(r)~="table"or not r.born then return nil end
-local s=tostring(q.Parent and q.Parent.Name or q.Name):lower()
-local u=n[s]or n[tostring(q.Name):lower()]
-if not u then return nil end
-return u-(os.clock()-r.born)
+local q=n[p]
+if type(q)~="table"or not q.born then return nil end
+local r=tostring(p.Parent and p.Parent.Name or p.Name):lower()
+local s=m[r]or m[tostring(p.Name):lower()]
+if not s then return nil end
+return s-(os.clock()-q.born)
 end
 
-local q={}
+local p={}
 
 
 
@@ -5181,33 +4893,33 @@ local q={}
 
 
 
-local r={cyclone=46}
+local q={cyclone=46}
 
-local s={}
-local u=0
+local r={}
+local s=0
 
 local function updateSpins()
 LPH_ATTRIBUTES(VM(NONE))
-local v=os.clock()
-if v-u<0.12 then return end
-u=v
+local u=os.clock()
+if u-s<0.12 then return end
+s=u
 
 
 
-local w=c.Value"spin"
-if not w then
-if next(s)then table.clear(s)end
+local v=c.Value"spin"
+if not v then
+if next(r)then table.clear(r)end
 return
 end
 
-for x,y in pairs(s)do
-if y.expires<=v or not x.Parent then s[x]=nil end
+for w,x in pairs(r)do
+if x.expires<=u or not w.Parent then r[w]=nil end
 end
 
-local x=game.Players.LocalPlayer.Character
-local y=x and x:FindFirstChild"HumanoidRootPart"
-local z=workspace:FindFirstChild"dungeon"
-if not y or not z then return end
+local w=game.Players.LocalPlayer.Character
+local x=w and w:FindFirstChild"HumanoidRootPart"
+local y=workspace:FindFirstChild"dungeon"
+if not x or not y then return end
 
 
 
@@ -5218,29 +4930,29 @@ if not y or not z then return end
 
 
 
-for A,B in ipairs(z:GetChildren())do
-local C=B:FindFirstChild"enemyFolder"
-if C then
-for D,E in ipairs(C:GetChildren())do
-if E:IsA"Model"then
-local F,G=pcall(function()return E:GetPivot().Position end)
-if F and(G-y.Position).Magnitude<130 then
-local H=E:FindFirstChildWhichIsA"Humanoid"
+for z,A in ipairs(y:GetChildren())do
+local B=A:FindFirstChild"enemyFolder"
+if B then
+for C,D in ipairs(B:GetChildren())do
+if D:IsA"Model"then
+local E,F=pcall(function()return D:GetPivot().Position end)
+if E and(F-x.Position).Magnitude<130 then
+local G=D:FindFirstChildWhichIsA"Humanoid"
+if G then
+local H,I=pcall(function()
+return G:GetPlayingAnimationTracks()end)
 if H then
-local I,J=pcall(function()
-return H:GetPlayingAnimationTracks()end)
-if I then
-for K,L in ipairs(J)do
-local M=r[tostring(L.Name):lower()]
-if M then
+for J,K in ipairs(I)do
+local L=q[tostring(K.Name):lower()]
+if L then
 
 
-if type(w)=="number"then
-M=w
+if type(v)=="number"then
+L=v
 end
 
 
-s[E]={radius=M,expires=v+1}
+r[D]={radius=L,expires=u+1}
 end
 end
 end
@@ -5251,7 +4963,7 @@ end
 end
 end
 end
-local v={}
+local u={}
 
 
 
@@ -5264,7 +4976,7 @@ local v={}
 
 
 
-local w=setmetatable({},{__mode="k"})
+local v=setmetatable({},{__mode="k"})
 
 
 
@@ -5280,35 +4992,35 @@ local w=setmetatable({},{__mode="k"})
 
 
 
-local x={
+local w={
 secondbossdamageparts=true,
 miyamotoflames=true,
 }
 
-local y,z=0
+local x,y=0
 
 local function revealableParts()
 LPH_ATTRIBUTES(VM(NONE))
-if z and os.clock()-y<5 then return z end
-local A={}
-for B,C in ipairs(workspace:GetChildren())do
-if x[tostring(C.Name):lower()]then
-for D,E in ipairs(C:GetDescendants())do
-if E:IsA"BasePart"then A[#A+1]=E end
+if y and os.clock()-x<5 then return y end
+local z={}
+for A,B in ipairs(workspace:GetChildren())do
+if w[tostring(B.Name):lower()]then
+for C,D in ipairs(B:GetDescendants())do
+if D:IsA"BasePart"then z[#z+1]=D end
 end
 end
 end
-z,y=A,os.clock()
-return A
+y,x=z,os.clock()
+return z
 end
 
 local function updateRevealed()
 LPH_ATTRIBUTES(VM(NONE))
-for A,B in ipairs(revealableParts())do
-if B.Parent and B.Transparency<0.95 then
-if not o[B]then o[B]={flat=0,vert=0}end
-elseif o[B]then
-o[B]=nil
+for z,A in ipairs(revealableParts())do
+if A.Parent and A.Transparency<0.95 then
+if not n[A]then n[A]={flat=0,vert=0}end
+elseif n[A]then
+n[A]=nil
 end
 end
 end
@@ -5331,18 +5043,18 @@ end
 
 
 
-local A={}
+local z={}
 
-local function kinOf(B)
+local function kinOf(A)
 LPH_ATTRIBUTES(VM(NONE))
-local C=B.Parent
-return(C and C:IsA"Model")and C or nil
+local B=A.Parent
+return(B and B:IsA"Model")and B or nil
 end
 
-local function modelLit(B)
+local function modelLit(A)
 LPH_ATTRIBUTES(VM(NONE))
-for C,D in ipairs(B:GetChildren())do
-if D:IsA"BasePart"and D.Transparency<0.95 then return true end
+for B,C in ipairs(A:GetChildren())do
+if C:IsA"BasePart"and C.Transparency<0.95 then return true end
 end
 return false
 end
@@ -5373,20 +5085,20 @@ end
 
 
 
-local B={
+local A={
 northernMageShot=true,
 spearmanStrikeHitbox=true,
 northernWarriorCircleStrike=true,
 northernWarriorLineStrike=true,
 }
 
-local function neverSleep(C)
+local function neverSleep(B)
 LPH_ATTRIBUTES(VM(NONE))
-local D=C and C.Parent
-return D~=nil and B[D.Name]==true
+local C=B and B.Parent
+return C~=nil and A[C.Name]==true
 end
 
-local function zoneDark(C,D)
+local function zoneDark(B,C)
 LPH_ATTRIBUTES(VM(NONE))
 
 
@@ -5403,7 +5115,7 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 
-return type(C)=="table"and C.dark==true
+return type(B)=="table"and B.dark==true
 end
 
 
@@ -5411,15 +5123,13 @@ end
 
 
 
-local C=8
+local B=8
 
-local D=18
-
-
-
-local E=0.45
+local C=18
 
 
+
+local D=0.45
 
 
 
@@ -5430,7 +5140,9 @@ local E=0.45
 
 
 
-local F={
+
+
+local E={
 secondbosscrescent=2.5,
 
 
@@ -5444,15 +5156,15 @@ steampunkrangemobshot=2,
 
 }
 
-local function lookaheadOf(G)
+local function lookaheadOf(F)
 LPH_ATTRIBUTES(VM(NONE))
-local H=G.Parent and tostring(G.Parent.Name):lower()or""
-return F[H]or F[tostring(G.Name):lower()]or E
+local G=F.Parent and tostring(F.Parent.Name):lower()or""
+return E[G]or E[tostring(F.Name):lower()]or D
 end
 
 
 
-local G=0
+local F=0
 
 
 
@@ -5470,8 +5182,8 @@ local G=0
 
 
 
-local H={["flame cyclone"]=true}
-local I=8
+local G={["flame cyclone"]=true}
+local H=8
 
 
 
@@ -5494,8 +5206,8 @@ local I=8
 
 
 
-local J={}
-local K=20
+local I={}
+local J=20
 
 
 
@@ -5507,7 +5219,7 @@ local K=20
 
 
 
-local L={}
+local K={}
 
 
 
@@ -5515,7 +5227,7 @@ local L={}
 
 
 
-local M=800
+local L=800
 
 
 
@@ -5528,6 +5240,14 @@ local M=800
 
 
 
+
+
+
+
+
+
+
+local M=setmetatable({},{__mode="k"})
 
 
 
@@ -5536,45 +5256,37 @@ local M=800
 
 
 local N=setmetatable({},{__mode="k"})
-
-
-
-
-
-
-
-local O=setmetatable({},{__mode="k"})
-local P,Q=0
-local R,T=0,0
+local O,P=0
+local Q,R=0,0
 
 function d.HitStats()
 LPH_ATTRIBUTES(VM(NONE))
-return R,T
+return Q,R
 end
 
 
 
 
-local U
+local T
 
 local function noteTrail()
 LPH_ATTRIBUTES(VM(NONE))
-local V=LocalPlayer.Character
-local W=V and V:FindFirstChild"HumanoidRootPart"
-if not W then return end
-table.insert(J,1,W.Position)
-if#J>K then table.remove(J)end
+local U=LocalPlayer.Character
+local V=U and U:FindFirstChild"HumanoidRootPart"
+if not V then return end
+table.insert(I,1,V.Position)
+if#I>J then table.remove(I)end
 
-local X=d.ZoneAt(W.Position,0)
-table.insert(L,1,{
+local W=d.ZoneAt(V.Position,0)
+table.insert(K,1,{
 t=os.clock(),
-p=W.Position,
-safe=X==nil,
-name=X and("%s/%s"):format(
-(X.Parent and X.Parent.Name)or(X.name and tostring(X.name))or"?",
-X.Name or"слепок")or nil,
+p=V.Position,
+safe=W==nil,
+name=W and("%s/%s"):format(
+(W.Parent and W.Parent.Name)or(W.name and tostring(W.name))or"?",
+W.Name or"s89")or nil,
 })
-if#L>M then table.remove(L)end
+if#K>L then table.remove(K)end
 end
 
 
@@ -5585,45 +5297,45 @@ end
 
 
 
-local V=0
+local U=0
 
 function d.NoteHop()
 LPH_ATTRIBUTES(VM(NONE))
-V=os.clock()
+U=os.clock()
 end
 
 function d.SinceHop()
 LPH_ATTRIBUTES(VM(NONE))
-return V>0 and(os.clock()-V)or-1
+return U>0 and(os.clock()-U)or-1
 end
 
-function d.SafeTrail(W)
+function d.SafeTrail(V)
 LPH_ATTRIBUTES(VM(NONE))
-local X=os.clock()
-local Y,Z,_=0,0,{}
-local aa
-for ab,ac in ipairs(L)do
-if X-ac.t>(W or 1.5)then break end
-Z=Z+1
-if not ac.safe then
+local W=os.clock()
+local X,Y,Z=0,0,{}
+local _
+for aa,ab in ipairs(K)do
+if W-ab.t>(V or 1.5)then break end
 Y=Y+1
-aa=X-ac.t
-if ac.name and not _[ac.name]then _[ac.name]=0 end
-if ac.name then _[ac.name]=_[ac.name]+1 end
+if not ab.safe then
+X=X+1
+_=W-ab.t
+if ab.name and not Z[ab.name]then Z[ab.name]=0 end
+if ab.name then Z[ab.name]=Z[ab.name]+1 end
 end
 end
-if Z==0 then return"хроники нет"end
-if Y==0 then
+if Y==0 then return"s90"end
+if X==0 then
 
 
 
 
-local ab=LocalPlayer.Character
+local aa=LocalPlayer.Character
 and LocalPlayer.Character:FindFirstChild"HumanoidRootPart"
-local ac="?"
-if ab then
-local ad=d.NearestZones(ab.Position,1)
-ac=(type(ad)=="table"and ad[1])or"зон рядом нет вовсе"
+local ab="?"
+if aa then
+local ac=d.NearestZones(aa.Position,1)
+ab=(type(ac)=="table"and ac[1])or"s91"
 end
 
 
@@ -5633,66 +5345,66 @@ end
 
 
 
-local ad=""
-if ab then
-local ae,af=1e9
-for ag,ah in ipairs(workspace:GetChildren())do
-local ai=ah.Name
-if ai=="groundAura"or ai=="spearmanStrike"then
-for aj,ak in ipairs(ah:GetDescendants())do
-if ak:IsA"BasePart"then
-local al=ak.CFrame:PointToObjectSpace(ab.Position)
-local am=ak.Size*0.5
-local an=Vector3.new(
-math.max(math.abs(al.X)-am.X,0),
-math.max(math.abs(al.Y)-am.Y,0),
-math.max(math.abs(al.Z)-am.Z,0)).Magnitude
-if an<ae then
-ae,af=an,("%s (%s)"):format(ai,tostring(ak.Size))
+local ac=""
+if aa then
+local ad,ae=1e9
+for af,ag in ipairs(workspace:GetChildren())do
+local ah=ag.Name
+if ah=="groundAura"or ah=="spearmanStrike"then
+for ai,aj in ipairs(ag:GetDescendants())do
+if aj:IsA"BasePart"then
+local ak=aj.CFrame:PointToObjectSpace(aa.Position)
+local al=aj.Size*0.5
+local am=Vector3.new(
+math.max(math.abs(ak.X)-al.X,0),
+math.max(math.abs(ak.Y)-al.Y,0),
+math.max(math.abs(ak.Z)-al.Z,0)).Magnitude
+if am<ad then
+ad,ae=am,("%s (%s)"):format(ah,tostring(aj.Size))
 end
 end
 end
 end
 end
+if ae then
+ac=("s92"):format(ae,ad)
+end
+end
+return("s93")
+:format(V or 1.5,Y,ab,ac)
+end
+local aa={}
+for ab,ac in pairs(Z)do aa[#aa+1]=("%s x%d"):format(ab,ac)end
+
+
+
+
+
+
+local ab,ac=0,0
+local ad,ae=0,0
+local af,ag,ah
+for ai,aj in ipairs(K)do
+if W-aj.t>(V or 1.5)then break end
+if aj.p then
 if af then
-ad=(" | вне зон рядом: %s снаружи на %.1f"):format(af,ae)
-end
-end
-return("хроника %.1fс: под ударом 0 из %d кадров — удар пришёл в ЧИСТОЕ место | ближайшая зона: %s%s")
-:format(W or 1.5,Z,ac,ad)
-end
-local ab={}
-for ac,ad in pairs(_)do ab[#ab+1]=("%s x%d"):format(ac,ad)end
+local ak=(Vector3.new(aj.p.X,0,aj.p.Z)-Vector3.new(af.X,0,af.Z)).Magnitude
+if ak<8 then
+ab=ab+ak
 
 
-
-
-
-
-local ac,ad=0,0
-local ae,af=0,0
-local ag,ah,ai
-for aj,ak in ipairs(L)do
-if X-ak.t>(W or 1.5)then break end
-if ak.p then
-if ag then
-local al=(Vector3.new(ak.p.X,0,ak.p.Z)-Vector3.new(ag.X,0,ag.Z)).Magnitude
-if al<8 then
-ac=ac+al
-
-
-if not ak.safe then
-ae=ae+al
-af=af+math.abs((ah or ak.t)-ak.t)
+if not aj.safe then
+ad=ad+ak
+ae=ae+math.abs((ag or aj.t)-aj.t)
 end
 end
 end
-ag,ah=ak.p,ak.t
-ai=ai or ak.p
+af,ag=aj.p,aj.t
+ah=ah or aj.p
 end
 end
-if ai and ag then
-ad=(Vector3.new(ai.X,0,ai.Z)-Vector3.new(ag.X,0,ag.Z)).Magnitude
+if ah and af then
+ac=(Vector3.new(ah.X,0,ah.Z)-Vector3.new(af.X,0,af.Z)).Magnitude
 end
 
 
@@ -5700,35 +5412,35 @@ end
 
 
 
-local aj=""
+local ai=""
 do
 
 
 
-local ak=L[1]and L[1].p
-local al=ak and{Position=ak}or nil
-if al then
+local aj=K[1]and K[1].p
+local ak=aj and{Position=aj}or nil
+if ak then
 
 
-local am
-for an,ao in pairs(o)do
-if an.Parent and not zoneDark(ao,an)then
-local ap=(type(ao)=="table"and ao.flat or 0)
-local aq=an.CFrame:PointToObjectSpace(al.Position)
-local ar=an.Size*0.5+Vector3.new(ap,0,ap)
-if math.abs(aq.X)<=ar.X and math.abs(aq.Z)<=ar.Z
-and math.abs(aq.Y)<=ar.Y then
-local as=math.min(ar.X-math.abs(aq.X),ar.Z-math.abs(aq.Z))
-if not am or as<am then am=as end
+local al
+for am,an in pairs(n)do
+if am.Parent and not zoneDark(an,am)then
+local ao=(type(an)=="table"and an.flat or 0)
+local ap=am.CFrame:PointToObjectSpace(ak.Position)
+local aq=am.Size*0.5+Vector3.new(ao,0,ao)
+if math.abs(ap.X)<=aq.X and math.abs(ap.Z)<=aq.Z
+and math.abs(ap.Y)<=aq.Y then
+local ar=math.min(aq.X-math.abs(ap.X),aq.Z-math.abs(ap.Z))
+if not al or ar<al then al=ar end
 end
 end
 end
-if am then aj=(" | до выхода было %.1f студа"):format(am)end
+if al then ai=("s94"):format(al)end
 end
 end
-return("хроника %.1fс: под ударом %d из %d кадров, самый ранний за %.2fс до удара (%s) | ногами прошёл %.1f, сместился %.1f | ПОД УДАРОМ прошёл %.1f за %.2fс (%.1f студ/с)"..aj)
-:format(W or 1.5,Y,Z,aa or 0,table.concat(ab,", "),ac,ad,
-ae,af,af>0.01 and(ae/af)or 0)
+return("s95"..ai)
+:format(V or 1.5,X,Y,_ or 0,table.concat(aa,", "),ab,ac,
+ad,ae,ae>0.01 and(ad/ae)or 0)
 end
 
 
@@ -5847,9 +5559,9 @@ if ah then
 
 
 local ai=ah:FindFirstChild"HumanoidRootPart"
-if ai and(ai.Position-ae).Magnitude<=I then return true end
+if ai and(ai.Position-ae).Magnitude<=H then return true end
 local aj,ak=pcall(function()return ah:GetPivot().Position end)
-if aj and(ak-ae).Magnitude<=I then return true end
+if aj and(ak-ae).Magnitude<=H then return true end
 end
 end
 return false
@@ -5862,12 +5574,12 @@ if ae-ad<0.2 then return end
 ad=ae
 
 for af,ag in ipairs(workspace:GetChildren())do
-if ag:IsA"Model"and H[tostring(ag.Name):lower()]then
+if ag:IsA"Model"and G[tostring(ag.Name):lower()]then
 if not ac[ag]then
 local ah,ai=pcall(function()return ag:GetPivot().Position end)
 if ah and ridesPlayer(ai)then
 ac[ag]=true
-for aj,ak in ipairs(ag:GetDescendants())do o[ak]=nil end
+for aj,ak in ipairs(ag:GetDescendants())do n[ak]=nil end
 end
 end
 
@@ -5882,7 +5594,7 @@ end
 
 
 
-if ac[ag]then q[ag]=nil end
+if ac[ag]then p[ag]=nil end
 end
 end
 end
@@ -5890,13 +5602,13 @@ end
 local function updateMotion()
 LPH_ATTRIBUTES(VM(NONE))
 local ae=os.clock()
-local af=ae-G
+local af=ae-F
 if af<1.1111111111111112E-2 then return end
-G=ae
+F=ae
 
-for ag in pairs(o)do
+for ag in pairs(n)do
 if ag.Parent then
-local ah=w[ag]
+local ah=v[ag]
 local ai=ag.Position
 if ah and ah.pos and af>0 then
 
@@ -5921,7 +5633,7 @@ ak, al=aj:ToAxisAngle()
 
 if math.abs(al)<0.002 then return nil end
 local am=ag.CFrame
-for an=1,C do am=aj*am end
+for an=1,B do am=aj*am end
 return am
 end)
 ah.future=aj and ak or nil
@@ -5934,7 +5646,7 @@ ah.pos=ai
 
 
 ah.speed=ak
-if ak>=D then
+if ak>=C then
 local al=aj.Unit
 
 
@@ -5957,10 +5669,10 @@ else
 ah.cf=nil
 end
 else
-w[ag]={pos=ai}
+v[ag]={pos=ai}
 end
 else
-w[ag]=nil
+v[ag]=nil
 end
 end
 end
@@ -6535,8 +6247,8 @@ end
 local ap=am:FindFirstChild"projectiles"
 if ap then
 for aq,ar in ipairs(ap:GetChildren())do
-local as=ar.Name:lower()
-if not an[as]then ak[as]=true end
+local V=ar.Name:lower()
+if not an[V]then ak[V]=true end
 end
 end
 end
@@ -6580,7 +6292,7 @@ end
 
 local function remember(al,am,an,ao,ap,aq)
 LPH_ATTRIBUTES(VM(NONE))
-v[#v+1]={
+u[#u+1]={
 cf=al,size=am,cylinder=an,
 flat=ap or 0,vert=aq or 0,
 name=ao,expires=os.clock()+ghostLifeFor(ao),
@@ -6613,10 +6325,10 @@ end
 function d.Foresee(al,am,an,ao,ap,aq,ar)
 LPH_ATTRIBUTES(VM(NONE))
 if typeof(al)~="CFrame"or typeof(am)~="Vector3"then return end
-v[#v+1]={
+u[#u+1]={
 cf=al,size=am,cylinder=ar or false,
 flat=ap or 0,vert=aq or 0,
-name=ao or"предвидение",expires=os.clock()+(an or 1),
+name=ao or"s96",expires=os.clock()+(an or 1),
 }
 end
 
@@ -6627,7 +6339,7 @@ local am=al.Parent and al.Parent.Name or"?"
 
 
 if isIgnoredAttack(al)then
-sight("игнор",am.."/"..al.Name,tostring(al.Size))
+
 return
 end
 
@@ -6636,7 +6348,7 @@ end
 
 if al:IsDescendantOf(workspace)
 and al:FindFirstAncestor"secondBossSafeSpots"then
-sight("укрытие",am.."/"..al.Name,"не опасность")
+
 return
 end
 
@@ -6653,12 +6365,12 @@ if al.Name=="ApelMark"then return end
 
 if ag[tostring(al.Name):lower()]
 or ag[tostring(am):lower()]then
-sight("укрытие",am.."/"..al.Name,tostring(al.Size))
+
 return
 end
 
 if isOwnProjectile(al)then
-sight("своё",am.."/"..al.Name,tostring(al.Size))
+
 return
 end
 if not(isTelegraphName(al.Name)or isTelegraphName(am)
@@ -6669,7 +6381,7 @@ end
 if ownedByEnemy(al)then
 
 
-sight("отброшено-моб",am.."/"..al.Name,tostring(al.Size))
+
 return
 end
 
@@ -6693,7 +6405,7 @@ if ao then
 
 
 af=os.clock()
-sight("нацелен",am.."/"..al.Name,"включаю отход")
+
 end
 end
 
@@ -6724,12 +6436,12 @@ local aq=al.Size*0.5
 if math.abs(ap.X)<=aq.X and math.abs(ap.Y)<=aq.Y
 and math.abs(ap.Z)<=aq.Z then
 af=os.clock()
-sight("наводка",am.."/"..al.Name,"родилась на нас, отхожу")
+
 end
 end
 end
 
-sight("принято",am.."/"..al.Name,tostring(al.Size))
+
 local an,ao=extraMargin(al)
 
 
@@ -6793,15 +6505,15 @@ ao=math.max(ao,siblingHeightBoost(al))
 if isCylinder(al)then
 local ap=al.CFrame.RightVector
 if math.abs(ap.Y)>0.85 and al.Size.X<=8 then
-ao=math.max(ao,i)
+ao=math.max(ao,h)
 end
 elseif al.Size.Y<=2 then
-ao=math.max(ao,i)
+ao=math.max(ao,h)
 end
 
 local ap=dangerDelayFor(al)
 local aq=dangerLifeFor(al)
-o[al]={
+n[al]={
 
 
 
@@ -6832,11 +6544,11 @@ end
 
 local function considerHazard(al)
 LPH_ATTRIBUTES(VM(NONE))
-local am=g[al.Name]
+local am=f[al.Name]
 if am then
 am=hazardRadius(al,am)
-q[al]=am
-sight("угроза",al.Name,("радиус %.0f"):format(am))
+p[al]=am
+
 elseif b.enabled and al:IsA"Model"then
 
 
@@ -6853,13 +6565,13 @@ if an and ao and(ao.Position-an.Position).Magnitude<60 then
 
 
 local ap,aq={},0
-for ar,as in ipairs(al:GetDescendants())do
-if as:IsA"BasePart"and aq<5 then
+for ar,V in ipairs(al:GetDescendants())do
+if V:IsA"BasePart"and aq<5 then
 aq=aq+1
-ap[#ap+1]=("%s %s"):format(as.Name,tostring(as.Size))
+ap[#ap+1]=("%s %s"):format(V.Name,tostring(V.Size))
 end
 end
-sight("рядом-неизвестное",al.Name,table.concat(ap," | "))
+
 end
 end
 end
@@ -6890,16 +6602,16 @@ local am={}
 
 function d.CoverReport()
 LPH_ATTRIBUTES(VM(NONE))
-if#am==0 then return"накрытий не было"end
+if#am==0 then return"s97"end
 local an,ao=os.clock(),{}
 for ap=#am,1,-1 do
 local aq=am[ap]
-ao[#ao+1]=("%s: за %.2fс до, внутри %s"):format(
+ao[#ao+1]=("s98"):format(
 aq.name,an-aq.born,
-aq.left and("%.2fс"):format(aq.left)or"ВСЁ ЕЩЁ ВНУТРИ")
+aq.left and("s99"):format(aq.left)or"s100")
 if#ao>=5 then break end
 end
-return("%d накрытий | %s"):format(#am,table.concat(ao," ;; "))
+return("s101"):format(#am,table.concat(ao," ;; "))
 end
 
 local function watchCover(an)
@@ -6918,9 +6630,9 @@ local ap=game.Players.LocalPlayer.Character
 local aq=ap and ap:FindFirstChild"HumanoidRootPart"
 while aq and an.Parent and os.clock()-ao.born<4 do
 local ar=an.CFrame:PointToObjectSpace(aq.Position)
-local as=an.Size*0.5
-if not(math.abs(ar.X)<=as.X and math.abs(ar.Y)<=as.Y
-and math.abs(ar.Z)<=as.Z)then
+local V=an.Size*0.5
+if not(math.abs(ar.X)<=V.X and math.abs(ar.Y)<=V.Y
+and math.abs(ar.Z)<=V.Z)then
 ao.left=os.clock()-ao.born
 return
 end
@@ -6967,10 +6679,10 @@ if isOwnProjectile(an)then return end
 
 
 local ar=an.CFrame:PointToObjectSpace(ap.Position)
-local as=an.Size*0.5
-local W=math.abs(ar.X)<=as.X
-and math.abs(ar.Y)<=as.Y
-and math.abs(ar.Z)<=as.Z
+local V=an.Size*0.5
+local W=math.abs(ar.X)<=V.X
+and math.abs(ar.Y)<=V.Y
+and math.abs(ar.Z)<=V.Z
 
 if W and b.enabled then watchCover(an)end
 
@@ -6979,7 +6691,7 @@ t=os.clock(),gap=aq,
 name=tostring(an.Parent and an.Parent.Name).."/"..tostring(an.Name),
 size=tostring(an.Size),
 mat=tostring(an.Material):gsub("Enum.Material.",""),
-taken=o[an]~=nil,
+taken=n[an]~=nil,
 covered=W,
 }
 
@@ -6992,15 +6704,15 @@ end
 function d.MotionInfo()
 LPH_ATTRIBUTES(VM(NONE))
 local an,ao,ap=0,0
-for aq,ar in pairs(w)do
+for aq,ar in pairs(v)do
 if aq.Parent and ar.cf then
-local as=ar.size and ar.size.Z or 0
-local W=as>0 and(as/E)or 0
-if W>an then ap,an,ao=aq,W,as end
+local V=ar.size and ar.size.Z or 0
+local W=V>0 and(V/D)or 0
+if W>an then ap,an,ao=aq,W,V end
 end
 end
-if not ap then return"движущихся зон нет"end
-return("%s | скорость ~%.0f студ/с | коридор %.0f студов"):format(
+if not ap then return"s102"end
+return("s103"):format(
 tostring(ap.Parent and ap.Parent.Name).."/"..tostring(ap.Name),
 an,ao)
 end
@@ -7017,18 +6729,18 @@ LPH_ATTRIBUTES(VM(NONE))
 local ao,ap=os.clock(),an or 2
 local aq={}
 for ar=#al,1,-1 do
-local as=al[ar]
-if ao-as.t>ap then break end
-aq[#aq+1]=as
+local V=al[ar]
+if ao-V.t>ap then break end
+aq[#aq+1]=V
 end
-table.sort(aq,function(ar,as)
-if ar.covered~=as.covered then return ar.covered end
-return ar.t>as.t
+table.sort(aq,function(ar,V)
+if ar.covered~=V.covered then return ar.covered end
+return ar.t>V.t
 end)
 
 local ar={}
-for as,W in ipairs(aq)do
-ar[#ar+1]=("%.2fс назад | %.1f студ | %s | %s | %s | принято=%s | НАКРЫЛА=%s"):format(
+for V,W in ipairs(aq)do
+ar[#ar+1]=("s104"):format(
 ao-W.t,W.gap,W.name,W.size,W.mat,tostring(W.taken),tostring(W.covered))
 end
 return ar
@@ -7057,27 +6769,27 @@ local ap=0.9
 local aq=0
 
 local ar=0
-local function projectMageBeam(as)
+local function projectMageBeam(V)
 LPH_ATTRIBUTES(VM(NONE))
 local W=os.clock()
 ar=ar+1
 if ar%20==1 and b.enabled then
-b.Log(("КОРИДОР: попытка %d"):format(ar))
+
 end
 if W-aq<0.4 then return end
 
 local X,Y=1e9
 local Z=workspace:FindFirstChild"dungeon"
 if not Z then return end
-for _,au in ipairs(Z:GetChildren())do
-local av=au:FindFirstChild"enemyFolder"
-if av then
-for aw,ax in ipairs(av:GetChildren())do
-if ax.Name=="Northern Mage"then
-local ay,az=pcall(function()return ax:GetPivot().Position end)
-if ay then
-local aA=(az-as.Position).Magnitude
-if aA<X then Y,X=az,aA end
+for _,as in ipairs(Z:GetChildren())do
+local au=as:FindFirstChild"enemyFolder"
+if au then
+for av,aw in ipairs(au:GetChildren())do
+if aw.Name=="Northern Mage"then
+local ax,ay=pcall(function()return aw:GetPivot().Position end)
+if ax then
+local az=(ay-V.Position).Magnitude
+if az<X then Y,X=ay,az end
 end
 end
 end
@@ -7085,18 +6797,18 @@ end
 end
 if not Y or X<5 or X>130 then return end
 
-local au=Vector3.new(as.Position.X-Y.X,0,as.Position.Z-Y.Z)
-if au.Magnitude<1 then return end
-au=au.Unit
+local as=Vector3.new(V.Position.X-Y.X,0,V.Position.Z-Y.Z)
+if as.Magnitude<1 then return end
+as=as.Unit
 
-local av=ao-X
-if av<10 then return end
-local aw=as.Position+au*(av*0.5)
+local au=ao-X
+if au<10 then return end
+local av=V.Position+as*(au*0.5)
 aq=W
-d.Foresee(CFrame.new(aw,aw+au),Vector3.new(an,6,av),
-ap,"коридор мага",0,0,false)
+d.Foresee(CFrame.new(av,av+as),Vector3.new(an,6,au),
+ap,"s105",0,0,false)
 if b.enabled then
-b.Log(("КОРИДОР МАГА: остаток %.0f студов, коробка в %.0f от мага"):format(av,X))
+
 end
 end
 
@@ -7121,27 +6833,25 @@ local as=os.clock()
 
 
 
-for au,av in pairs(o)do
+for au,av in pairs(n)do
 if not au.Parent then
-o[au]=nil
+n[au]=nil
 elseif type(av)=="table"and not av.dark then
 if av.over and as>av.over then
 av.dark=true
-sight("отработала",("%s/%s"):format(
-au.Parent and au.Parent.Name or"?",au.Name),"срок вышел")
+
 elseif av.seen and au.Transparency>0.95 and not neverSleep(au)then
 av.dark=true
-sight("погасла",("%s/%s"):format(
-au.Parent and au.Parent.Name or"?",au.Name),"усыплена до следующего замаха")
+
 end
 end
 end
 
-for au,av in pairs(o)do
+for au,av in pairs(n)do
 local aw=type(av)=="table"and av.kin or nil
 if aw and aw.Parent and au.Parent then
 if modelLit(aw)then
-A[aw.Name]=true
+z[aw.Name]=true
 
 
 
@@ -7162,16 +6872,16 @@ local ax=dangerDelayFor(au)
 local ay=dangerLifeFor(au)
 av.active=ax and(as+ax)or nil
 av.over=ay and(as+(ax or 0)+ay)or nil
-sight("зажглась",au.Name,"замах пошёл заново")
+
 end
-elseif A[aw.Name]and not av.dark and not neverSleep(au)then
+elseif z[aw.Name]and not av.dark and not neverSleep(au)then
 
 
 
 
 av.dark=true
 av.wasLit=nil
-sight("догорела",("%s/%s"):format(au.Parent and au.Parent.Name or"?",au.Name),"модель погасла целиком")
+
 end
 end
 end
@@ -7187,7 +6897,7 @@ updateRevealed()
 updateSpins()
 updateShared()
 noteTrail()
-U()
+T()
 trackDomes()
 end))
 
@@ -7229,23 +6939,23 @@ consider(as)
 noteAdd(as)
 end))
 regConn(workspace.DescendantRemoving:Connect(function(as)
-if o[as]then
+if n[as]then
 
 
-local au=o[as]
-o[as]=nil
+local au=n[as]
+n[as]=nil
 remember(as.CFrame,as.Size,isCylinder(as),
 ("%s/%s"):format(as.Parent and as.Parent.Name or"?",as.Name),
 type(au)=="table"and au.flat or 0,
 type(au)=="table"and au.vert or 0)
 end
-q[as]=nil
+p[as]=nil
 end))
 regConn(workspace.ChildAdded:Connect(considerHazard))
 regConn(workspace.ChildRemoved:Connect(function(as)
-local au=q[as]
+local au=p[as]
 if not au then return end
-q[as]=nil
+p[as]=nil
 
 local av=as:IsA"Model"and as.PrimaryPart
 if av then
@@ -7266,8 +6976,8 @@ end
 local function sweepGhosts()
 LPH_ATTRIBUTES(VM(NONE))
 local as=os.clock()
-for au=#v,1,-1 do
-if v[au].expires<=as then table.remove(v,au)end
+for au=#u,1,-1 do
+if u[au].expires<=as then table.remove(u,au)end
 end
 end
 
@@ -7282,14 +6992,14 @@ LPH_ATTRIBUTES(VM(NONE))
 sweepGhosts()
 
 local as=0
-for au,av in pairs(o)do
-if not au.Parent then o[au]=nil
+for au,av in pairs(n)do
+if not au.Parent then n[au]=nil
 elseif not zoneDark(av,au)then as=as+1 end
 end
-for au in pairs(q)do
-if au.Parent then as=as+1 else q[au]=nil end
+for au in pairs(p)do
+if au.Parent then as=as+1 else p[au]=nil end
 end
-return as+#v
+return as+#u
 end
 
 
@@ -7318,7 +7028,7 @@ local as=2
 
 local function penetrationOf(au,av,aw,ax,ay,az)
 LPH_ATTRIBUTES(VM(NONE))
-local aA=au:PointToObjectSpace(ax)
+local V=au:PointToObjectSpace(ax)
 local W=ay
 local X=az
 
@@ -7327,16 +7037,16 @@ local Y=av.Y*0.5+W
 
 
 local Z=av.X*0.5+X
-local _=math.sqrt(aA.Y^2+aA.Z^2)
-if math.abs(aA.X)>Z or _>Y then return nil end
+local _=math.sqrt(V.Y^2+V.Z^2)
+if math.abs(V.X)>Z or _>Y then return nil end
 return Y-_
 end
 
 local Y=av*0.5+Vector3.new(W,X,W)
-if math.abs(aA.X)>Y.X then return nil end
-if math.abs(aA.Y)>Y.Y then return nil end
-if math.abs(aA.Z)>Y.Z then return nil end
-return math.min(Y.X-math.abs(aA.X),Y.Z-math.abs(aA.Z))
+if math.abs(V.X)>Y.X then return nil end
+if math.abs(V.Y)>Y.Y then return nil end
+if math.abs(V.Z)>Y.Z then return nil end
+return math.min(Y.X-math.abs(V.X),Y.Z-math.abs(V.Z))
 end
 
 local function penetration(au,av,aw)
@@ -7348,7 +7058,7 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 
-local ax=o[au]
+local ax=n[au]
 local ay=type(ax)=="table"and ax.flat or 0
 local az=type(ax)=="table"and ax.vert or 0
 
@@ -7367,8 +7077,8 @@ local az=type(ax)=="table"and ax.vert or 0
 
 
 
-local aA=w[au]
-local W=(aA and aA.size)and aA.size.Z or 0
+local V=v[au]
+local W=(V and V.size)and V.size.Z or 0
 local X=au.Size
 local Y=au.Position
 local Z=av.Y-Y.Y
@@ -7376,26 +7086,26 @@ local _=X.Y*0.5+math.min(aw,as)+az
 +W+6
 if Z<-_ or Z>_ then return nil end
 
-local aB,aC=av.X-Y.X,av.Z-Y.Z
-local aD=math.max(X.X,X.Z)*0.71+aw+ay+W+6
-if aB*aB+aC*aC>aD*aD then return nil end
-local aE=aw+ay
-local aF=math.min(aw,as)+az
-local aG=penetrationOf(au.CFrame,au.Size,isCylinder(au),av,aE,aF)
+local aA,aB=av.X-Y.X,av.Z-Y.Z
+local aC=math.max(X.X,X.Z)*0.71+aw+ay+W+6
+if aA*aA+aB*aB>aC*aC then return nil end
+local aD=aw+ay
+local aE=math.min(aw,as)+az
+local aF=penetrationOf(au.CFrame,au.Size,isCylinder(au),av,aD,aE)
+if aF then return aF end
+
+
+
+
+
+
+if V and V.future then
+local aG=penetrationOf(V.future,au.Size,isCylinder(au),av,aD,aE)
 if aG then return aG end
-
-
-
-
-
-
-if aA and aA.future then
-local aH=penetrationOf(aA.future,au.Size,isCylinder(au),av,aE,aF)
-if aH then return aH end
 end
 
-if aA and aA.cf then
-return penetrationOf(aA.cf,aA.size,false,av,aE+2,aF+1)
+if V and V.cf then
+return penetrationOf(V.cf,V.size,false,av,aD+2,aE+1)
 end
 return nil
 end
@@ -7403,7 +7113,7 @@ end
 
 local function hazardAt(au,av)
 LPH_ATTRIBUTES(VM(NONE))
-for aw,ax in pairs(q)do
+for aw,ax in pairs(p)do
 if aw.Parent then
 local ay=hazardPoint(aw)
 
@@ -7413,7 +7123,7 @@ local az=Vector3.new(au.X-ay.X,0,au.Z-ay.Z)
 if az.Magnitude<=ax+av then return aw end
 end
 else
-q[aw]=nil
+p[aw]=nil
 end
 end
 return nil
@@ -7516,13 +7226,13 @@ local aE=av and(av.Position.Y-ay.Position.Y)>40
 local aF=-9
 if av then aF=ay.CFrame.LookVector:Dot(av.CFrame.LookVector)end
 
-aw[#aw+1]=("y=%.0f до нас %.0f | ближний %s (%.0f) | %s | поворот %.3f | пол %s | вниз %s"):format(
+aw[#aw+1]=("s106"):format(
 ay.Position.Y,aC,
-az and az.Name or"никто",aA,
-domeMoves(ay)and"ЕДЕТ = отметка"or"лежит = подбор",
+az and az.Name or"s107",aA,
+domeMoves(ay)and"s108"or"s109",
 aF,
-aD and"есть"or"НЕТ",
-aE and"УЕХАЛ"or"нет")
+aD and"s82"or"s83",
+aE and"s110"or"s3")
 end
 end
 return aw
@@ -7662,7 +7372,7 @@ local aC=aB:IsA"BasePart"and aB
 or aB:FindFirstChildWhichIsA"BasePart"
 if aC then
 local aD=Vector3.new(ay.X-aC.Position.X,0,ay.Z-aC.Position.Z)
-local aE=math.max(aC.Size.X,aC.Size.Z)*0.5+h
+local aE=math.max(aC.Size.X,aC.Size.Z)*0.5+g
 if aD.Magnitude<=aE then
 return true,math.max(aC.Size.X,aC.Size.Z)
 end
@@ -7685,18 +7395,18 @@ local aA,aB,aC=math.huge
 for aD,aE in ipairs(workspace:GetChildren())do
 if tostring(aE.Name):lower()==az then
 local aF=aE:FindFirstChild"hitBox"or aE:FindFirstChild"precast"
-local aG,aH
+local aG,V
 if aF and aF:IsA"BasePart"then
-aG,aH=aF.Position,math.max(aF.Size.X,aF.Size.Z)*0.5
+aG,V=aF.Position,math.max(aF.Size.X,aF.Size.Z)*0.5
 elseif aE:IsA"BasePart"then
-aG,aH=aE.Position,math.max(aE.Size.X,aE.Size.Z)*0.5
+aG,V=aE.Position,math.max(aE.Size.X,aE.Size.Z)*0.5
 else
 local W,X=pcall(function()return aE:GetPivot().Position end)
-if W then aG,aH=X,6 end
+if W then aG,V=X,6 end
 end
 if aG then
 local W=ay and(Vector3.new(ay.X-aG.X,0,ay.Z-aG.Z).Magnitude)or 0
-if W<aA then aB,aA,aC=aG,W,aH end
+if W<aA then aB,aA,aC=aG,W,V end
 end
 end
 end
@@ -7771,10 +7481,10 @@ end
 
 
 
-for aC in pairs(o)do
-if aC.Parent and not zoneDark(o[aC],aC)
+for aC in pairs(n)do
+if aC.Parent and not zoneDark(n[aC],aC)
 and(named(aC.Parent.Name)or named(aC.Name))then
-local aD=o[aC]
+local aD=n[aC]
 local aE=type(aD)=="table"and aD.flat or 0
 local aF
 if aA then
@@ -7789,7 +7499,7 @@ end
 
 
 local aC=os.clock()
-for aD,aE in ipairs(v)do
+for aD,aE in ipairs(u)do
 if aE.expires>aC and named(aE.name)then
 local aF
 if aA then
@@ -7814,7 +7524,7 @@ end
 function d.HasZoneNamed(ax)
 LPH_ATTRIBUTES(VM(NONE))
 if type(ax)~="string"or ax==""then return false end
-for ay in pairs(o)do
+for ay in pairs(n)do
 if ay.Parent then
 local az=tostring(ay.Parent.Name):lower()
 if az:find(ax,1,true)or tostring(ay.Name):lower():find(ax,1,true)then
@@ -7828,7 +7538,7 @@ end
 function d.SpinRadius()
 LPH_ATTRIBUTES(VM(NONE))
 local ax
-for ay,az in pairs(s)do
+for ay,az in pairs(r)do
 if ay.Parent and(not ax or az.radius>ax)then ax=az.radius end
 end
 return ax
@@ -7837,7 +7547,7 @@ end
 local function spinThreat(ax,ay)
 LPH_ATTRIBUTES(VM(NONE))
 local az=0
-for aA,aB in pairs(s)do
+for aA,aB in pairs(r)do
 if aA.Parent then
 local aC,aD=pcall(function()return aA:GetPivot().Position end)
 if aC then
@@ -7886,9 +7596,9 @@ local aF=ay.X*0.5+aC
 local aG=math.sqrt(aD.Y^2+aD.Z^2)
 if math.abs(aD.X)>aF or aG>aE then return nil end
 
-local aH,W=aD.Y,aD.Z
-if aG<0.01 then aH,W,aG=1,0,0.01 end
-local X=(ax.YVector*(aH/aG))+(ax.ZVector*(W/aG))
+local V,W=aD.Y,aD.Z
+if aG<0.01 then V,W,aG=1,0,0.01 end
+local X=(ax.YVector*(V/aG))+(ax.ZVector*(W/aG))
 return X.Unit,aE-aG
 end
 
@@ -7938,27 +7648,27 @@ if aG>aD then aD=aG end
 aE=aE+1
 end
 
-for aF,aG in pairs(o)do
+for aF,aG in pairs(n)do
 if aF.Parent then
-local aH=az+(type(aG)=="table"and aG.flat or 0)
+local V=az+(type(aG)=="table"and aG.flat or 0)
 local W=math.min(az,as)
 +(type(aG)=="table"and aG.vert or 0)
 
 
 if not zoneDark(aG,aF)then
 local X,Y=exitVector(aF.CFrame,aF.Size,isCylinder(aF),
-ay,aH,W)
+ay,V,W)
 if X then note(X,Y)end
 end
 end
 end
 
 local aF=os.clock()
-for aG,aH in ipairs(v)do
-if aH.expires>aF then
-local W,X=exitVector(aH.cf,aH.size,aH.cylinder,ay,
-az+(aH.flat or 0),
-math.min(az,as)+(aH.vert or 0))
+for aG,V in ipairs(u)do
+if V.expires>aF then
+local W,X=exitVector(V.cf,V.size,V.cylinder,ay,
+az+(V.flat or 0),
+math.min(az,as)+(V.vert or 0))
 if W then note(W,X)end
 end
 end
@@ -7975,14 +7685,14 @@ end
 
 
 
-for aG,aH in pairs(q)do
+for aG,V in pairs(p)do
 if aG.Parent then
 local W=hazardPoint(aG)
 if W then
 local X=Vector3.new(ay.X-W.X,0,ay.Z-W.Z)
 local Y=X.Magnitude
-if Y<=aH+az and Y>0.1 then
-note(X.Unit,math.min(aH+az-Y,4))
+if Y<=V+az and Y>0.1 then
+note(X.Unit,math.min(V+az-Y,4))
 end
 end
 end
@@ -7993,9 +7703,7 @@ local aG=Vector3.new(aC.X,0,aC.Z)
 
 
 if aG.Magnitude/aE>=ax then
-sight("выход","равнодействующая",
-("зон %d, согласие %.2f, худшая цена %.1f"):format(
-aE,aG.Magnitude/aE,aD))
+
 return aG.Unit,aD
 end
 end
@@ -8045,9 +7753,9 @@ end
 
 
 local aG=Vector3.new(aE.X,0,aE.Z)
-local aH=aG.Magnitude
-if aH<0.01 then return nil end
-local W=math.min((aF+aA)/aH,(aF+aA)*5)
+local V=aG.Magnitude
+if V<0.01 then return nil end
+local W=math.min((aF+aA)/V,(aF+aA)*5)
 aB=aB+aG.Unit*W
 aC=aC+W
 end
@@ -8076,9 +7784,9 @@ LPH_ATTRIBUTES(VM(NONE))
 if not e then return nil end
 az=az or 0
 local aA=os.clock()
-for aB,aC in pairs(o)do
+for aB,aC in pairs(n)do
 if not aB.Parent then
-o[aB]=nil
+n[aB]=nil
 elseif zoneDark(aC,aB)then
 
 elseif type(aC)=="table"and aC.seen and aB.Transparency>0.95
@@ -8099,7 +7807,7 @@ and not neverSleep(aB)then
 
 
 aC.dark=true
-sight("погасла",("%s/%s"):format(aB.Parent and aB.Parent.Name or"?",aB.Name),"усыплена до следующего замаха")
+
 elseif type(aC)=="table"and aC.over and aA>aC.over then
 
 
@@ -8120,14 +7828,14 @@ elseif type(aC)=="table"and aC.over and aA>aC.over then
 
 
 aC.dark=true
-sight("отработала",("%s/%s"):format(aB.Parent and aB.Parent.Name or"?",aB.Name),"усыплена до следующего замаха")
+
 else
 local aD=not(type(aC)=="table"and aC.active and aA<aC.active)
 if aD and penetration(aB,ay,az)then return aB end
 end
 end
 local aB=os.clock()
-for aC,aD in ipairs(v)do
+for aC,aD in ipairs(u)do
 if aD.expires>aB and penetrationOf(aD.cf,aD.size,aD.cylinder,ay,
 az+(aD.flat or 0),math.min(az,as)+(aD.vert or 0))then
 return aD
@@ -8190,7 +7898,7 @@ az.MaxParts=40
 
 local function attackPart(aA)
 LPH_ATTRIBUTES(VM(NONE))
-local aB=o[aA]
+local aB=n[aA]
 if not aB then return false end
 if zoneDark(aB,aA)then return false end
 local aC=os.clock()
@@ -8237,11 +7945,11 @@ and(aD-aE).Magnitude<0.05 then
 return aC
 end
 
-local aH,W=pcall(function()
+local V,W=pcall(function()
 return workspace:GetPartBoundsInBox(CFrame.new(aE),ay,az)
 end)
 local X,Y=true
-if aH and type(W)=="table"then
+if V and type(W)=="table"then
 for Z,_ in ipairs(W)do
 if attackPart(_)then
 X,Y=false,_
@@ -8286,9 +7994,9 @@ if aG~=aA then
 aA=aG
 az.FilterDescendantsInstances={aG}
 end
-local aH=Vector3.new(ay.X+aF*2,ay.Y,ay.Z+aF*2)
+local V=Vector3.new(ay.X+aF*2,ay.Y,ay.Z+aF*2)
 local W,X=pcall(function()
-return workspace:GetPartBoundsInBox(CFrame.new(aE),aH,az)
+return workspace:GetPartBoundsInBox(CFrame.new(aE),V,az)
 end)
 if not W or type(X)~="table"then return true end
 for Y,Z in ipairs(X)do
@@ -8310,7 +8018,7 @@ end
 
 local aE=0.2
 
-function d.PassAt(aF,aG,aH)
+function d.PassAt(aF,aG,V)
 LPH_ATTRIBUTES(VM(NONE))
 
 
@@ -8322,19 +8030,19 @@ LPH_ATTRIBUTES(VM(NONE))
 if not e then return true end
 aG=aG or 0
 local W=os.clock()
-for X,Y in pairs(o)do
+for X,Y in pairs(n)do
 if X.Parent and not zoneDark(Y,X)then
 local Z=not(type(Y)=="table"and Y.active and W<Y.active)
 local _=type(Y)=="table"and Y.over and W>Y.over
 if Z and not _ and penetration(X,aF,aG)then
-local aI=d.TimeToHit(X)
-if not(aI and aH<aI-aE)then
+local aH=d.TimeToHit(X)
+if not(aH and V<aH-aE)then
 return false,X
 end
 end
 end
 end
-for aI,X in ipairs(v)do
+for aH,X in ipairs(u)do
 if X.expires>W and penetrationOf(X.cf,X.size,X.cylinder,aF,
 aG+(X.flat or 0),math.min(aG,as)+(X.vert or 0))then
 return false,X
@@ -8344,51 +8052,51 @@ if hazardAt(aF,aG)then return false,nil end
 return true
 end
 
-U=function()
+T=function()
 LPH_ATTRIBUTES(VM(NONE))
 local aF=LocalPlayer.Character
-if aF~=Q then
-Q=aF
-P=os.clock()
-N=setmetatable({},{__mode="k"})
+if aF~=P then
+P=aF
+O=os.clock()
+M=setmetatable({},{__mode="k"})
 end
 if not aF then return end
 local aG=aF:FindFirstChild"HumanoidRootPart"
 local aH=aF:FindFirstChildOfClass"Humanoid"
 if not aG or not aH or aH.Health<=0 then return end
 
-local aI=aG.Position
+local V=aG.Position
 local W=os.clock()
 
 
-for X,Y in pairs(O)do
+for X,Y in pairs(N)do
 local Z=false
 if X.Parent then
-for _,aJ in ipairs(X:GetDescendants())do
-if aJ:IsA"BasePart"and o[aJ]and not zoneDark(o[aJ],aJ)
-and penetration(aJ,aI,0)then
+for _,aI in ipairs(X:GetDescendants())do
+if aI:IsA"BasePart"and n[aI]and not zoneDark(n[aI],aI)
+and penetration(aI,V,0)then
 Z=true
 break
 end
 end
 end
 if not Z then
-b.Log(("ВЫШЕЛ ИЗ НАКРЫТИЯ: %s за %.2fс"):format(Y.name,W-Y.t0))
-O[X]=nil
+
+N[X]=nil
 end
 end
 
-for aJ,X in pairs(o)do
-local Y=aJ.Parent
-if aJ.Parent and Y and not N[Y]and not zoneDark(X,aJ)then
+for aI,X in pairs(n)do
+local Y=aI.Parent
+if aI.Parent and Y and not M[Y]and not zoneDark(X,aI)then
 local Z=not(type(X)=="table"and X.active and W<X.active)
 local _=type(X)=="table"and X.over and W>X.over
-if Z and not _ and penetration(aJ,aI,0)then
-N[Y]=true
-O[Y]={t0=W,name=("%s/%s"):format(Y.Name,aJ.Name)}
-R=R+1
-local aK=aH.Health
-local aL=W-P
+if Z and not _ and penetration(aI,V,0)then
+M[Y]=true
+N[Y]={t0=W,name=("%s/%s"):format(Y.Name,aI.Name)}
+Q=Q+1
+local aJ=aH.Health local aK=
+W-O;
 
 
 
@@ -8397,7 +8105,7 @@ local aL=W-P
 
 
 
-local aM=("%s/%s"):format(Y.Name,aJ.Name)
+("%s/%s"):format(Y.Name,aI.Name)local aL=
 
 
 
@@ -8407,14 +8115,12 @@ local aM=("%s/%s"):format(Y.Name,aJ.Name)
 
 
 
-local aN=aF:FindFirstChildOfClass"ForceField"~=nil
-local aO=(type(X)=="table"and X.born)and(W-X.born)or-1
+aF:FindFirstChildOfClass"ForceField"~=nil local aM=
+(type(X)=="table"and X.born)and(W-X.born)or-1
 task.delay(1,function()
-local aP=aH.Health
-if aP>=aK then T=T+1 end
-b.Log(("ПОПАДАНИЕ: %s | возраст зоны %.2fс | спавн %.1fс назад | щит %s | hp %.0f -> %.0f | %s"):format(
-aM,aO,aL,aN and"ЕСТЬ"or"нет",aK,aP,
-aP<aK and"УБИЛО"or"ПЕРЕЖИЛИ"))
+local aN=aH.Health
+if aN>=aJ then R=R+1 end
+
 end)
 end
 end
@@ -8427,34 +8133,34 @@ end
 
 local function threatAt(aF,aG)
 LPH_ATTRIBUTES(VM(NONE))
-aG=aG+h
+aG=aG+g
 local aH=spinThreat(aF,aG)
 local aI=os.clock()
-for aJ,aK in pairs(o)do
+for aJ,aM in pairs(n)do
 if aJ.Parent
-and not(type(aK)=="table"and aK.active and aI<aK.active)
-and not(type(aK)=="table"and aK.over and aI>aK.over)
-and not zoneDark(aK,aJ)
-and not(type(aK)=="table"and aK.seen and aJ.Transparency>0.95)then
-local aL=penetration(aJ,aF,aG)
-if aL and aL>aH then aH=aL end
+and not(type(aM)=="table"and aM.active and aI<aM.active)
+and not(type(aM)=="table"and aM.over and aI>aM.over)
+and not zoneDark(aM,aJ)
+and not(type(aM)=="table"and aM.seen and aJ.Transparency>0.95)then
+local aN=penetration(aJ,aF,aG)
+if aN and aN>aH then aH=aN end
 end
 end
 local aJ=os.clock()
-for aK,aL in ipairs(v)do
-if aL.expires>aJ then
-local aM=penetrationOf(aL.cf,aL.size,aL.cylinder,aF,
-aG+(aL.flat or 0),math.min(aG,as)+(aL.vert or 0))
-if aM and aM>aH then aH=aM end
+for aM,aN in ipairs(u)do
+if aN.expires>aJ then
+local V=penetrationOf(aN.cf,aN.size,aN.cylinder,aF,
+aG+(aN.flat or 0),math.min(aG,as)+(aN.vert or 0))
+if V and V>aH then aH=V end
 end
 end
-for aK,aL in pairs(q)do
-if aK.Parent then
-local aM=hazardPoint(aK)
-if aM then
-local aN=Vector3.new(aF.X-aM.X,0,aF.Z-aM.Z)
-local aO=aL+aG-aN.Magnitude
-if aO>aH then aH=aO end
+for aM,aN in pairs(p)do
+if aM.Parent then
+local V=hazardPoint(aM)
+if V then
+local W=Vector3.new(aF.X-V.X,0,aF.Z-V.Z)
+local X=aN+aG-W.Magnitude
+if X>aH then aH=X end
 end
 end
 end
@@ -8468,7 +8174,7 @@ end
 
 function d.IsZone(aF)
 LPH_ATTRIBUTES(VM(NONE))
-return o[aF]~=nil
+return n[aF]~=nil
 end
 
 function d.ThreatAt(aF,aG)
@@ -8480,7 +8186,7 @@ end
 function d.IsSafe(aF,aG)
 LPH_ATTRIBUTES(VM(NONE))
 if not e then return true end
-aG=(aG or 6)+h
+aG=(aG or 6)+g
 if spinThreat(aF,aG)>0 then return false end
 if d.ZoneAt(aF,aG)~=nil then return false end
 
@@ -8525,18 +8231,18 @@ aJ.IgnoreWater=true
 
 
 
-local aK,aL=(-99)
+local aM,aN=(-99)
 
 local function floorIgnore()
 LPH_ATTRIBUTES(VM(NONE))
-if aL and os.clock()-aK<0.5 then return aL end
-local aM={LocalPlayer.Character}
-local aN=workspace:FindFirstChild"dungeon"
-if aN then
+if aN and os.clock()-aM<0.5 then return aN end
+local V={LocalPlayer.Character}
+local W=workspace:FindFirstChild"dungeon"
+if W then
 
-for aO,aP in ipairs(aN:GetChildren())do
-local W=aP:FindFirstChild"enemyFolder"
-if W then aM[#aM+1]=W end
+for X,Y in ipairs(W:GetChildren())do
+local Z=Y:FindFirstChild"enemyFolder"
+if Z then V[#V+1]=Z end
 end
 end
 
@@ -8555,12 +8261,12 @@ end
 
 
 
-local aO=workspace:FindFirstChild"enemies"
-if aO then aM[#aM+1]=aO end
-for aP,W in ipairs(workspace:GetChildren())do
-if W~=LocalPlayer.Character and W:IsA"Model"
-and W:FindFirstChildWhichIsA"Humanoid"then
-aM[#aM+1]=W
+local X=workspace:FindFirstChild"enemies"
+if X then V[#V+1]=X end
+for Y,Z in ipairs(workspace:GetChildren())do
+if Z~=LocalPlayer.Character and Z:IsA"Model"
+and Z:FindFirstChildWhichIsA"Humanoid"then
+V[#V+1]=Z
 end
 end
 
@@ -8572,8 +8278,8 @@ end
 
 
 
-for aP,W in ipairs(workspace:GetChildren())do
-if ac[W]or isOwnProjectile(W)then aM[#aM+1]=W end
+for Y,Z in ipairs(workspace:GetChildren())do
+if ac[Z]or isOwnProjectile(Z)then V[#V+1]=Z end
 end
 
 
@@ -8585,11 +8291,11 @@ end
 
 
 
-for aP in pairs(o)do
-if aP.Parent then aM[#aM+1]=aP end
+for Y in pairs(n)do
+if Y.Parent then V[#V+1]=Y end
 end
-aL,aK=aM,os.clock()
-return aM
+aN,aM=V,os.clock()
+return V
 end
 
 
@@ -8602,11 +8308,11 @@ end
 
 
 
-local aM=RaycastParams.new()
-aM.FilterType=Enum.RaycastFilterType.Include
-aM.IgnoreWater=true
+local V=RaycastParams.new()
+V.FilterType=Enum.RaycastFilterType.Include
+V.IgnoreWater=true
 
-local aN,aO=(-99)
+local W,X=(-99)
 
 
 
@@ -8614,16 +8320,16 @@ local aN,aO=(-99)
 
 local function borderParts()
 LPH_ATTRIBUTES(VM(NONE))
-if aO and os.clock()-aN<5 then return aO end
+if X and os.clock()-W<5 then return X end
 
-local aP={}
-local function take(W)
-if W:IsA"BasePart"then
-aP[#aP+1]=W
+local Y={}
+local function take(Z)
+if Z:IsA"BasePart"then
+Y[#Y+1]=Z
 return
 end
-for X,Y in ipairs(W:GetDescendants())do
-if Y:IsA"BasePart"then aP[#aP+1]=Y end
+for _,aO in ipairs(Z:GetDescendants())do
+if aO:IsA"BasePart"then Y[#Y+1]=aO end
 end
 end
 
@@ -8636,36 +8342,36 @@ end
 
 
 
-for W,X in ipairs(workspace:GetChildren())do
-local Y=tostring(X.Name):lower()
-if Y=="borders"or Y:find("inviswall",1,true)then
-take(X)
+for aO,Z in ipairs(workspace:GetChildren())do
+local _=tostring(Z.Name):lower()
+if _=="borders"or _:find("inviswall",1,true)then
+take(Z)
 end
 end
 
-aO,aN=aP,os.clock()
-return aP
+X,W=Y,os.clock()
+return Y
 end
 
-local function crossesBorder(aP,W)
+local function crossesBorder(aO,Y)
 LPH_ATTRIBUTES(VM(NONE))
-local X=borderParts()
-if#X==0 then return false end
-aM.FilterDescendantsInstances=X
-local Y=W-aP
-if Y.Magnitude<0.01 then return false end
-return workspace:Raycast(aP,Y,aM)~=nil
+local Z=borderParts()
+if#Z==0 then return false end
+V.FilterDescendantsInstances=Z
+local _=Y-aO
+if _.Magnitude<0.01 then return false end
+return workspace:Raycast(aO,_,V)~=nil
 end
 
-function d.CrossesBorder(aP,W)
+function d.CrossesBorder(aO,Y)
 LPH_ATTRIBUTES(VM(NONE))
-return crossesBorder(aP,W)
+return crossesBorder(aO,Y)
 end
 
-local function hasFloor(aP)
+local function hasFloor(aO)
 LPH_ATTRIBUTES(VM(NONE))
 aJ.FilterDescendantsInstances=floorIgnore()
-return workspace:Raycast(aP,Vector3.new(0,-aI,0),aJ)~=nil
+return workspace:Raycast(aO,Vector3.new(0,-aI,0),aJ)~=nil
 end
 
 
@@ -8686,29 +8392,29 @@ end
 
 
 
-function d.HazardRadius(aP)
+function d.HazardRadius(aO)
 LPH_ATTRIBUTES(VM(NONE))
-return aP and q[aP]or nil
+return aO and p[aO]or nil
 end
 
-function d.HasFloor(aP)
+function d.HasFloor(aO)
 LPH_ATTRIBUTES(VM(NONE))
-return hasFloor(aP)
+return hasFloor(aO)
 end
 
-local function ringPoints(aP,W)
+local function ringPoints(aO,Y)
 LPH_ATTRIBUTES(VM(NONE))
-local X={}
-for Y=0,aF-1 do
-local Z=(Y/aF)*math.pi*2
-X[#X+1]=aP+Vector3.new(math.cos(Z)*W,0,math.sin(Z)*W)
+local Z={}
+for _=0,aF-1 do
+local aP=(_/aF)*math.pi*2
+Z[#Z+1]=aO+Vector3.new(math.cos(aP)*Y,0,math.sin(aP)*Y)
 end
-return X
+return Z
 end
 
 
 
-local aP,W=(-99)
+local aO,aP=(-99)
 
 
 
@@ -8730,26 +8436,26 @@ local aP,W=(-99)
 
 
 
-local function atStandHeight(X,Y)
+local function atStandHeight(Y,Z)
 LPH_ATTRIBUTES(VM(NONE))
-if not X then return nil end
-local Z=Y and Y.lift
-if not Z or Z==0 then return X end
-return X+Vector3.new(0,Z,0)
+if not Y then return nil end
+local _=Z and Z.lift
+if not _ or _==0 then return Y end
+return Y+Vector3.new(0,_,0)
 end
 
-local function shelterSpot(X,Y,Z)
+local function shelterSpot(Y,Z,_)
 LPH_ATTRIBUTES(VM(NONE))
-if not(X and X.safeSpots)then return nil end
-local _,aQ=math.huge
-for aR,aS in ipairs(X.safeSpots)do
-local aT=atStandHeight(aS,X)or aS
-if d.ZoneAt(aT,Z)==nil then
-local aU=(aT-Y).Magnitude
-if aU<_ then aQ,_=aT,aU end
+if not(Y and Y.safeSpots)then return nil end
+local aQ,aR=math.huge
+for aS,aT in ipairs(Y.safeSpots)do
+local aU=atStandHeight(aT,Y)or aT
+if d.ZoneAt(aU,_)==nil then
+local aV=(aU-Z).Magnitude
+if aV<aQ then aR,aQ=aU,aV end
 end
 end
-return aQ
+return aR
 end
 
 
@@ -8786,9 +8492,9 @@ aQ=aR
 if typeof(aS)~="Vector3"then return aS,aT end
 
 local aU=c.Active()
-local X=aU and aU.ceiling
+local aV=aU and aU.ceiling
 local Y=aU and aU.floorY
-if not(X and Y)then return aS,aT end
+if not(aV and Y)then return aS,aT end
 
 
 
@@ -8796,20 +8502,20 @@ if not(X and Y)then return aS,aT end
 
 
 
-local Z=Y+X+(aU.lift or 0)
+local Z=Y+aV+(aU.lift or 0)
 local _=aS
 
 if _.Y>Z then
 
 
 
-local aV=d.GroundAt(_.X,_.Z,Y+30)
-if aV and aV.Y<=Z then
-_=aV
-aQ=aR.." +потолок"
+local aW=d.GroundAt(_.X,_.Z,Y+30)
+if aW and aW.Y<=Z then
+_=aW
+aQ=aR.."s111"
 else
 _=Vector3.new(_.X,Z,_.Z)
-aQ=aR.." +потолок(срез)"
+aQ=aR.."s112"
 end
 end
 
@@ -8833,7 +8539,7 @@ LPH_ATTRIBUTES(VM(NONE))
 if not e then return aR end
 aS=aS or 6
 sweepGhosts()
-if d.IsSafe(aR,aS)then return pick("уже чисто",aR)end
+if d.IsSafe(aR,aS)then return pick("s113",aR)end
 
 local aT=c.Active()
 local function permitted(aU)
@@ -8856,25 +8562,25 @@ end
 
 
 for aU=aG,aH,aG do
-for aV,X in ipairs(ringPoints(aR,aU))do
-local Y=onGround(X)
+for aV,aW in ipairs(ringPoints(aR,aU))do
+local Y=onGround(aW)
 if d.IsSafe(Y,aS)and hasFloor(Y)and permitted(Y)then
-return pick("кольцо на своей высоте",Y)
+return pick("s114",Y)
 end
 end
 end
 
-if W and os.clock()-aP<0.35 then return pick("повтор прошлого",W)end
+if aP and os.clock()-aO<0.35 then return pick("s115",aP)end
 
 
 
 
 if hasFloor(aR)and not(aT and aT.groundOnly)then
 for aU,aV in ipairs{20,45,80}do
-local X=aR+Vector3.new(0,aV,0)
-if d.IsSafe(X,aS)and permitted(X)then
-W,aP=X,os.clock()
-return pick("подъём над собой",X)
+local aW=aR+Vector3.new(0,aV,0)
+if d.IsSafe(aW,aS)and permitted(aW)then
+aP,aO=aW,os.clock()
+return pick("s116",aW)
 end
 end
 end
@@ -8895,28 +8601,28 @@ end
 
 local aU=shelterSpot(aT,aR,aS)
 if aU then
-W,aP=aU,os.clock()
-return pick("убежище",aU)
+aP,aO=aU,os.clock()
+return pick("s117",aU)
 end
 
 local aV=aT and aT.cleanOnly
-local X,Y=aR,threatAt(aR,aS)
+local aW,Y=aR,threatAt(aR,aS)
 local Z=(aT and aT.groundOnly)and{0}or{0,22,48}
-for _,aW in ipairs(Z)do
-for aX=aG*2,aH,aG*2 do
-for aY,aZ in ipairs(ringPoints(aR,aX))do
-local a_=onGround(aZ+Vector3.new(0,aW,0))
-local a0=threatAt(a_,aS)
-if a0<Y and hasFloor(a_)and permitted(a_)
-and not(aV and d.ZoneAt(a_,0)~=nil)then
-X,Y=a_,a0
+for _,aX in ipairs(Z)do
+for aY=aG*2,aH,aG*2 do
+for aZ,a_ in ipairs(ringPoints(aR,aY))do
+local a0=onGround(a_+Vector3.new(0,aX,0))
+local a1=threatAt(a0,aS)
+if a1<Y and hasFloor(a0)and permitted(a0)
+and not(aV and d.ZoneAt(a0,0)~=nil)then
+aW,Y=a0,a1
 end
 end
 end
 end
 
-W,aP=X,os.clock()
-return pick("наименее простреливаемое (без цели)",X)
+aP,aO=aW,os.clock()
+return pick("s118",aW)
 end
 
 
@@ -9032,10 +8738,10 @@ function d.SafePointAround(aX,aY)
 LPH_ATTRIBUTES(VM(NONE))
 
 
-if not e then return pick("уклонение выключено",aY.from or aX,true)end
+if not e then return pick("s119",aY.from or aX,true)end
 local aZ=aY.from
 local a_,a0=aY.min,aY.max
-local X=aY.margin or 6
+local a1=aY.margin or 6
 
 
 
@@ -9061,13 +8767,13 @@ local _=c.Active()
 
 
 
-local a1=_ and _.minionGuard~=nil
+local a2=_ and _.minionGuard~=nil
 
-local function tooCloseToMob(a2)
+local function tooCloseToMob(a3)
 if not Z then return false end
-for a3,a4 in ipairs(Z)do
-local a5=Vector3.new(a2.X-a4.pos.X,0,a2.Z-a4.pos.Z).Magnitude
-if a5<a4.radius and(a1 or math.abs(a2.Y-a4.pos.Y)<a4.height)then
+for a4,a5 in ipairs(Z)do
+local a6=Vector3.new(a3.X-a5.pos.X,0,a3.Z-a5.pos.Z).Magnitude
+if a6<a5.radius and(a2 or math.abs(a3.Y-a5.pos.Y)<a5.height)then
 return true
 end
 end
@@ -9084,8 +8790,8 @@ sweepGhosts()
 
 
 
-local a2={}
 local a3={}
+local a4={}
 
 
 
@@ -9118,11 +8824,11 @@ local a3={}
 
 
 
-local a4=c.Allows"close"and aT or aU
-local a5=_ and _.groundOnly
-local a6=a5 and math.max(a0*1.8,64)or a0*1.8
+local a5=c.Allows"close"and aT or aU
+local a6=_ and _.groundOnly
+local a7=a6 and math.max(a0*1.8,64)or a0*1.8
 
-local function offer(a7,a8,a9)
+local function offer(a8,a9,ba)
 
 
 
@@ -9135,35 +8841,35 @@ local function offer(a7,a8,a9)
 
 
 if _ and _.groundOnly then
-local ba=math.sqrt((a7-aX.X)^2+(a8-aX.Z)^2)
-if ba<=a6 then
-a2[#a2+1]={x=a7,z=a8,d=ba,lazy=true}
+local bb=math.sqrt((a8-aX.X)^2+(a9-aX.Z)^2)
+if bb<=a7 then
+a3[#a3+1]={x=a8,z=a9,d=bb,lazy=true}
 end
 return
 end
 
-for ba,bb in ipairs(aS)do
-local bc=Vector3.new(a7,Y+bb,a8)
+for bb,bc in ipairs(aS)do
+local bd=Vector3.new(a8,Y+bc,a9)
 
 
 
 
-if(bc-aX).Magnitude<=a6 then
-
-
-
-
-
+if(bd-aX).Magnitude<=a7 then
 
 
 
 
 
 
-local bd={
-p=bc,
-d=(bc-aX).Magnitude
-+math.abs(bc.Y-aX.Y)*a4,
+
+
+
+
+
+local be={
+p=bd,
+d=(bd-aX).Magnitude
++math.abs(bd.Y-aX.Y)*a5,
 }
 
 
@@ -9172,10 +8878,10 @@ d=(bc-aX).Magnitude
 
 
 
-if _ and not _.allow(bc)then
-a3[#a3+1]=bd
+if _ and not _.allow(bd)then
+a4[#a4+1]=be
 else
-a2[#a2+1]=bd
+a3[#a3+1]=be
 end
 end
 end
@@ -9197,7 +8903,7 @@ offer(aX.X,aX.Z,0)
 
 
 
-local a7=3
+local a8=3
 
 
 
@@ -9217,20 +8923,20 @@ local a7=3
 
 
 
-local a8=(_ and _.dirs)or aR
-local function ring(a9)
-for ba=0,a8-1 do
-local bb=(ba/a8)*math.pi*2
-offer(aX.X+math.cos(bb)*a9,
-aX.Z+math.sin(bb)*a9,a9)
+local a9=(_ and _.dirs)or aR
+local function ring(ba)
+for bb=0,a9-1 do
+local bc=(bb/a9)*math.pi*2
+offer(aX.X+math.cos(bc)*ba,
+aX.Z+math.sin(bc)*ba,ba)
 end
 end
 
-for a9=a_,a0,a7 do ring(a9)end
+for ba=a_,a0,a8 do ring(ba)end
 
 
 
-for a9=a0+4,a6,(a5 and 5 or 8)do ring(a9)end
+for ba=a0+4,a7,(a6 and 5 or 8)do ring(ba)end
 
 
 
@@ -9246,16 +8952,16 @@ for a9=a0+4,a6,(a5 and 5 or 8)do ring(a9)end
 
 
 if _ and _.hopNear then
-local a9=aZ
-table.sort(a2,function(ba,bb)
-local bc=(ba.p and(ba.p-a9).Magnitude)
-or math.sqrt((ba.x-a9.X)^2+(ba.z-a9.Z)^2)
-local bd=(bb.p and(bb.p-a9).Magnitude)
-or math.sqrt((bb.x-a9.X)^2+(bb.z-a9.Z)^2)
-return bc<bd
+local ba=aZ
+table.sort(a3,function(bb,bc)
+local bd=(bb.p and(bb.p-ba).Magnitude)
+or math.sqrt((bb.x-ba.X)^2+(bb.z-ba.Z)^2)
+local be=(bc.p and(bc.p-ba).Magnitude)
+or math.sqrt((bc.x-ba.X)^2+(bc.z-ba.Z)^2)
+return bd<be
 end)
 else
-table.sort(a2,function(a9,ba)return a9.d<ba.d end)
+table.sort(a3,function(ba,bb)return ba.d<bb.d end)
 end
 
 
@@ -9273,11 +8979,11 @@ end
 
 
 
-local a9=260
+local ba=260
 if _ and _.dirs then
-a9=math.floor(a9*(_.dirs/aR))
-end
-local ba,bb=0,0
+ba=math.floor(ba*(_.dirs/aR))
+end local
+bb=0
 
 
 
@@ -9326,7 +9032,7 @@ if bc then
 
 
 local bd={}
-for be,bf in ipairs(a2)do
+for be,bf in ipairs(a3)do
 if bf.d>bc then break end
 if#bd>=200 then break end
 if bf.lazy and not bf.p then
@@ -9342,10 +9048,10 @@ for be,bf in ipairs{6,4,3}do
 local bg,bh=math.huge
 for bi,bj in ipairs(bd)do
 if d.ZoneAt(bj,bf)==nil then
-if d.IsSafe(bj,X)and _.allow(bj)then
-return pick("рядом и чисто",bj,true)
+if d.IsSafe(bj,a1)and _.allow(bj)then
+return pick("s120",bj,true)
 end
-local bk=threatAt(bj,X)
+local bk=threatAt(bj,a1)
 if bk<bg then bh,bg=bj,bk end
 end
 end
@@ -9362,18 +9068,18 @@ if bh then
 
 
 
-return pick(("рядом, зазор %d"):format(bf),bh,false)
+return pick(("s121"):format(bf),bh,false)
 end
 end
 
 end
 
-for bd,be in ipairs(a2)do
+for bd,be in ipairs(a3)do
 local bf=be.p
 if be.lazy then
-if a9<=0 then break end
-a9=a9-1
-ba=ba+1
+if ba<=0 then break end
+ba=ba-1
+bb=bb+1
 bf=atStandHeight(
 d.GroundAt(be.x,be.z,_.center.Y),_)
 
@@ -9390,22 +9096,22 @@ elseif not _.hardAllow(bf)then
 note(bf,"rules")
 elseif tooCloseToMob(bf)then
 note(bf,"mob")
-elseif not d.IsSafe(bf,X)then
+elseif not d.IsSafe(bf,a1)then
 elseif _.allow(bf)then
-return pick("чистая",bf,true)
+return pick("s122",bf,true)
 else
 note(bf,"spare")
-a3[#a3+1]={p=bf,d=be.d}
+a4[#a4+1]={p=bf,d=be.d}
 end
 bf=nil
 elseif tooCloseToMob(bf)then
 note(bf,"mob")
-elseif not d.IsSafe(bf,X)then
+elseif not d.IsSafe(bf,a1)then
 note(bf,"dirty")
 elseif not hasFloor(bf)then
 note(bf,"nofloor")
 else
-return pick("чистая-прямая",bf,true)
+return pick("s123",bf,true)
 end
 end
 
@@ -9418,16 +9124,16 @@ end
 
 
 
-if _ and _.groundOnly and#a3==0 then
-for bd,be in ipairs{X*0.5,1}do
+if _ and _.groundOnly and#a4==0 then
+for bd,be in ipairs{a1*0.5,1}do
 local bf=0
-for bg,bh in ipairs(a2)do
+for bg,bh in ipairs(a3)do
 
 if bh.p and bf<160 then
 bf=bf+1
 if _.hardAllow(bh.p)and not tooCloseToMob(bh.p)
 and d.IsSafe(bh.p,be)then
-return pick("ослабленный запас",bh.p,true)
+return pick("s124",bh.p,true)
 end
 end
 end
@@ -9440,22 +9146,22 @@ end
 
 
 
-if#a3>0 then
+if#a4>0 then
 
 local bd=_ and _.cleanOnly
 local be,bf=math.huge
-for bg,bh in ipairs(a3)do
+for bg,bh in ipairs(a4)do
 if not(bd and d.ZoneAt(bh.p,0)~=nil)then
-local bi=threatAt(bh.p,X)
+local bi=threatAt(bh.p,a1)
 if bi<be then bf,be=bh.p,bi end
 end
 end
-if bf then return pick("у стены",bf,false)end
+if bf then return pick("s125",bf,false)end
 end
 
 
-local bd=shelterSpot(_,aZ,X)
-if bd then return pick("убежище",bd,true)end
+local bd=shelterSpot(_,aZ,a1)
+if bd then return pick("s117",bd,true)end
 
 
 
@@ -9469,14 +9175,14 @@ if bd then return pick("убежище",bd,true)end
 
 for be,bf in ipairs(_ and _.groundOnly and{}or{30,55,85,115})do
 local bg=Vector3.new(aZ.X,aX.Y+bf,aZ.Z)
-if d.IsSafe(bg,X)then return pick("аварийный подъём",bg,true)end
+if d.IsSafe(bg,a1)then return pick("s126",bg,true)end
 end
 
 
 
 
 local be,bf=math.huge
-for bg,bh in ipairs(a2)do
+for bg,bh in ipairs(a3)do
 
 
 
@@ -9499,7 +9205,7 @@ for bg,bh in ipairs(a2)do
 
 if bh.p and not tooCloseToMob(bh.p)
 and(not _ or not _.hardAllow or _.hardAllow(bh.p))then
-local bi=threatAt(bh.p,X)
+local bi=threatAt(bh.p,a1)
 if bi<be and hasFloor(bh.p)then
 bf,be=bh.p,bi
 end
@@ -9523,14 +9229,13 @@ if bf and _.hardAllow and not _.hardAllow(bf)then
 bf=d.GroundAt(_.center.X,_.center.Z,_.center.Y)
 end
 end
-if _ and _.groundOnly and b.enabled and ba>0 then
-b.Log(("ПОИСК ПРОВАЛЕН: разобрано %d точек из %d, чистых %d, запасных %d")
-:format(ba,#a2,bb,#a3))
+if _ and _.groundOnly and b.enabled and bb>0 then
+
 end
 
 
 
-return pick("наименее простреливаемое",bf,false)
+return pick("s127",bf,false)
 end
 
 
@@ -9605,7 +9310,7 @@ function d.CeilingNear(a_,a0)
 LPH_ATTRIBUTES(VM(NONE))
 local a1
 
-for a2,a3 in pairs(o)do
+for a2,a3 in pairs(n)do
 if a2.Parent and not zoneDark(a3,a2)and(ceilingForced(a2)
 or(a2.Size.Y>=aX and isBlocky(a2.Size)))then
 local a4=Vector3.new(a_.X-a2.Position.X,0,a_.Z-a2.Position.Z).Magnitude
@@ -9613,7 +9318,7 @@ if a4<=a0+math.max(a2.Size.X,a2.Size.Z)*0.5 then
 
 
 
-local a5=o[a2]
+local a5=n[a2]
 local a6=type(a5)=="table"and a5.vert or 0
 local a7=a2.Position.Y+a2.Size.Y*0.5+a6
 if not a1 or a7>a1 then a1=a7 end
@@ -9643,7 +9348,7 @@ end
 function d.NearestZones(a_,a0)
 LPH_ATTRIBUTES(VM(NONE))
 local a1={}
-for a2,a3 in pairs(o)do
+for a2,a3 in pairs(n)do
 if a2.Parent and not zoneDark(a3,a2)then
 local a4=a2.CFrame:PointToObjectSpace(a_)
 local a5=a2.Size*0.5
@@ -9651,10 +9356,10 @@ local a6=Vector3.new(
 math.max(math.abs(a4.X)-a5.X,0),
 math.max(math.abs(a4.Y)-a5.Y,0),
 math.max(math.abs(a4.Z)-a5.Z,0)).Magnitude
-local a7=w[a2]
+local a7=v[a2]
 a1[#a1+1]={
 gap=a6,
-text=("%s/%s %s | снаружи на %.1f | скорость %.0f | запас %.0f/%.0f"):format(
+text=("s128"):format(
 tostring(a2.Parent and a2.Parent.Name or"?"),tostring(a2.Name),
 tostring(a2.Size),a6,
 (a7 and a7.speed)or 0,
@@ -9687,10 +9392,10 @@ LPH_ATTRIBUTES(VM(NONE))
 
 if not e then return{}end
 a0=a0 or 80
-a1=(a1 or 0)+h
+a1=(a1 or 0)+g
 local a2={}
 
-for a3,a4 in pairs(o)do
+for a3,a4 in pairs(n)do
 if a3.Parent and not zoneDark(a4,a3)
 and(a3.Position-a_).Magnitude<=a0 then
 local a5=type(a4)=="table"and a4.flat or 0
@@ -9709,7 +9414,7 @@ end
 end
 
 local a3=os.clock()
-for a4,a5 in ipairs(v)do
+for a4,a5 in ipairs(u)do
 if a5.expires>a3 and(a5.cf.Position-a_).Magnitude<=a0 then
 local a6=a1+(a5.flat or 0)
 local a7=math.min(a1,as)+(a5.vert or 0)
@@ -9718,7 +9423,7 @@ cf=a5.cf,
 size=a5.size+Vector3.new(a6*2,a7*2,a6*2),
 raw=a5.size,
 cylinder=a5.cylinder,
-name="след:"..tostring(a5.name),
+name="s46"..tostring(a5.name),
 ghost=true,
 }
 end
@@ -9731,7 +9436,7 @@ LPH_ATTRIBUTES(VM(NONE))
 a0=a0 or 60
 local a1={}
 
-for a2,a3 in pairs(o)do
+for a2,a3 in pairs(n)do
 if a2.Parent and not zoneDark(a3,a2)then
 local a4=(a2.Position-a_).Magnitude
 if a4<=a0 then
@@ -9742,14 +9447,14 @@ end
 end
 
 local a2=os.clock()
-for a3,a4 in ipairs(v)do
+for a3,a4 in ipairs(u)do
 if a4.expires>a2 then
 local a5=(a4.cf.Position-a_).Magnitude
-if a5<=a0 then a1[#a1+1]=("след:%s@%.0f"):format(a4.name,a5)end
+if a5<=a0 then a1[#a1+1]=("s129"):format(a4.name,a5)end
 end
 end
 
-for a3 in pairs(q)do
+for a3 in pairs(p)do
 if a3.Parent then
 local a4=hazardPoint(a3)
 if a4 then
@@ -9760,7 +9465,7 @@ end
 end
 
 table.sort(a1)
-return#a1>0 and table.concat(a1," ")or"пусто"
+return#a1>0 and table.concat(a1," ")or"s130"
 end
 
 
@@ -9789,25 +9494,25 @@ local a2={}
 local function add(a3,a4,a5,a6)
 local a7=Vector3.new(a_.X-a4.X,0,a_.Z-a4.Z).Magnitude
 local a8=math.max(a5.X,a5.Z)*0.5+(a6 or 0)
-a2[#a2+1]=("%s гор=%.0f/%.0f верт=%+.0f"):format(
+a2[#a2+1]=("s131"):format(
 a3,a7,a8,a_.Y-a4.Y)
 end
 
-for a3 in pairs(o)do
-if a3.Parent and not zoneDark(o[a3],a3)
+for a3 in pairs(n)do
+if a3.Parent and not zoneDark(n[a3],a3)
 and(named(a3.Parent.Name)or named(a3.Name))then
-local a4=o[a3]
+local a4=n[a3]
 add(a3.Name,a3.Position,a3.Size,
 type(a4)=="table"and a4.flat or 0)
 end
 end
 local a3=os.clock()
-for a4,a5 in ipairs(v)do
+for a4,a5 in ipairs(u)do
 if a5.expires>a3 and named(a5.name)then
-add("след:"..tostring(a5.name),a5.cf.Position,a5.size,a5.flat or 0)
+add("s46"..tostring(a5.name),a5.cf.Position,a5.size,a5.flat or 0)
 end
 end
-if#a2==0 then return"нет"end
+if#a2==0 then return"s3"end
 table.sort(a2)
 return table.concat(a2," ")
 end
@@ -9816,15 +9521,15 @@ end
 function d.Describe(a_)
 LPH_ATTRIBUTES(VM(NONE))
 local a0={}
-for a1,a2 in pairs(o)do
+for a1,a2 in pairs(n)do
 if a1.Parent and not zoneDark(a2,a1)and penetration(a1,a_,0)then
 a0[#a0+1]=("%s/%s"):format(a1.Parent and a1.Parent.Name or"?",a1.Name)
 end
 end
 local a1=os.clock()
-for a2,a3 in ipairs(v)do
+for a2,a3 in ipairs(u)do
 if a3.expires>a1 and penetrationOf(a3.cf,a3.size,a3.cylinder,a_,0,0)then
-a0[#a0+1]="след:"..a3.name
+a0[#a0+1]="s46"..a3.name
 end
 end
 local a2=hazardAt(a_,0)
@@ -9904,7 +9609,7 @@ ad.state.dodgeAt=os.clock()
 if ag then
 ad.state.dodgeStand,ae=ag,ag
 if ad.log then
-ad.log(("DODGE -> %.0f,%.0f,%.0f | до цели %.0f | из %s | зон=%d"):format(
+ad.log(("s140"):format(
 ag.X,ag.Y,ag.Z,(ag-ad.pos).Magnitude,
 aa.Describe(ad.here or ae),aa.Count()))
 end
@@ -10049,7 +9754,7 @@ local aI=aa.ZoneAt(aF,al)
 local aJ=aI
 and(tostring(aI.Parent and aI.Parent.Name or"?")
 .."/"..tostring(aI.Name))
-or"столб"
+or"s133"
 as[aJ]=(as[aJ]or 0)+1
 end
 
@@ -10145,8 +9850,8 @@ local av={}
 for aw,ax in pairs(au)do
 av[#av+1]=("%s x%d"):format(aw,ax)
 end
-aj.log(("НАЗЕМНАЯ СТОЙКА: проверено %d, %s | бракует: %s"):format(
-as,ar and"нашёл"or"НЕ НАШЁЛ",
+aj.log(("s134"):format(
+as,ar and"s135"or"s136",
 #av>0 and table.concat(av,", ")or"-"))
 end
 
@@ -10163,7 +9868,7 @@ end
 if not ar and aj.escape then
 ar=aj.escape()
 if ar and aj.log then
-aj.log"НАЗЕМНАЯ СТОЙКА: на полу чисто негде, ушёл обычным уклонением"
+aj.log"s137"
 end
 end
 
@@ -10283,7 +9988,7 @@ ah=ag+ai.Unit*af
 end
 
 
-ab.Where(ad.Carrying()and"пушка: несу ядро"or"пушка: иду за ядром")
+ab.Where(ad.Carrying()and"s74"or"s75")
 ab.Pin(ah,ah+Vector3.new(0,0,1))
 return true
 end
@@ -10387,7 +10092,7 @@ end
 
 
 local ak=ah.point or aj.Position
-ab.Where"шестерёнки: за укрытием"
+ab.Where"s132"
 ab.Pin(ak,ak+Vector3.new(0,0,1))
 return true
 end
@@ -10427,10 +10132,9 @@ local ad=8
 
 local function mark(ae,af,ag,ah)
 aa.Foresee(ae,af,ag,ah,ad,ad)
-if ab.enabled then
-local ai=ae.Position
-ab.Log(("ВУЛКАН: %s -> %.0f,%.0f,%.0f | размер %.0f | на %.1fс"):format(
-ah,ai.X,ai.Y,ai.Z,af.X,ag))
+if ab.enabled then local ai=
+ae.Position
+
 end
 end
 
@@ -10453,19 +10157,19 @@ if typeof(aj)=="CFrame"then
 
 
 
-mark(aj,Vector3.new(15,15,15),1.1,"артиллерия")
+mark(aj,Vector3.new(15,15,15),1.1,"s175")
 end
 
 elseif ah=="Second Boss Rock Fall"then
 
 if typeof(ai)=="CFrame"then
-mark(ai,Vector3.new(42,42,42),2.2,"камень")
+mark(ai,Vector3.new(42,42,42),2.2,"s141")
 end
 
 elseif ah=="First Boss Sky Shot"then
 
 if typeof(ai)=="Vector3"then
-mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"небесный луч")
+mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"s176")
 end
 end
 end))
@@ -10507,13 +10211,13 @@ if ag=="CFrame"or ag=="Vector3"then
 local ah=(ag=="CFrame")and ad.Position or ad
 local ai=af and(ah-af).Magnitude or nil
 return("%s %.0f,%.0f,%.0f%s"):format(ag,ah.X,ah.Y,ah.Z,
-ai and(" (до нас %.0f)"):format(ai)or"")
+ai and("s160"):format(ai)or"")
 end
 
 if ag=="Instance"then
 local ah=""
 if ad:IsA"BasePart"then
-ah=(" @%.0f,%.0f,%.0f размер %s"):format(
+ah=("s161"):format(
 ad.Position.X,ad.Position.Y,ad.Position.Z,tostring(ad.Size))
 elseif ad:IsA"Model"then
 local ai,aj=pcall(function()return ad:GetPivot().Position end)
@@ -10582,9 +10286,8 @@ local function foresee(ae,af)
 if typeof(af)~="CFrame"then return end
 local ag=ad[tostring(ae):lower()]
 if not ag then return end
-ab.Foresee(af,ag.size,ag.life,"сигнал:"..tostring(ae),0,0,false)
-aa.Log(("СЕВЕР ЗАРАНЕЕ: %s помечен на %.1f с, коробка %.0fx%.0fx%.0f")
-:format(tostring(ae),ag.life,ag.size.X,ag.size.Y,ag.size.Z))
+ab.Foresee(af,ag.size,ag.life,"s162"..tostring(ae),0,0,false)
+
 end
 
 
@@ -10642,7 +10345,7 @@ as=as.Unit
 local av=math.min(af.Z,au+20)
 local aw=Vector3.new(af.X,af.Y,av)
 local ax=CFrame.new(ar+as*(av*0.5),ar+as*100)
-ab.Foresee(ax,aw,ag,"анимация:Spearman Strike",0,0,false)
+ab.Foresee(ax,aw,ag,"s163",0,0,false)
 end))
 end
 
@@ -10679,9 +10382,8 @@ local an=game.Players.LocalPlayer.Character
 local ao=an and an:FindFirstChild"HumanoidRootPart"
 local ap=ao and ao.Position or nil
 
-local aq,ar=pcall(describe,am,0,ap)
-aa.Log(("СЕВЕР: %s | %s"):format(
-tostring(al),aq and ar or"пейлоад не разобрался"))
+pcall(describe,am,0,ap)
+
 end))
 
 return true
@@ -11208,7 +10910,7 @@ end
 
 
 function ad.SendRequest(af)
-if type(af)~="string"or af==""then return false,nil,"пустой ник"end
+if type(af)~="string"or af==""then return false,nil,"s164"end
 return aa.InvokeMulti("sendJoinRequest",(af:gsub("^%s+",""):gsub("%s+$","")))
 end
 
@@ -11335,11 +11037,11 @@ nofloor=Color3.fromRGB(80,140,255),
 
 
 
-local aK,aL,aM=0
-local aN=0
-local aO,aP,aQ
-local aR
-local aS=-99
+local aM,aN,aO=0
+local aP=0
+local aQ,aR,aS
+local aT
+local aU=-99
 
 
 
@@ -11349,25 +11051,25 @@ local aS=-99
 
 
 
-local aT={}
+local aV={}
 
 local function clearedRooms()
-local aU,aV=0,0
-for aW,aX in ipairs(ac.Rooms())do
-if aX.enemies then
-if#ac.AliveIn(aX)>0 then
-aT[aX.model]=true
+local aW,aX=0,0
+for aY,aZ in ipairs(ac.Rooms())do
+if aZ.enemies then
+if#ac.AliveIn(aZ)>0 then
+aV[aZ.model]=true
 end
-if aT[aX.model]then
-aV=aV+1
-if#ac.AliveIn(aX)==0 then aU=aU+1 end
+if aV[aZ.model]then
+aX=aX+1
+if#ac.AliveIn(aZ)==0 then aW=aW+1 end
 end
 end
 end
-return aU,aV
+return aW,aX
 end
 
-local function forgetRooms()aT={}end
+local function forgetRooms()aV={}end
 
 
 
@@ -11375,7 +11077,7 @@ local function forgetRooms()aT={}end
 
 
 
-local aU={hover=0,topY=0,raiser="-",raiseH=0}
+local aW={hover=0,topY=0,raiser="-",raiseH=0}
 
 
 
@@ -11389,31 +11091,31 @@ local aU={hover=0,topY=0,raiser="-",raiseH=0}
 
 if aq.enabled then
 task.spawn(function()
-local aV=ReplicatedStorage:FindFirstChild"remotes"
-aV=aV and aV:FindFirstChild"sanadaClientEvents"
-if not aV or not aV:IsA"RemoteEvent"then return end
+local aX=ReplicatedStorage:FindFirstChild"remotes"
+aX=aX and aX:FindFirstChild"sanadaClientEvents"
+if not aX or not aX:IsA"RemoteEvent"then return end
 
-local aW={}
-regConn(aV.OnClientEvent:Connect(function(aX,aY)
-local aZ=tostring(aX)
-local a_=""
-if typeof(aY)=="Instance"then
-a_=aY.ClassName..":"..aY.Name
-elseif typeof(aY)=="table"then
-a_="table["..#aY.."]"
-elseif aY~=nil then
-a_=tostring(aY)
+local aY={}
+regConn(aX.OnClientEvent:Connect(function(aZ,a_)
+local a0=tostring(aZ)
+local a1=""
+if typeof(a_)=="Instance"then
+a1=a_.ClassName..":"..a_.Name
+elseif typeof(a_)=="table"then
+a1="table["..#a_.."]"
+elseif a_~=nil then
+a1=tostring(a_)
 end
 
 
 
-local a0=aZ:lower()
-if a0:find"safe"or a0:find"pylon"or a0:find"mark"
-or a0:find"last boss"then
-aq.Log("MAPEVENT! "..aZ..(a_~=""and(" | "..a_)or""))
-elseif not aW[aZ]then
-aW[aZ]=true
-aq.Log("MAPEVENT "..aZ..(a_~=""and(" | "..a_)or""))
+local a2=a0:lower()
+if a2:find"safe"or a2:find"pylon"or a2:find"mark"
+or a2:find"last boss"then
+
+elseif not aY[a0]then
+aY[a0]=true
+
 end
 end))
 end)
@@ -11429,33 +11131,30 @@ end
 
 if aq.enabled then
 spawnLoop(function()
-local aV={}
+local aX={}
 while not _apelStopped do
 task.wait(1)
-local aW=ab.HRP()
-if aW and IN_MATCH then
+local aY=ab.HRP()
+if aY and IN_MATCH then
 
 
 
 
 
-for aX,aY in ipairs(workspace:GetChildren())do
-local aZ=aY:FindFirstChildOfClass"Humanoid"~=nil
-if not aZ and aY~=LocalPlayer.Character then
-local a_=aY:IsA"BasePart"and{aY}or aY:GetChildren()
-for a0,a1 in ipairs(a_)do
-if a1:IsA"BasePart"
-and math.max(a1.Size.X,a1.Size.Y,a1.Size.Z)>=3
-and(a1.Position-aW.Position).Magnitude<70 then
-local a2=aY.Name.."/"..a1.Name
-local a3=a2:lower()
-if not(a3:find"hitbox"or a3:find"precast")
-and not aV[a2]then
-aV[a2]=true
-aq.Log(("НЕВИДИМО %s %s neon=%s anch=%s cq=%s"):format(
-a2,tostring(a1.Size),
-tostring(a1.Material==Enum.Material.Neon),
-tostring(a1.Anchored),tostring(a1.CanQuery)))
+for aZ,a_ in ipairs(workspace:GetChildren())do
+local a0=a_:FindFirstChildOfClass"Humanoid"~=nil
+if not a0 and a_~=LocalPlayer.Character then
+local a1=a_:IsA"BasePart"and{a_}or a_:GetChildren()
+for a2,a3 in ipairs(a1)do
+if a3:IsA"BasePart"
+and math.max(a3.Size.X,a3.Size.Y,a3.Size.Z)>=3
+and(a3.Position-aY.Position).Magnitude<70 then
+local a4=a_.Name.."/"..a3.Name
+local a5=a4:lower()
+if not(a5:find"hitbox"or a5:find"precast")
+and not aX[a4]then
+aX[a4]=true
+
 end
 end
 end
@@ -11477,7 +11176,7 @@ end
 
 
 
-local aV=5
+local aX=5
 
 
 
@@ -11490,24 +11189,11 @@ local aV=5
 
 
 
-local aW=setmetatable({},{__mode="k"})
+local aY=setmetatable({},{__mode="k"})
 
-local function mobShape(aX)
-local aY=tonumber(
-aX:FindFirstChild"meleeDistance"and aX.meleeDistance.Value)or 0
-
-
-
-
-
-
-
-
-
-
-
-
-
+local function mobShape(aZ)
+local a_=tonumber(
+aZ:FindFirstChild"meleeDistance"and aZ.meleeDistance.Value)or 0
 
 
 
@@ -11521,43 +11207,56 @@ aX:FindFirstChild"meleeDistance"and aX.meleeDistance.Value)or 0
 
 
 
-local aZ,a_
+
+
+
+
+
+
+
+
+
+
+
+
+
+local a0,a1
 if am.Allows"bodyOnly"then
-aZ,a_=pcall(function()
-local a0=aX:FindFirstChild"HumanoidRootPart"
-if not a0 then return aX:GetExtentsSize()end
-local a1,a2
-for a3,a4 in ipairs(aX:GetDescendants())do
-if a4:IsA"BasePart"
-and(a4.Position-a0.Position).Magnitude<=15
+a0,a1=pcall(function()
+local a2=aZ:FindFirstChild"HumanoidRootPart"
+if not a2 then return aZ:GetExtentsSize()end
+local a3,a4
+for a5,a6 in ipairs(aZ:GetDescendants())do
+if a6:IsA"BasePart"
+and(a6.Position-a2.Position).Magnitude<=15
 then
-local a5=a4.Size*0.5
-local a6,a7=a4.Position-a5,a4.Position+a5
-a1=a1 and Vector3.new(math.min(a1.X,a6.X),math.min(a1.Y,a6.Y),
-math.min(a1.Z,a6.Z))or a6
-a2=a2 and Vector3.new(math.max(a2.X,a7.X),math.max(a2.Y,a7.Y),
-math.max(a2.Z,a7.Z))or a7
+local a7=a6.Size*0.5
+local a8,a9=a6.Position-a7,a6.Position+a7
+a3=a3 and Vector3.new(math.min(a3.X,a8.X),math.min(a3.Y,a8.Y),
+math.min(a3.Z,a8.Z))or a8
+a4=a4 and Vector3.new(math.max(a4.X,a9.X),math.max(a4.Y,a9.Y),
+math.max(a4.Z,a9.Z))or a9
 end
 end
-if not a1 then return aX:GetExtentsSize()end
-return a2-a1
+if not a3 then return aZ:GetExtentsSize()end
+return a4-a3
 end)
 else
-aZ,a_=pcall(function()return aX:GetExtentsSize()end)
+a0,a1=pcall(function()return aZ:GetExtentsSize()end)
 end
 
-if aZ and a_ and a_.Y>1 and math.max(a_.X,a_.Z)>1 then
+if a0 and a1 and a1.Y>1 and math.max(a1.X,a1.Z)>1 then
 if ext then
-a_=Vector3.new(math.min(ext.X,a_.X),math.min(ext.Y,a_.Y),
-math.min(ext.Z,a_.Z))
+a1=Vector3.new(math.min(ext.X,a1.X),math.min(ext.Y,a1.Y),
+math.min(ext.Z,a1.Z))
 end
-ext=a_
-aW[aX]=a_
+ext=a1
+aY[aZ]=a1
 end
 ext=ext or Vector3.new(6,5,3)
 
-local a0=math.max(ext.X,ext.Z)*0.5
-local a1=math.max(aY,a0)+aV
+local a2=math.max(ext.X,ext.Z)*0.5
+local a3=math.max(a_,a2)+aX
 
 
 
@@ -11570,18 +11269,18 @@ local a1=math.max(aY,a0)+aV
 
 
 
-local a2=am.Value"minionGuard"
-if a2 and a2>0 and not ac.Folder()and aX.Parent==workspace then
-a1=math.max(a1,a2)
+local a4=am.Value"minionGuard"
+if a4 and a4>0 and not ac.Folder()and aZ.Parent==workspace then
+a3=math.max(a3,a4)
 end
 
-local a3=math.clamp(math.max(aY+3,ext.Y*0.5+3),6,30)
-return a1,a3
+local a5=math.clamp(math.max(a_+3,ext.Y*0.5+3),6,30)
+return a3,a5
 end
-local aX,aY={},-99
-local aZ=-99
+local aZ,a_={},-99
+local a0=-99
 
-local a_,a0,a1=1
+local a1,a2,a3=1
 
 
 
@@ -11590,13 +11289,13 @@ local a_,a0,a1=1
 
 
 local function orbiting()
-local a2=am.Value"orbitFor"
-local a3=am.Orbit(aB and aB.Name)
-if not a2 or not a3 or a3<=0 or not aB then return false end
-if type(a2)~="table"then a2={a2}end
-local a4=tostring(aB.Name):lower()
-for a5,a6 in ipairs(a2)do
-if a4:find(tostring(a6),1,true)then return true end
+local a4=am.Value"orbitFor"
+local a5=am.Orbit(aB and aB.Name)
+if not a4 or not a5 or a5<=0 or not aB then return false end
+if type(a4)~="table"then a4={a4}end
+local a6=tostring(aB.Name):lower()
+for a7,a8 in ipairs(a4)do
+if a6:find(tostring(a8),1,true)then return true end
 end
 return false
 end
@@ -11614,7 +11313,7 @@ return not orbiting()
 end
 
 
-local a2,a3,a4=0
+local a4,a5,a6=0
 
 
 
@@ -11629,89 +11328,85 @@ local a2,a3,a4=0
 
 
 
-local function shelterFromNamed(a5)
-local a6=am.Value"dodgeNamed"
-local a7=am.Value"dodgeFar"
-if not a6 or not a7 then return nil end
-local a8=ab.HRP()
-if not a8 then return nil end
-local a9=a8.Position
+local function shelterFromNamed(a7)
+local a8=am.Value"dodgeNamed"
+local a9=am.Value"dodgeFar"
+if not a8 or not a9 then return nil end
+local b=ab.HRP()
+if not b then return nil end
+local ba=b.Position
 
 
 
-local b=am.Allows"dodgeFlat"
-
-
-
-
+local bb=am.Allows"dodgeFlat"
 
 
 
 
-if a4 and os.clock()<a2 and a3 then
-if af.NamedZoneAt(a3,ar,a6,b)
-and not af.NamedZoneAt(a4,ar,a6,b)
+
+
+
+
+if a6 and os.clock()<a4 and a5 then
+if af.NamedZoneAt(a5,ar,a8,bb)
+and not af.NamedZoneAt(a6,ar,a8,bb)
 then
-return Vector3.new(a4.X,a5,a4.Z)
+return Vector3.new(a6.X,a7,a6.Z)
 end
 end
-a3,a4,a2=nil,nil,0
+a5,a6,a4=nil,nil,0
 
-local ba,bb=af.NamedZoneAt(a9,ar,a6,b)
-if not ba then return nil end
-bb=bb or a9
-
-
-
-
-local bc=Vector3.new(a9.X-bb.X,0,a9.Z-bb.Z)
-if bc.Magnitude<1 then bc=Vector3.new(1,0,0)end
-bc=bc.Unit
+local bc,bd=af.NamedZoneAt(ba,ar,a8,bb)
+if not bc then return nil end
+bd=bd or ba
 
 
 
 
-local bd=am.Active()
-for be=0,11 do
-local bf=(be%2==0 and 1 or-1)*math.rad(30*math.ceil(be/2))
-local bg=CFrame.Angles(0,bf,0)*bc
-local bh=Vector3.new(bb.X+bg.X*a7,a5,bb.Z+bg.Z*a7)
-local bi=not(bd and bd.hardAllow)or bd.hardAllow(bh)
-if bi and af.HasFloor(bh)
-and not af.CrossesBorder(a9,bh)
-and not af.NamedZoneAt(bh,ar,a6,b)
+local be=Vector3.new(ba.X-bd.X,0,ba.Z-bd.Z)
+if be.Magnitude<1 then be=Vector3.new(1,0,0)end
+be=be.Unit
+
+
+
+
+local bf=am.Active()
+for bg=0,11 do
+local bh=(bg%2==0 and 1 or-1)*math.rad(30*math.ceil(bg/2))
+local bi=CFrame.Angles(0,bh,0)*be
+local bj=Vector3.new(bd.X+bi.X*a9,a7,bd.Z+bi.Z*a9)
+local bk=not(bf and bf.hardAllow)or bf.hardAllow(bj)
+if bk and af.HasFloor(bj)
+and not af.CrossesBorder(ba,bj)
+and not af.NamedZoneAt(bj,ar,a8,bb)
 then
-a3,a4=a9,bh
-a2=os.clock()+(am.Value"dodgeHold"or 4)
+a5,a6=ba,bj
+a4=os.clock()+(am.Value"dodgeHold"or 4)
 if aq.enabled then
-aq.Log(("УКРЫТИЕ ОТ АТАКИ: %.0f,%.0f,%.0f -> %.0f,%.0f,%.0f | ")
-:format(a9.X,a9.Y,a9.Z,bh.X,bh.Y,bh.Z)
-..("центр %.0f,%.0f | ушли на %.0f студа | от центра %.0f | держим %.1fс")
-:format(bb.X,bb.Z,(bh-a9).Magnitude,a7,
-a2-os.clock()))
+
 end
-return bh
+return bj
 end
 end
 
 
 
 if aq.enabled then
-aq.Log"УКРЫТИЕ ОТ АТАКИ: некуда уйти, остаёмся на орбите"
+
 end
 return nil
 end
-local a5=-99
+local a7=-99
 
 local function mobGuards()
 
 
 
 if am.Allows"noMobGuard"then return{}end
-if os.clock()-aY<0.2 then return aX end
-local a6=ab.HRP()
-local a7={}
-if a6 then
+if os.clock()-a_<0.2 then return aZ end
+local a8=ab.HRP()
+local a9={}
+if a8 then
 
 
 
@@ -11719,36 +11414,36 @@ if a6 then
 
 
 
-local a8=am.Value"minionGuard"
-local a9=a8==0 and not ac.Folder()
+local b=am.Value"minionGuard"
+local ba=b==0 and not ac.Folder()
 
-for b,ba in ipairs(ac.AllAlive())do
-local bb=ac.PivotOf(ba)
-local bc=a9 and ba.Parent==workspace
+for bb,bc in ipairs(ac.AllAlive())do
+local bd=ac.PivotOf(bc)
+local be=ba and bc.Parent==workspace
 
-if bb and not bc and(bb-a6.Position).Magnitude<90 then
-local bd,be=mobShape(ba)
-a7[#a7+1]={
+if bd and not be and(bd-a8.Position).Magnitude<90 then
+local bf,bg=mobShape(bc)
+a9[#a9+1]={
 
 
-mob=ba,
-pos=bb,radius=bd,height=be,name=ba.Name,
+mob=bc,
+pos=bd,radius=bf,height=bg,name=bc.Name,
 }
 end
 end
 end
-aX,aY=a7,os.clock()
-return a7
+aZ,a_=a9,os.clock()
+return a9
 end
 
 
 
 
-local function crowded(a6)
-local a7=am.Value"minionGuard"~=nil
-for a8,a9 in ipairs(mobGuards())do
-local b=Vector3.new(a6.X-a9.pos.X,0,a6.Z-a9.pos.Z).Magnitude
-if b<a9.radius and(a7 or math.abs(a6.Y-a9.pos.Y)<a9.height)then
+local function crowded(a8)
+local a9=am.Value"minionGuard"~=nil
+for b,ba in ipairs(mobGuards())do
+local bb=Vector3.new(a8.X-ba.pos.X,0,a8.Z-ba.pos.Z).Magnitude
+if bb<ba.radius and(a9 or math.abs(a8.Y-ba.pos.Y)<ba.height)then
 return true
 end
 end
@@ -11770,13 +11465,13 @@ local function holdingForFriends()
 return ao.Holding()
 end
 
-local function drop(a6)
+local function drop(a8)
 if aq.enabled and ae.IsPinning()then
-aq.Log("DROP удержание снято: "..tostring(a6 or"без причины"))
+
 end
 aB=nil
 aC=nil
-aR=nil
+aT=nil
 ae.EndPin()
 end
 
@@ -11784,7 +11479,7 @@ end
 
 
 
-local a6,a7=0,0
+local a8,a9=0,0
 
 
 
@@ -11795,8 +11490,8 @@ local a6,a7=0,0
 
 
 
-local a8=100
-local a9,b=true
+local b=100
+local ba,bb=true
 
 
 
@@ -11808,15 +11503,15 @@ local a9,b=true
 
 
 
-local ba=22
-local bb=14
+local bc=22
+local bd=14
 
 
 
 
 
-local bc=1
-local bd=3
+local be=1
+local bf=3
 
 
 
@@ -11824,36 +11519,36 @@ local bd=3
 
 
 
-local be=6
-local bf,bg,bh=1
-local bi
-local bj,bk=0,true
-local c,d=-1,0
+local bg=6
+local bh,bi,bj=1
+local bk
+local c,d=0,true
+local e,f=-1,0
 
 
-local function planSweep(e,f)
-local g={}
-for h,i in ipairs(e)do
-local j=ac.PivotOf(i)
-if j then
-local k=false
-for l,m in ipairs(g)do
-if(m.sum/m.n-j).Magnitude<ba then
-m.sum,m.n=m.sum+j,m.n+1
-k=true
+local function planSweep(g,h)
+local i={}
+for j,k in ipairs(g)do
+local l=ac.PivotOf(k)
+if l then
+local m=false
+for n,o in ipairs(i)do
+if(o.sum/o.n-l).Magnitude<bc then
+o.sum,o.n=o.sum+l,o.n+1
+m=true
 break
 end
 end
-if not k then g[#g+1]={sum=j,n=1}end
+if not m then i[#i+1]={sum=l,n=1}end
 end
 end
 
-if#g<2 then return nil end
+if#i<2 then return nil end
 
-local h={}
-for i,j in ipairs(g)do h[#h+1]=j.sum/j.n end
-table.sort(h,function(i,j)
-return(i-f).Magnitude<(j-f).Magnitude
+local j={}
+for k,l in ipairs(i)do j[#j+1]=l.sum/l.n end
+table.sort(j,function(k,l)
+return(k-h).Magnitude<(l-h).Magnitude
 end)
 
 
@@ -11870,17 +11565,17 @@ end)
 
 
 
-local i=(#h>=3)and 2 or 1
-local j,k=math.huge
-for l,m in ipairs(e)do
-local n=ac.PivotOf(m)
-if n then
-local o=(n-h[i]).Magnitude
-if o<j then k,j=m,o end
+local k=(#j>=3)and 2 or 1
+local l,m=math.huge
+for n,o in ipairs(g)do
+local p=ac.PivotOf(o)
+if p then
+local q=(p-j[k]).Magnitude
+if q<l then m,l=o,q end
 end
 end
 
-return h,k
+return j,m
 end
 
 
@@ -11889,27 +11584,26 @@ end
 
 
 
-local function enterRoom(e)
-local f=e and e.model or nil
-if f==b then return end
-b=f
-a9=true
-bg,bf,bh,bi=nil,1,nil,nil
-bj,bk=os.clock(),false
-c,d=-1,os.clock()
+local function enterRoom(g)
+local h=g and g.model or nil
+if h==bb then return end
+bb=h
+ba=true
+bi,bh,bj,bk=nil,1,nil,nil
+c,d=os.clock(),false
+e,f=-1,os.clock()
 end
 
 
-local function trySweep(e,f)
+local function trySweep(g,h)
 
 
 if not S.agroSweep then return end
-if bg or bk then return end
-if os.clock()-bj>be then
-bk=true
+if bi or d then return end
+if os.clock()-c>bg then
+d=true
 if aq.enabled then
-aq.Log(("SWEEP %s: маршрута нет, комната одной кучкой"):format(
-tostring(e and e.name)))
+
 end
 return
 end
@@ -11920,23 +11614,21 @@ end
 
 
 
-local g=f and#f or 0
-if g~=c then
-c,d=g,os.clock()
+local i=h and#h or 0
+if i~=e then
+e,f=i,os.clock()
 return
 end
-if os.clock()-d<1 then return end
+if os.clock()-f<1 then return end
 
-local h=ab.HRP()
-local i,j
-if h and f then i,j=planSweep(f,h.Position)end
-if i then
-bg,bf,bh,bi=i,1,nil,j
-bk=true
+local j=ab.HRP()
+local k,l
+if j and h then k,l=planSweep(h,j.Position)end
+if k then
+bi,bh,bj,bk=k,1,nil,l
+d=true
 if aq.enabled then
-aq.Log(("SWEEP %s: кучек %d (живых %d), возврат к %s (кучка %d)"):format(
-tostring(e and e.name),#i,g,
-j and j.Name or"—",(#i>=3)and 2 or 1))
+
 end
 end
 end
@@ -11948,7 +11640,7 @@ end
 
 
 
-local e={
+local g={
 ["elder dark mage"]=true,
 
 
@@ -11969,51 +11661,46 @@ local e={
 }
 
 
-local function pickTarget(f,g)
-local h,i,j=math.huge,false
-for k,l in ipairs(f)do
-local m=ac.PivotOf(l)
-if m then
-local n=e[tostring(l.Name):lower()]==true
-local o=(m-g).Magnitude
+local function pickTarget(h,i)
+local j,k,l=math.huge,false
+for m,n in ipairs(h)do
+local o=ac.PivotOf(n)
+if o then
+local p=g[tostring(n.Name):lower()]==true
+local q=(o-i).Magnitude
 
 
-if(n and not i)or(n==i and o<h)then
-j,h,i=l,o,n
+if(p and not k)or(p==k and q<j)then
+l,j,k=n,q,p
 end
 end
 end
-return j,i
+return l,k
 end
 
-local function acquire(f)
-aB=f
+local function acquire(h)
+aB=h
 if aq.enabled then
-local g=f:FindFirstChildOfClass"Humanoid"
-local h,i=mobShape(f)
-local j,k=pcall(function()return f:GetExtentsSize()end)
-a6,a7=os.clock(),g and g.Health or 0
-aq.Log(("HOLD %s | размер %s | melee=%s | столб r=%.0f h=%.0f | высота=%.0f"):format(
-f.Name,
-j and("%.0f/%.0f/%.0f"):format(k.X,k.Y,k.Z)or"?",
-tostring(f:FindFirstChild"meleeDistance"and f.meleeDistance.Value),
-h,i,i+2))
+local i=h:FindFirstChildOfClass"Humanoid"
+mobShape(h)
+pcall(function()return h:GetExtentsSize()end)
+a8,a9=os.clock(),i and i.Health or 0
+
 end
 end
 
-local function noteKill(f)
-if not aq.enabled or a6==0 then return end
-local g=os.clock()-a6
-a6=0
-if g>0.2 then
-aq.Log(("KILL %s | %.0f hp за %.1fс = %.0f dps"):format(
-f.Name,a7,g,a7/g))
+local function noteKill(h)
+if not aq.enabled or a8==0 then return end
+local i=os.clock()-a8
+a8=0
+if i>0.2 then
+
 end
 end
 
 
 
-local f=7
+local h=7
 
 
 
@@ -12033,47 +11720,47 @@ local f=7
 
 
 
-local g=6
-local h,i=0,0
+local i=6
+local j,k=0,0
 
 local function refuge()
-local j=workspace:FindFirstChild"lastBossPylonShootParts"
-local k=j and#j:GetChildren()or 0
-if k>h then i=os.clock()+g end
-h=k
-if os.clock()>=i then return nil end
+local l=workspace:FindFirstChild"lastBossPylonShootParts"
+local m=l and#l:GetChildren()or 0
+if m>j then k=os.clock()+i end
+j=m
+if os.clock()>=k then return nil end
 
-local l=workspace:FindFirstChild"lastBossSafeZones"
-if not l then return nil end
-local m=ab.HRP()
-if not m then return nil end
-
-
+local n=workspace:FindFirstChild"lastBossSafeZones"
+if not n then return nil end
+local o=ab.HRP()
+if not o then return nil end
 
 
 
-local n,o=math.huge
-for p,q in ipairs(l:GetChildren())do
-local r,s=pcall(function()return q:GetPivot()end)
-if r and s then
-local u=(s.Position-m.Position).Magnitude
-if u<n then o,n=s.Position,u end
+
+
+local p,q=math.huge
+for r,s in ipairs(n:GetChildren())do
+local u,v=pcall(function()return s:GetPivot()end)
+if u and v then
+local w=(v.Position-o.Position).Magnitude
+if w<p then q,p=v.Position,w end
 end
 end
-return o
+return q
 end
 
-local j=false
-local k=false
 local l=false
-local m={point=nil}
+local m=false
 local n=false
+local o={point=nil}
+local p=false
 
-local o,p,q,r=false,0,0,-99
-local s=false
-local u=0
-local v=0
+local q,r,s,u=false,0,0,-99
+local v=false
 local w=0
+local x=0
+local y=0
 
 
 
@@ -12088,37 +11775,35 @@ local w=0
 
 
 if aq.enabled then
-local x=0
+local z=0
 
 spawnLoop(function()
-local y=false
+local A=false
 while not _apelStopped do
 task.wait(0.05)
 pcall(function()
-local z=ab.Char()
-local A=z and z:FindFirstChild("arrowDownGui",true)
-local B=A~=nil
-if B and not y then
-x=os.clock()
-aq.Log"СТРЕЛКА: появилась над нами"
-elseif y and not B then
-aq.Log(("СТРЕЛКА: пропала, провисела %.2fс"):format(
-os.clock()-x))
+local B=ab.Char()
+local C=B and B:FindFirstChild("arrowDownGui",true)
+local D=C~=nil
+if D and not A then
+z=os.clock()
+
+elseif A and not D then
+
 end
-y=B
+A=D
 end)
 end
 end)
 
-regConn(workspace.DescendantAdded:Connect(function(y)
-local z=y.Parent and tostring(y.Parent.Name):lower()or""
-if not z:find("finalbossarrowshothitbox",1,true)then return end
-if tostring(y.Name):lower()~="hitbox"then return end
+regConn(workspace.DescendantAdded:Connect(function(A)
+local B=A.Parent and tostring(A.Parent.Name):lower()or""
+if not B:find("finalbossarrowshothitbox",1,true)then return end
+if tostring(A.Name):lower()~="hitbox"then return end
 
-local A=ab.HRP()
-local B=A and(y.Position-A.Position).Magnitude or-1
-aq.Log(("СТРЕЛА: прилетела в %.0f студах, стрелка была за %.2fс до неё"):format(
-B,x>0 and(os.clock()-x)or-1))
+local C=ab.HRP()local D=
+C and(A.Position-C.Position).Magnitude or-1
+
 end))
 end
 
@@ -12132,54 +11817,49 @@ end
 
 
 if aq.enabled then
-local x={}
-regConn(workspace.ChildAdded:Connect(function(y)
-local z=tostring(y.Name):lower()
-if not(z:find("thirdboss",1,true)or z:find("cog",1,true)
-or z:find("safe",1,true))then
+local z={}
+regConn(workspace.ChildAdded:Connect(function(A)
+local B=tostring(A.Name):lower()
+if not(B:find("thirdboss",1,true)or B:find("cog",1,true)
+or B:find("safe",1,true))then
 return
 end
-if x[z]then return end
-x[z]=true
+if z[B]then return end
+z[B]=true
 
 task.delay(0.35,function()
 pcall(function()
-local A=workspace:FindFirstChild"thirdBossMiddlePart"
-local B=A and A.Position or Vector3.zero
-local C=ab.HRP()
+local C=workspace:FindFirstChild"thirdBossMiddlePart"
+local D=C and C.Position or Vector3.zero
+local E=ab.HRP()
 
 
 
 
-local D={}
-for E,F in ipairs(y:GetChildren())do
-local G,H=pcall(function()return F:GetPivot().Position end)
-if G and H then
-local I=Vector3.new(H.X-B.X,0,H.Z-B.Z)
-local J=math.deg(math.atan2(I.Z,I.X))
-local K=""
-if F:IsA"BasePart"then
-K=(" size=%s look=%.2f,%.2f"):format(
-tostring(F.Size),F.CFrame.LookVector.X,F.CFrame.LookVector.Z)
+local F={}
+for G,H in ipairs(A:GetChildren())do
+local I,J=pcall(function()return H:GetPivot().Position end)
+if I and J then
+local K=Vector3.new(J.X-D.X,0,J.Z-D.Z)
+local L=math.deg(math.atan2(K.Z,K.X))
+local M=""
+if H:IsA"BasePart"then
+M=(" size=%s look=%.2f,%.2f"):format(
+tostring(H.Size),H.CFrame.LookVector.X,H.CFrame.LookVector.Z)
 end
-D[#D+1]=("%s[%s] R=%.0f угол=%.0f%s"):format(
-F.Name,F.ClassName,I.Magnitude,J,K)
+F[#F+1]=("s1"):format(
+H.Name,H.ClassName,K.Magnitude,L,M)
 end
-if#D>=14 then break end
-end
-
-local E,F=-1,-999
-if C then
-local G=Vector3.new(C.Position.X-B.X,0,
-C.Position.Z-B.Z)
-E=G.Magnitude
-F=math.deg(math.atan2(G.Z,G.X))
+if#F>=14 then break end
 end
 
-aq.Log(("УЛЬТА3: появилось %s, детей %d | центр %.0f,%.0f,%.0f | мы R=%.0f угол=%.0f"):format(
-y.Name,#y:GetChildren(),
-B.X,B.Y,B.Z,E,F))
-aq.Log("УЛЬТА3: "..table.concat(D," ;; "))
+local G,H=-1,-999
+if E then
+local I=Vector3.new(E.Position.X-D.X,0,
+E.Position.Z-D.Z)
+G=I.Magnitude
+H=math.deg(math.atan2(I.Z,I.X))
+end
 
 
 
@@ -12187,27 +11867,30 @@ aq.Log("УЛЬТА3: "..table.concat(D," ;; "))
 
 
 
-if y.Name=="thirdBossSafeSpots"then
+
+
+
+if A.Name=="thirdBossSafeSpots"then
 task.delay(0.6,function()
 pcall(function()
-local G={}
-for H=15,90,15 do
 local I={}
-for J=0,350,20 do
-local K=math.rad(J)
-local L=Vector3.new(
-B.X+math.cos(K)*H,
-B.Y+3,
-B.Z+math.sin(K)*H)
-local M=af.GroundAt(L.X,L.Z,L.Y+20)
-if M and af.IsSafe(M,4)then
-I[#I+1]=tostring(J)
+for J=15,90,15 do
+local K={}
+for L=0,350,20 do
+local M=math.rad(L)
+local N=Vector3.new(
+D.X+math.cos(M)*J,
+D.Y+3,
+D.Z+math.sin(M)*J)
+local O=af.GroundAt(N.X,N.Z,N.Y+20)
+if O and af.IsSafe(O,4)then
+K[#K+1]=tostring(L)
 end
 end
-G[#G+1]=("R=%d: %s"):format(H,
-#I>0 and table.concat(I,",")or"нигде")
+I[#I+1]=("R=%d: %s"):format(J,
+#K>0 and table.concat(K,",")or"s2")
 end
-aq.Log("УЛЬТА3 чисто: "..table.concat(G," | "))
+
 end)
 end)
 end
@@ -12229,34 +11912,33 @@ end
 
 if aq.enabled then
 spawnLoop(function()
-local x=0
+local z=0
 while not _apelStopped do
 task.wait(0.5)
-if os.clock()-x>=15 then
+if os.clock()-z>=15 then
 pcall(function()
-local y=workspace:FindFirstChild"secondBossCrossBeam"
-if not y then return end
-x=os.clock()
+local A=workspace:FindFirstChild"secondBossCrossBeam"
+if not A then return end
+z=os.clock()
 
-local z,A,B={},{},{}
-for C,D in ipairs(y:GetDescendants())do
-if D:IsA"BasePart"then
-local E=D.Name
-A[E]=math.min(A[E]or 9,D.Transparency)
-B[E]=math.max(B[E]or-1,D.Transparency)
+local B,C,D={},{},{}
+for E,F in ipairs(A:GetDescendants())do
+if F:IsA"BasePart"then
+local G=F.Name
+C[G]=math.min(C[G]or 9,F.Transparency)
+D[G]=math.max(D[G]or-1,F.Transparency)
 end
 end
-for C in pairs(A)do
-z[#z+1]=("%s %.2f..%.2f"):format(C,A[C],B[C])
+for E in pairs(C)do
+B[#B+1]=("%s %.2f..%.2f"):format(E,C[E],D[E])
 end
 
 
 
-local C=os.clock()
+local E=os.clock()
 task.spawn(function()
-while y.Parent and os.clock()-C<30 do task.wait(0.25)end
-aq.Log(("КРЕСТ: прожил %.1fс, прозрачность %s"):format(
-os.clock()-C,table.concat(z,", ")))
+while A.Parent and os.clock()-E<30 do task.wait(0.25)end
+
 end)
 end)
 end
@@ -12279,56 +11961,56 @@ end
 
 
 if aq.enabled then
-local x={
+local z={
 "outwardblastsize","crossbeam","bosshorizontalbeam",
 "circlehit","bosscannonbeam","bossrandomstrike",
 }
-local y,z={},{}
+local A,B={},{}
 
-local function watched(A)
-local B=tostring(A):lower()
-for C,D in ipairs(x)do
-if B:find(D,1,true)then return D end
+local function watched(C)
+local D=tostring(C):lower()
+for E,F in ipairs(z)do
+if D:find(F,1,true)then return F end
 end
 return nil
 end
 
-regConn(workspace.DescendantAdded:Connect(function(A)
-if not A:IsA"BasePart"then return end
-local B=A.Parent
-if not B or z[B]then return end
-local C=watched(B.Name)
-if not C then return end
-local D=os.clock()
-if y[C]and D-y[C]<3 then return end
-y[C],z[B]=D,true
+regConn(workspace.DescendantAdded:Connect(function(C)
+if not C:IsA"BasePart"then return end
+local D=C.Parent
+if not D or B[D]then return end
+local E=watched(D.Name)
+if not E then return end
+local F=os.clock()
+if A[E]and F-A[E]<3 then return end
+A[E],B[D]=F,true
 
 task.spawn(function()
-local E=os.clock()
-local F,G,H
+local G=os.clock()
+local H,I,J
 
-while os.clock()-E<6 and B.Parent do
-for I,J in ipairs(B:GetChildren())do
-if J:IsA"BasePart"then
-local K=tostring(J.Name):lower()
-if not F and K:find("precast",1,true)then
-F=os.clock()-E
+while os.clock()-G<6 and D.Parent do
+for K,L in ipairs(D:GetChildren())do
+if L:IsA"BasePart"then
+local M=tostring(L.Name):lower()
+if not H and M:find("precast",1,true)then
+H=os.clock()-G
 end
-if not G and K:find("hitbox",1,true)then
-G=os.clock()-E
+if not I and M:find("hitbox",1,true)then
+I=os.clock()-G
 end
-if not H and J.Transparency<0.9 then
-H=os.clock()-E
+if not J and L.Transparency<0.9 then
+J=os.clock()-G
 end
 end
 end
 task.wait()
 end
-local I=os.clock()-E
-local function t(J)return J and("+%.2f"):format(J)or"нет"end
-aq.Timing(("%s | precast %s | hitBox %s | видно %s | прожил %.2f"):format(
-B.Name,t(F),t(G),t(H),I))
-z[B]=nil
+local K=os.clock()-G
+local function t(L)return L and("+%.2f"):format(L)or"s3"end
+aq.Timing(("s4"):format(
+D.Name,t(H),t(I),t(J),K))
+B[D]=nil
 end)
 end))
 end
@@ -12354,108 +12036,101 @@ end
 
 
 if aq.enabled then
-local x,y,z=70,1.5,4
-local A={}
+local z,A,B=70,1.5,4
+local C={}
 
-local function noteBirth(B)
-if not B:IsA"BasePart"then return end
-local C=os.clock()
+local function noteBirth(D)
+if not D:IsA"BasePart"then return end
+local E=os.clock()
 task.defer(function()
-if not B.Parent then return end
-local D=ab.HRP()
-if not D then return end
-local E,F=pcall(function()return B.Position end)
-if not E then return end
-local G=(F-D.Position).Magnitude
-if G>x then return end
-local H=B.Parent
-A[#A+1]={
-t=C,gap=G,
-name=B.Name,
-owner=H and H.Name or"?",
-grand=H and H.Parent and H.Parent.Name or"?",
-size=B.Size,
-mat=tostring(B.Material):gsub("Enum.Material.",""),
-query=B.CanQuery,collide=B.CanCollide,
-clear=B.Transparency,
+if not D.Parent then return end
+local F=ab.HRP()
+if not F then return end
+local G,H=pcall(function()return D.Position end)
+if not G then return end
+local I=(H-F.Position).Magnitude
+if I>z then return end
+local J=D.Parent
+C[#C+1]={
+t=E,gap=I,
+name=D.Name,
+owner=J and J.Name or"?",
+grand=J and J.Parent and J.Parent.Name or"?",
+size=D.Size,
+mat=tostring(D.Material):gsub("Enum.Material.",""),
+query=D.CanQuery,collide=D.CanCollide,
+clear=D.Transparency,
 zone=(function()
-local I,J=pcall(af.IsZone,B)
-return I and J or false
+local K,L=pcall(af.IsZone,D)
+return K and L or false
 end)(),
 }
-if#A>500 then table.remove(A,1)end
+if#C>500 then table.remove(C,1)end
 end)
 end
 
 regConn(workspace.DescendantAdded:Connect(noteBirth))
 
 
-local function nowLooksLikeAttack(B)
-local C={}
-for D,E in ipairs(workspace:GetDescendants())do
-if E:IsA"BasePart"and not E.CanCollide then
-local F,G=pcall(function()return E.Position end)
-if F then
-local H=(G-B.Position).Magnitude
-if H<=30 and math.max(E.Size.X,E.Size.Y,E.Size.Z)>=3 then
-C[#C+1]=("%s/%s %s | в %.1f | %s | видимость %.2f | зона %s")
-:format(tostring(E.Parent and E.Parent.Name or"?"),E.Name,
-tostring(E.Size),H,
-tostring(E.Material):gsub("Enum.Material.",""),
-E.Transparency,
-tostring((select(2,pcall(af.IsZone,E)))or false))
+local function nowLooksLikeAttack(D)
+local E={}
+for F,G in ipairs(workspace:GetDescendants())do
+if G:IsA"BasePart"and not G.CanCollide then
+local H,I=pcall(function()return G.Position end)
+if H then
+local J=(I-D.Position).Magnitude
+if J<=30 and math.max(G.Size.X,G.Size.Y,G.Size.Z)>=3 then
+E[#E+1]=("s5")
+:format(tostring(G.Parent and G.Parent.Name or"?"),G.Name,
+tostring(G.Size),J,
+tostring(G.Material):gsub("Enum.Material.",""),
+G.Transparency,
+tostring((select(2,pcall(af.IsZone,G)))or false))
 end
 end
 end
-if#C>=12 then break end
+if#E>=12 then break end
 end
-return C
+return E
 end
 
 spawnLoop(function()
-local B,C
+local D,E
 while not _apelStopped do
 task.wait(0.2)
-local D=ab.Humanoid()
-if D and D~=B then
-B,C=D,D.Health
-regConn(D.HealthChanged:Connect(function(E)
-local F=C or E
-C=E
-if E>=F then return end
-local G=ab.HRP()
-if not G then return end
-local H=os.clock()
+local F=ab.Humanoid()
+if F and F~=D then
+D,E=F,F.Health
+regConn(F.HealthChanged:Connect(function(G)
+local H=E or G
+E=G
+if G>=H then return end
+local I=ab.HRP()
+if not I then return end
+local J=os.clock()
 
-aq.Log(("УРОН -%.0f hp | модель %s | зон рядом %s")
-:format(F-E,
-af.ZoneAt(G.Position,1.5)and"НАКРЫТ"or"чисто",
-tostring(af.Count and select(1,af.Count())or"?")))
 
-local I=0
-for J=#A,1,-1 do
-local K=A[J]
-if H-K.t>y then break end
-I=I+1
-aq.Log(("   за %.2fс: %s/%s/%s %s | в %.1f | %s | query=%s collide=%s видимость %.2f | ЗОНА=%s")
-:format(H-K.t,K.grand,K.owner,K.name,
-tostring(K.size),K.gap,K.mat,
-tostring(K.query),tostring(K.collide),K.clear,
-tostring(K.zone)))
-if I>=10 then break end
+
+local K=0
+for L=#C,1,-1 do
+local M=C[L]
+if J-M.t>A then break end
+K=K+1
+
+if K>=10 then break end
 end
-if I==0 then
-aq.Log"   за 1.5с рядом НЕ ПОЯВИЛОСЬ НИЧЕГО"
+if K==0 then
+
 end
 
-for J,K in ipairs(nowLooksLikeAttack(G))do
-aq.Log("   сейчас рядом: "..K)
+for L,M in ipairs(nowLooksLikeAttack(I))do
+
 end
 end))
 end
 
-local E=os.clock()-z
-while A[1]and A[1].t<E do table.remove(A,1)end
+local G=os.clock()-B
+while C[1]and C[1].t<G do table.remove(C,1)end
 end
 end)
 end
@@ -12473,28 +12148,28 @@ end
 
 if aq.enabled then
 task.spawn(function()
-local x=game:GetService"ReplicatedStorage"
-local y=x:FindFirstChild"Utility"
-local z=y and y:FindFirstChild"BridgeNet2"
-if not z then
-aq.Bridge"BridgeNet2 не найден — слушать нечего"
+local z=game:GetService"ReplicatedStorage"
+local A=z:FindFirstChild"Utility"
+local B=A and A:FindFirstChild"BridgeNet2"
+if not B then
+aq.Bridge"s6"
 return
 end
-local A,B=pcall(require,z)
-if not A then
-aq.Bridge("require BridgeNet2 упал: "..tostring(B))
+local C,D=pcall(require,B)
+if not C then
+aq.Bridge("s7"..tostring(D))
 return
 end
-local C,D=pcall(B.ReferenceBridge,"precastHitbox")
-if not C or not D then
-aq.Bridge("ReferenceBridge упал: "..tostring(D))
+local E,F=pcall(D.ReferenceBridge,"precastHitbox")
+if not E or not F then
+aq.Bridge("s8"..tostring(F))
 return
 end
-local E=B.ReferenceIdentifier"action"
-aq.Bridge(("подписался · карта %s · плейс %d"):format(
+local G=D.ReferenceIdentifier"action"
+aq.Bridge(("s9"):format(
 tostring(ac.Name()),game.PlaceId))
 
-local F=0
+local H=0
 
 
 
@@ -12507,72 +12182,72 @@ local F=0
 task.spawn(function()
 while not _apelStopped do
 task.wait(15)
-aq.Bridge(("жив, пакетов за прогон: %d · карта %s")
-:format(F,tostring(ac.Name())))
+aq.Bridge(("s10")
+:format(H,tostring(ac.Name())))
 end
 end)
-regConn(D:Connect(function(G)
-F=F+1
-local H=tostring(G and G[E])
-local I=G and(G.cframe or G.position)
-local J=G and(G.size and tostring(G.size)
-or(G.radius and("радиус "..tostring(G.radius)))or"?")
-local K="?"
-if I then
-local L=typeof(I)=="CFrame"and I.Position or I
-K=("%.0f,%.0f,%.0f"):format(L.X,L.Y,L.Z)
+regConn(F:Connect(function(I)
+H=H+1
+local J=tostring(I and I[G])
+local K=I and(I.cframe or I.position)
+local L=I and(I.size and tostring(I.size)
+or(I.radius and("s11"..tostring(I.radius)))or"?")
+local M="?"
+if K then
+local N=typeof(K)=="CFrame"and K.Position or K
+M=("%.0f,%.0f,%.0f"):format(N.X,N.Y,N.Z)
 end
-local L=ab.HRP()
-local M="-"
-if L and K~="?"then
-local N=typeof(I)=="CFrame"and I.Position or I
-M=("%.0f"):format((N-L.Position).Magnitude)
-end
-
-
-
-
-
-
-local N="-"
-if G and tonumber(G.delayUntilAttack)and tonumber(G.startTime)then
-N=("%.2f"):format(tonumber(G.delayUntilAttack)
--(workspace:GetServerTimeNow()-tonumber(G.startTime)))
+local N=ab.HRP()
+local O="-"
+if N and M~="?"then
+local P=typeof(K)=="CFrame"and K.Position or K
+O=("%.0f"):format((P-N.Position).Magnitude)
 end
 
-local O=("#%d %s | %s | %s | до нас %s | delay=%s | осталось %s"):format(
-F,H,K,J,M,
-tostring(G and G.delayUntilAttack),N)
-aq.Bridge(O..(" | start=%s"):format(tostring(G and G.startTime)))
 
 
 
 
 
-
-
-
-local function show(P,Q)
-local R=typeof(P)
-if R=="table"then
-if Q<=0 then return"{...}"end
-local T={}
-for U,V in pairs(P)do
-T[#T+1]=tostring(U).."="..show(V,Q-1)
+local P="-"
+if I and tonumber(I.delayUntilAttack)and tonumber(I.startTime)then
+P=("%.2f"):format(tonumber(I.delayUntilAttack)
+-(workspace:GetServerTimeNow()-tonumber(I.startTime)))
 end
-table.sort(T)
-return"{"..table.concat(T," ").."}"
+
+local Q=("s12"):format(
+H,J,M,L,O,
+tostring(I and I.delayUntilAttack),P)
+aq.Bridge(Q..(" | start=%s"):format(tostring(I and I.startTime)))
+
+
+
+
+
+
+
+
+local function show(R,T)
+local U=typeof(R)
+if U=="table"then
+if T<=0 then return"{...}"end
+local V={}
+for W,X in pairs(R)do
+V[#V+1]=tostring(W).."="..show(X,T-1)
 end
-if R=="CFrame"then
-local T=P.Position
-return("CFrame(%.0f,%.0f,%.0f)"):format(T.X,T.Y,T.Z)
+table.sort(V)
+return"{"..table.concat(V," ").."}"
 end
-return("%s(%s)"):format(R,tostring(P))
+if U=="CFrame"then
+local V=R.Position
+return("CFrame(%.0f,%.0f,%.0f)"):format(V.X,V.Y,V.Z)
 end
-if type(G)=="table"then
-aq.Bridge("   сырьё: "..show(G,2))
+return("%s(%s)"):format(U,tostring(R))
+end
+if type(I)=="table"then
+aq.Bridge("s13"..show(I,2))
 else
-aq.Bridge("   сырьё: "..show(G,2).." (не таблица)")
+aq.Bridge("s13"..show(I,2).."s14")
 end
 end))
 end)
@@ -12590,42 +12265,42 @@ end
 
 if aq.enabled then
 spawnLoop(function()
-local x={}
+local z={}
 while not _apelStopped do
 task.wait(2)
-local y=ab.HRP()
-if y and IN_MATCH then
+local A=ab.HRP()
+if A and IN_MATCH then
 pcall(function()
 
-local z=ac.Nearest(y.Position,60)
-local A=z and ac.PivotOf(z)
-if not A then return end
+local B=ac.Nearest(A.Position,60)
+local C=B and ac.PivotOf(B)
+if not C then return end
 
-local B={}
-for C,D in ipairs(workspace:GetDescendants())do
-if D:IsA"BasePart"and not D:IsDescendantOf(z)
-and not Players:GetPlayerFromCharacter(D.Parent or D)
+local D={}
+for E,F in ipairs(workspace:GetDescendants())do
+if F:IsA"BasePart"and not F:IsDescendantOf(B)
+and not Players:GetPlayerFromCharacter(F.Parent or F)
 then
-local E=(D.Position-A).Magnitude
+local G=(F.Position-C).Magnitude
 
 
-if E<=22 and math.max(D.Size.X,D.Size.Y,D.Size.Z)>=3
-and not af.IsZone(D)
+if G<=22 and math.max(F.Size.X,F.Size.Y,F.Size.Z)>=3
+and not af.IsZone(F)
 then
-local F=D.Parent and D.Parent.Name or"?"
-local G=F.."/"..D.Name.."/"..tostring(D.Size)
-if not x[G]and#B<6 then
-x[G]=true
-B[#B+1]=("%s %s %s trans=%.2f cq=%s"):format(
-G,tostring(D.Material):gsub("Enum.Material.",""),
-D.Anchored and"anch"or"free",
-D.Transparency,tostring(D.CanQuery))
+local H=F.Parent and F.Parent.Name or"?"
+local I=H.."/"..F.Name.."/"..tostring(F.Size)
+if not z[I]and#D<6 then
+z[I]=true
+D[#D+1]=("%s %s %s trans=%.2f cq=%s"):format(
+I,tostring(F.Material):gsub("Enum.Material.",""),
+F.Anchored and"anch"or"free",
+F.Transparency,tostring(F.CanQuery))
 end
 end
 end
 end
-if#B>0 then
-aq.Log(("НЕ ВИЖУ у %s: %s"):format(z.Name,table.concat(B," ;; ")))
+if#D>0 then
+
 end
 end)
 end
@@ -12642,12 +12317,11 @@ if aq.enabled then
 spawnLoop(function()
 while not _apelStopped do
 task.wait(2)
-local x,y=ab.HRP(),aB
-local z=y and ac.PivotOf(y)
-if x and z then
-local A=Vector3.new(x.Position.X-z.X,0,x.Position.Z-z.Z).Magnitude
-aq.Log(("СТОЙКА у %s: вбок %.1f | вверх %.1f"):format(
-y.Name,A,x.Position.Y-z.Y))
+local z,A=ab.HRP(),aB
+local B=A and ac.PivotOf(A)
+if z and B then local C=
+Vector3.new(z.Position.X-B.X,0,z.Position.Z-B.Z).Magnitude
+
 end
 end
 end)
@@ -12662,25 +12336,25 @@ end
 
 if aq.enabled then
 spawnLoop(function()
-local x=""
+local z=""
 while not _apelStopped do
 task.wait(3)
-local y=ab.HRP()
-if y and IN_MATCH then
-local z,A={},0
-for B,C in ipairs(workspace:GetDescendants())do
-if C:IsA"Humanoid"then
-local D=C.Parent
-local E,F=pcall(function()return D:GetPivot().Position end)
-if E and D~=LocalPlayer.Character
-and not Players:GetPlayerFromCharacter(D)then
-local G=(F-y.Position).Magnitude
-if G<=90 then
-A=A+1
-if#z<12 then
-z[#z+1]=("%s @%.0f hp=%.0f [%s]"):format(
-D.Name,G,C.Health,
-D.Parent and D.Parent:GetFullName():gsub(
+local A=ab.HRP()
+if A and IN_MATCH then
+local B,C={},0
+for D,E in ipairs(workspace:GetDescendants())do
+if E:IsA"Humanoid"then
+local F=E.Parent
+local G,H=pcall(function()return F:GetPivot().Position end)
+if G and F~=LocalPlayer.Character
+and not Players:GetPlayerFromCharacter(F)then
+local I=(H-A.Position).Magnitude
+if I<=90 then
+C=C+1
+if#B<12 then
+B[#B+1]=("%s @%.0f hp=%.0f [%s]"):format(
+F.Name,I,E.Health,
+F.Parent and F.Parent:GetFullName():gsub(
 "^Workspace%.?","")or"?")
 end
 end
@@ -12689,10 +12363,10 @@ end
 end
 
 
-local B=("КТО РЯДОМ: %d | %s"):format(A,table.concat(z," ;; "))
-if B~=x then
-x=B
-aq.Log(B)
+local D=("s15"):format(C,table.concat(B," ;; "))
+if D~=z then
+z=D
+
 end
 end
 end
@@ -12708,25 +12382,25 @@ end
 
 
 if aq.enabled then
-local x=0
-regConn(workspace.DescendantAdded:Connect(function(y)
-local z=y.Parent and tostring(y.Parent.Name):lower()or""
-if not z:find("secondbosscrescent",1,true)then return end
-if not y:IsA"BasePart"then return end
-if os.clock()-x<5 then return end
-x=os.clock()
+local z=0
+regConn(workspace.DescendantAdded:Connect(function(A)
+local B=A.Parent and tostring(A.Parent.Name):lower()or""
+if not B:find("secondbosscrescent",1,true)then return end
+if not A:IsA"BasePart"then return end
+if os.clock()-z<5 then return end
+z=os.clock()
 
 task.spawn(function()
-local A=y.Position
-local B=os.clock()
+local C=A.Position
+local D=os.clock()
 task.wait(0.25)
-if not y.Parent then
-aq.Log"ПОЛУМЕСЯЦ: прожил меньше четверти секунды"
+if not A.Parent then
+
 return
 end
-local C=math.max(os.clock()-B,0.001)
-local D=(y.Position-A).Magnitude/C
-local E=ab.HRP()
+local E=math.max(os.clock()-D,0.001)local F=
+(A.Position-C).Magnitude/E
+ab.HRP()
 
 
 
@@ -12735,22 +12409,18 @@ local E=ab.HRP()
 
 
 
-local F,G,H=math.huge,-math.huge,0
-for I,J in ipairs(workspace:GetDescendants())do
-if J:IsA"BasePart"and J.Parent
-and tostring(J.Parent.Name):lower():find("secondbosscrescent",1,true)
+local G,H,I=math.huge,-math.huge,0
+for J,K in ipairs(workspace:GetDescendants())do
+if K:IsA"BasePart"and K.Parent
+and tostring(K.Parent.Name):lower():find("secondbosscrescent",1,true)
 then
-H=H+1
-F=math.min(F,J.Position.Y-J.Size.Y*0.5)
-G=math.max(G,J.Position.Y+J.Size.Y*0.5)
+I=I+1
+G=math.min(G,K.Position.Y-K.Size.Y*0.5)
+H=math.max(H,K.Position.Y+K.Size.Y*0.5)
 end
 end
 
-aq.Log(("ПОЛУМЕСЯЦ: %.0f студ/с, упреждение %s, до нас %.0f студ | %d шт, высота %.1f..%.1f, мы на %.1f"):format(
-D,D>=18 and"строится"or"НЕ СТРОИТСЯ",
-E and(y.Position-E.Position).Magnitude or-1,
-H,F<math.huge and F or-1,G>-math.huge and G or-1,
-E and E.Position.Y or-1))
+
 end)
 end))
 end
@@ -12771,70 +12441,69 @@ end
 
 
 if aq.enabled then
-local x=0
+local z=0
 
 
 
-local function beamOf(y)
-local z,A=0
-for B,C in ipairs(y:GetDescendants())do
-if C:IsA"BasePart"then
-local D=C.Size.X*C.Size.Y*C.Size.Z
-if D>z then A,z=C,D end
+local function beamOf(A)
+local B,C=0
+for D,E in ipairs(A:GetDescendants())do
+if E:IsA"BasePart"then
+local F=E.Size.X*E.Size.Y*E.Size.Z
+if F>B then C,B=E,F end
 end
 end
-return A
+return C
 end
 
 
-local function axisOf(y,z)
-local A=y.CFrame:PointToObjectSpace(z)
-local B=y.Size
-local C,D
-if B.X>=B.Y and B.X>=B.Z then
-C,D=A.X,Vector3.new(0,A.Y,A.Z).Magnitude
-elseif B.Z>=B.Y then
-C,D=A.Z,Vector3.new(A.X,A.Y,0).Magnitude
-else
-C,D=A.Y,Vector3.new(A.X,0,A.Z).Magnitude
-end
-return C,D,A
-end
 
-local function insideOf(y,z,A,B)
-local C=y.CFrame:PointToObjectSpace(z)
-local D=y.Size*0.5
-return math.abs(C.X)<=D.X+A
-and math.abs(C.Y)<=D.Y+B
-and math.abs(C.Z)<=D.Z+A
-end
 
-local function describe(y,z,A)
-local B,C,D=axisOf(z,A)
-return("%s %s %s | центр %.0f,%.0f,%.0f | вдоль %.1f поперёк %.1f | по высоте %.1f | внутри %s, с запасом 3/12 %s"):format(
-y,z.Name,tostring(z.Size),
-z.Position.X,z.Position.Y,z.Position.Z,
-B,C,D.Y,
-tostring(insideOf(z,A,0,0)),
-tostring(insideOf(z,A,3,12)))
-end
 
-regConn(workspace.DescendantAdded:Connect(function(y)
-local z=y.Parent and tostring(y.Parent.Name):lower()or""
-if z~="bossrifleprecast"then return end
-if os.clock()-x<3 then return end
-x=os.clock()
-local A=y.Parent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+regConn(workspace.DescendantAdded:Connect(function(A)
+local B=A.Parent and tostring(A.Parent.Name):lower()or""
+if B~="bossrifleprecast"then return end
+if os.clock()-z<3 then return end
+z=os.clock()
+local C=A.Parent
 
 task.spawn(function()
 
 task.wait(0.05)
-if not A.Parent then return end
-local B=beamOf(A)
-local C=ab.HRP()
-if not B or not C then return end
-local D,E=B.CFrame,B.Size
-aq.Log("РУЖЬЁ: "..describe("предупреждение",B,C.Position))
+if not C.Parent then return end
+local D=beamOf(C)
+local E=ab.HRP()
+if not D or not E then return end
+local F,G=D.CFrame,D.Size
 
 
 
@@ -12842,40 +12511,38 @@ aq.Log("РУЖЬЁ: "..describe("предупреждение",B,C.Position))
 
 
 
-local F=os.clock()+3
-local G
-while os.clock()<F do
-for H,I in ipairs(workspace:GetChildren())do
-if I:IsA"Model"and tostring(I.Name):lower()=="bossrifleshot"then
-G=beamOf(I)
+
+local H=os.clock()+3
+local I
+while os.clock()<H do
+for J,K in ipairs(workspace:GetChildren())do
+if K:IsA"Model"and tostring(K.Name):lower()=="bossrifleshot"then
+I=beamOf(K)
 break
 end
 end
-if G then break end
+if I then break end
 task.wait(0.03)
 end
 
-local H=ab.HRP()
-if not G or not H then
-aq.Log"РУЖЬЁ: выстрел за три секунды не появился"
+local J=ab.HRP()
+if not I or not J then
+
 return
 end
-aq.Log("РУЖЬЁ: "..describe("выстрел",G,H.Position))
 
 
 
-local function longDir(I,J)
-if J.X>=J.Y and J.X>=J.Z then return I.RightVector end
-if J.Z>=J.Y then return I.LookVector end
-return I.UpVector
+
+local function longDir(K,L)
+if L.X>=L.Y and L.X>=L.Z then return K.RightVector end
+if L.Z>=L.Y then return K.LookVector end
+return K.UpVector
 end
-local I=longDir(D,E)
-local J=longDir(G.CFrame,G.Size)
-local K=math.clamp(math.abs(I:Dot(J)),-1,1)
-aq.Log(("РУЖЬЁ: угол между стволами %.1f°, сдвиг центров %.1f студ | мы сместились на %.1f студ"):format(
-math.deg(math.acos(K)),
-(G.Position-D.Position).Magnitude,
-(H.Position-C.Position).Magnitude))
+local K=longDir(F,G)
+local L=longDir(I.CFrame,I.Size)
+math.clamp(math.abs(K:Dot(L)),-1,1)
+
 end)
 end))
 end
@@ -12892,24 +12559,23 @@ end
 
 
 if aq.enabled then
-local x=0
-regConn(workspace.DescendantAdded:Connect(function(y)
-local z=tostring(y.Name):lower()
-if z:find("finalbossrotatingcircle",1,true)then
-x=os.clock()+9
-aq.Log"УЛЬТА: босс начал копить, пишу всё, что появится"
+local z=0
+regConn(workspace.DescendantAdded:Connect(function(A)
+local B=tostring(A.Name):lower()
+if B:find("finalbossrotatingcircle",1,true)then
+z=os.clock()+9
+
 return
 end
-if os.clock()>=x then return end
+if os.clock()>=z then return end
 
-if z=="apelmark"then return end
-local A=ab.HRP()
-local B=-1
-if A and y:IsA"BasePart"then
-B=(y.Position-A.Position).Magnitude
+if B=="apelmark"then return end
+local C=ab.HRP()
+local D=-1
+if C and A:IsA"BasePart"then
+D=(A.Position-C.Position).Magnitude
 end
-aq.Log(("УЛЬТА +%.1fс: %s [%s] в %.0f студах"):format(
-9-(x-os.clock()),y:GetFullName(),y.ClassName,B))
+
 end))
 end
 
@@ -12922,14 +12588,14 @@ end
 
 
 if ak.Watch()and aq.enabled then
-aq.Log"ВУЛКАН: слушаю volcanicBossSpecficEvents"
+
 end
 
 
 
 
 if al.Watch()and aq.enabled then
-aq.Log"СЕВЕР: слушаю northernBossSpecficEvents"
+
 end
 
 
@@ -12943,9 +12609,9 @@ ae.SetTrace(aq.enabled and aq.Log or nil)
 
 
 
-ae.SetGroundClamp(function(x)
-if not am.Allows"ground"then return x end
-local y=am.Active()
+ae.SetGroundClamp(function(z)
+if not am.Allows"ground"then return z end
+local A=am.Active()
 
 
 
@@ -12963,26 +12629,26 @@ local y=am.Active()
 
 
 
-if y and y.floorY and y.ceiling then
-local z=y.lift or 0
-local A=y.floorY+z
-local B=y.floorY+y.ceiling+z
-if x.Y>=A and x.Y<=B then return x end
-local C=af.GroundAt(x.X,x.Z,y.floorY+30)
-if C then
-local D=math.clamp(C.Y+z,A,B)
-return Vector3.new(x.X,D,x.Z)
+if A and A.floorY and A.ceiling then
+local B=A.lift or 0
+local C=A.floorY+B
+local D=A.floorY+A.ceiling+B
+if z.Y>=C and z.Y<=D then return z end
+local E=af.GroundAt(z.X,z.Z,A.floorY+30)
+if E then
+local F=math.clamp(E.Y+B,C,D)
+return Vector3.new(z.X,F,z.Z)
 end
-return Vector3.new(x.X,math.clamp(x.Y,A,B),x.Z)
+return Vector3.new(z.X,math.clamp(z.Y,C,D),z.Z)
 end
 
-local z=y and y.center.Y or x.Y
-local A=af.GroundAt(x.X,x.Z,z)
-if A and x.Y>A.Y+3 then return A end
-return x
+local B=A and A.center.Y or z.Y
+local C=af.GroundAt(z.X,z.Z,B)
+if C and z.Y>C.Y+3 then return C end
+return z
 end)
 
-regConn(RunService.Heartbeat:Connect(function(x)
+regConn(RunService.Heartbeat:Connect(function(z)
 if _apelStopped then return end
 
 
@@ -12991,12 +12657,12 @@ ae.SetVoidGuard(am.Allows"noVoid")
 
 
 if ae.RescueFromVoid()and aq.enabled then
-aq.Log"СПАСЕНИЕ ИЗ ПУСТОТЫ: вернул на последнюю твёрдую точку"
+
 end
 
 if not S.autoFarm then
 if ae.IsPinning()then
-drop(not S.autoFarm and"фарм выключен"or"включён полёт")
+drop(not S.autoFarm and"s17"or"s18")
 end
 return
 end
@@ -13051,23 +12717,23 @@ end
 
 
 
-local y=af.SafeSpot()
-if y then
-if not aM then
-aM=os.clock()
-if aq.enabled then aq.Log"УКРЫТИЕ: загорелось"end
+local A=af.SafeSpot()
+if A then
+if not aO then
+aO=os.clock()
+if aq.enabled then aq.Log"s19"end
 end
-aL=y
-aN=os.clock()
+aN=A
+aP=os.clock()
 
 
 
-aK=os.clock()+2.2
-elseif aM and(os.clock()-aN)>0.5 then
+aM=os.clock()+2.2
+elseif aO and(os.clock()-aP)>0.5 then
 if aq.enabled then
-aq.Log(("УКРЫТИЕ: погасло, горело %.1fс"):format(aN-aM))
+
 end
-aM=nil
+aO=nil
 end
 
 
@@ -13083,7 +12749,7 @@ end
 
 
 
-local z=aM~=nil and(os.clock()-aM)<3.4
+local B=aO~=nil and(os.clock()-aO)<3.4
 
 
 
@@ -13097,7 +12763,7 @@ local z=aM~=nil and(os.clock()-aM)<3.4
 
 
 
-local A=aL and((af.CleanNear(aL)or aL)
+local C=aN and((af.CleanNear(aN)or aN)
 +Vector3.new(0,3,0))or nil
 
 
@@ -13113,68 +12779,64 @@ local A=aL and((af.CleanNear(aL)or aL)
 
 
 
-local B=am.Value"haven"
-if B then
-local C=ab.HRP()
-local D=am.Value"havenWhen"
-local E,F=false
-if C then E,F=af.TimerRing(D,C.Position)end
-if E then
-if p==0 then q=os.clock()end
-p=os.clock()
+local D=am.Value"haven"
+if D then
+local E=ab.HRP()
+local F=am.Value"havenWhen"
+local G,H=false
+if E then G,H=af.TimerRing(F,E.Position)end
+if G then
+if r==0 then s=os.clock()end
+r=os.clock()
 end
 
-local G=am.Value"havenTail"or 1.5
-local H=p>0 and(os.clock()-p)<G
-if C and H then
-local I,J,K=af.HavenSpot(B,C.Position)
-if I then
+local I=am.Value"havenTail"or 1.5
+local J=r>0 and(os.clock()-r)<I
+if E and J then local
+K=af.HavenSpot(D,E.Position)
+if K then
 
 
 
-local L=I+Vector3.new(0,3,0)
-if not o then
-o=true
+local L=K+Vector3.new(0,3,0)
+if not q then
+q=true
 if aq.enabled then
-aq.Log(("ПРОКЛЯТИЕ: круг %s на нас (размер %.1f), иду в укрытие %.0f,%.0f,%.0f | радиус %.1f | лететь %.0f студов")
-:format(tostring(D),F or-1,
-I.X,I.Y,I.Z,J or-1,K or-1))
+
 end
 end
-ae.Where"укрытие проклятия"
+ae.Where"s20"
 ae.Pin(L,L+Vector3.new(0,0,1))
 return
-elseif aq.enabled and(os.clock()-r)>2 then
+elseif aq.enabled and(os.clock()-u)>2 then
 
 
-r=os.clock()
-aq.Log(("ПРОКЛЯТИЕ: круг на нас, а укрытия %s в мире НЕТ")
-:format(tostring(B)))
+u=os.clock()
+
 end
 end
 
 
 
 
-if not H and p>0 then
-if o and aq.enabled then
-aq.Log(("ПРОКЛЯТИЕ: отпустило, кольцо держалось %.1fс")
-:format(p-q))
+if not J and r>0 then
+if q and aq.enabled then
+
 end
-o=false
-p,q=0,0
+q=false
+r,s=0,0
 end
 end
 
-if am.Allows"gears"and aj.Step(m)then
-if not l then
-l=true
-if aq.enabled then aq.Log"ШЕСТЕРЁНКИ: фаза началась"end
+if am.Allows"gears"and aj.Step(o)then
+if not n then
+n=true
+if aq.enabled then aq.Log"s21"end
 end
 return
-elseif l then
-l=false
-if aq.enabled then aq.Log"ШЕСТЕРЁНКИ: фаза кончилась"end
+elseif n then
+n=false
+if aq.enabled then aq.Log"s22"end
 end
 
 
@@ -13186,14 +12848,14 @@ end
 
 
 if am.Allows"cannon"and ai.Step()then
-if not k then
-k=true
-if aq.enabled then aq.Log"ПУШКА: фаза началась, иду за ядром"end
+if not m then
+m=true
+if aq.enabled then aq.Log"s23"end
 end
 return
-elseif k then
-k=false
-if aq.enabled then aq.Log"ПУШКА: фаза кончилась"end
+elseif m then
+m=false
+if aq.enabled then aq.Log"s24"end
 end
 
 
@@ -13207,14 +12869,14 @@ end
 
 
 
-if A and not aM and not af.IsSafe(A,0)then
-A=nil
+if C and not aO and not af.IsSafe(C,0)then
+C=nil
 end
 
-if A and not z and os.clock()<aK then
-if not n then
-n=true
-if aq.enabled then aq.Log"УКРЫТИЕ: зашёл"end
+if C and not B and os.clock()<aM then
+if not p then
+p=true
+if aq.enabled then aq.Log"s25"end
 end
 
 
@@ -13227,15 +12889,15 @@ end
 
 
 
-ae.Where"укрытие"
-ae.Pin(A,A+Vector3.new(0,0,1))
+ae.Where"s26"
+ae.Pin(C,C+Vector3.new(0,0,1))
 return
 end
-if n then
-n=false
-if aq.enabled then aq.Log"УКРЫТИЕ: вышел"end
+if p then
+p=false
+if aq.enabled then aq.Log"s27"end
 end
-aL=nil
+aN=nil
 
 
 
@@ -13254,20 +12916,17 @@ if am.Allows"dome"then
 
 
 
-local C=af.HasDome()
-local D=ab.HRP()
-local E,F
-if not C then E,F=af.SafeDome()end
+local E=af.HasDome()
+local F=ab.HRP()
+local G,H
+if not E then G,H=af.SafeDome()end
 
 
-if aq.enabled and os.clock()-w>1 then
-local G=af.DomeReport()
-if#G>0 then
-w=os.clock()
-aq.Log(("КУПОЛ: щит на мне=%s, цель=%s | %s"):format(
-tostring(C),
-E and("%.0f,%.0f,%.0f"):format(E.X,E.Y,E.Z)or"нет",
-table.concat(G," ;; ")))
+if aq.enabled and os.clock()-y>1 then
+local I=af.DomeReport()
+if#I>0 then
+y=os.clock()
+
 end
 end
 
@@ -13282,25 +12941,14 @@ end
 
 
 
-if C then
-s=false
-elseif not E then
-u,v=0,0
+if E then
+v=false
+elseif not G then
+w,x=0,0
 end
-if E and u==0 then u=os.clock()end
+if G and w==0 then w=os.clock()end
 
-if E and D then
-
-
-
-
-
-
-
-
-
-
-local G=2
+if G and F then
 
 
 
@@ -13311,8 +12959,7 @@ local G=2
 
 
 
-
-local H=E
+local I=2
 
 
 
@@ -13324,13 +12971,25 @@ local H=E
 
 
 
-
-local I=math.abs(E.Y-D.Position.Y)<=60
-
+local J=G
 
 
-if I and not af.IsSafe(H,G)then
-H=af.CleanNear(H)or H
+
+
+
+
+
+
+
+
+
+
+local K=math.abs(G.Y-F.Position.Y)<=60
+
+
+
+if K and not af.IsSafe(J,I)then
+J=af.CleanNear(J)or J
 end
 
 
@@ -13353,28 +13012,28 @@ end
 
 
 
-local J=not af.IsSafe(H,G)
-if I and J and(os.clock()-u)<1.5 then
+local L=not af.IsSafe(J,I)
+if K and L and(os.clock()-w)<1.5 then
 
 
-ae.Where"щит: жду, пока пройдёт удар"
-ae.Pin(D.Position,D.Position+Vector3.new(0,0,1))
+ae.Where"s28"
+ae.Pin(F.Position,F.Position+Vector3.new(0,0,1))
 return
 end
 
-if I then
+if K then
 
-if not s then
-s=true
-if aq.enabled then
-local K=(E-D.Position).Magnitude
-aq.Log(("КУПОЛ: иду подбирать, %.0f студ"):format(K))
+if not v then
+v=true
+if aq.enabled then local M=
+(G-F.Position).Magnitude
+
 end
 end
 
 
-ae.Where"щит"
-ae.Pin(H,H+Vector3.new(0,0,1))
+ae.Where"s29"
+ae.Pin(J,J+Vector3.new(0,0,1))
 
 
 
@@ -13393,31 +13052,31 @@ ae.Pin(H,H+Vector3.new(0,0,1))
 
 
 
-local K=(E-D.Position).Magnitude
-if K<=8 and v==0 then
-v=os.clock()
+local M=(G-F.Position).Magnitude
+if M<=8 and x==0 then
+x=os.clock()
 end
 
-if F and K<=12 then
+if H and M<=12 then
 
 
 if type(firetouchinterest)=="function"then
-local L=ab.Char()
-for M,N in ipairs(L and L:GetChildren()or{})do
-if N:IsA"BasePart"then
-pcall(firetouchinterest,N,F,0)
-pcall(firetouchinterest,N,F,1)
+local N=ab.Char()
+for O,P in ipairs(N and N:GetChildren()or{})do
+if P:IsA"BasePart"then
+pcall(firetouchinterest,P,H,0)
+pcall(firetouchinterest,P,H,1)
 end
 end
 end
 
 
 
-if v>0 and(os.clock()-v)>=0.8 then
-af.MarkDomeUsed(F)
-v=0
+if x>0 and(os.clock()-x)>=0.8 then
+af.MarkDomeUsed(H)
+x=0
 if aq.enabled then
-aq.Log"КУПОЛ: постоял и коснулся, отмечаю использованным"
+
 end
 end
 end
@@ -13426,7 +13085,7 @@ end
 end
 end
 
-local C=refuge()
+local E=refuge()
 
 
 
@@ -13436,77 +13095,76 @@ local C=refuge()
 
 
 
-if C and am.Active()then C=nil end
+if E and am.Active()then E=nil end
 
 
 
-if C and not af.IsSafe(C+Vector3.new(0,3,0),ar)then
-C=nil
+if E and not af.IsSafe(E+Vector3.new(0,3,0),ar)then
+E=nil
 end
 
-if C then
-local D=C+Vector3.new(0,3,0)
-aC=D
-if not j then
-j=true
+if E then
+local F=E+Vector3.new(0,3,0)
+aC=F
+if not l then
+l=true
 if aq.enabled then
-aq.Log(("REFUGE идём в укрытие %.0f,%.0f,%.0f"):format(
-D.X,D.Y,D.Z))
+
 end
 end
 
 
 
-local E=am.Active()
-if E and E.groundOnly then
-local F=af.GroundAt(D.X,D.Z,E.center.Y)
-if F and D.Y>F.Y+3 then D=F end
+local G=am.Active()
+if G and G.groundOnly then
+local H=af.GroundAt(F.X,F.Z,G.center.Y)
+if H and F.Y>H.Y+3 then F=H end
 end
-ae.Pin(D,D+Vector3.new(0,-1,0))
+ae.Pin(F,F+Vector3.new(0,-1,0))
 return
 end
-if j then
-j=false
-if aq.enabled then aq.Log"REFUGE укрытие больше не нужно"end
+if l then
+l=false
+if aq.enabled then aq.Log"s30"end
 end
 
-local D
+local F
 
-if bg then
-local E=ab.HRP()and ab.HRP().Position
-local F=bg[bf]
-if E and F then
-local G=Vector3.new(E.X-F.X,0,E.Z-F.Z).Magnitude
-if G<bb then
-bh=bh or os.clock()
-local H=(bf==1)and bd or bc
-if os.clock()-bh>=H then
-bf,bh=bf+1,nil
+if bi then
+local G=ab.HRP()and ab.HRP().Position
+local H=bi[bh]
+if G and H then
+local I=Vector3.new(G.X-H.X,0,G.Z-H.Z).Magnitude
+if I<bd then
+bj=bj or os.clock()
+local J=(bh==1)and bf or be
+if os.clock()-bj>=J then
+bh,bj=bh+1,nil
 if aq.enabled then
-aq.Log(("SWEEP точка %d из %d пройдена"):format(bf-1,#bg))
+
 end
 end
 end
 end
 
-if bf>#bg and bi and ac.IsAlive(bi)then
-local G=ac.PivotOf(bi)
-if G and E then
-local H=Vector3.new(E.X-G.X,0,E.Z-G.Z).Magnitude
-if H>=bb then
-D=G
-F=G
+if bh>#bi and bk and ac.IsAlive(bk)then
+local I=ac.PivotOf(bk)
+if I and G then
+local J=Vector3.new(G.X-I.X,0,G.Z-I.Z).Magnitude
+if J>=bd then
+F=I
+H=I
 else
-bi=nil
-if aq.enabled then aq.Log"SWEEP возврат выполнен"end
+bk=nil
+if aq.enabled then aq.Log"s31"end
 end
 else
-bi=nil
+bk=nil
 end
 end
 
-if bf>#bg and not bi then
-bg=nil
+if bh>#bi and not bk then
+bi=nil
 
 
 
@@ -13514,15 +13172,15 @@ bg=nil
 
 
 aB=nil
-if aq.enabled then aq.Log"SWEEP закончен — встаём бить"end
-elseif bf<=#bg then
+if aq.enabled then aq.Log"s32"end
+elseif bh<=#bi then
 
 
-D=bg[bf]
+F=bi[bh]
 end
 end
 
-if not D then D=aB and ac.PivotOf(aB)or nil end
+if not F then F=aB and ac.PivotOf(aB)or nil end
 
 
 
@@ -13534,7 +13192,7 @@ if not D then D=aB and ac.PivotOf(aB)or nil end
 
 
 
-if not D then
+if not F then
 
 
 
@@ -13552,10 +13210,10 @@ if aC then
 
 
 
-local E=am.Active()
+local G=am.Active()
 if not af.IsSafe(aC,ar)then
-local F
-if E then
+local H
+if G then
 
 
 
@@ -13567,13 +13225,13 @@ if E then
 
 
 
-F=af.SafePointAround(aC,{
+H=af.SafePointAround(aC,{
 from=aC,min=6,max=64,
 margin=ar,baseY=aC.Y})
 else
-F=af.SafePoint(aC,ar)
+H=af.SafePoint(aC,ar)
 end
-if F then aC=F end
+if H then aC=H end
 end
 
 
@@ -13581,7 +13239,7 @@ end
 
 
 if af.IsSafe(aC,ar)then aD=nil end
-ae.Where"без цели"
+ae.Where"s33"
 ae.Pin(aC,aC-Vector3.new(0,1,0))
 else
 
@@ -13598,10 +13256,10 @@ else
 
 
 
-local E=ab.HRP()
-if E and IN_MATCH and ac.Started()and ae.IsPinning()then
-ae.Where"без цели: держусь на месте"
-ae.Pin(E.Position,E.Position+Vector3.new(0,0,1))
+local G=ab.HRP()
+if G and IN_MATCH and ac.Started()and ae.IsPinning()then
+ae.Where"s34"
+ae.Pin(G.Position,G.Position+Vector3.new(0,0,1))
 end
 end
 return
@@ -13639,11 +13297,11 @@ end
 
 
 
-local E=af.TargetedRecently(1.4)
+local G=af.TargetedRecently(1.4)
 
-local F=aB or ac.Nearest(D,40)
-local G,H=9,7
-if F then G,H=mobShape(F)end
+local H=aB or ac.Nearest(F,40)
+local I,J=9,7
+if H then I,J=mobShape(H)end
 
 
 
@@ -13658,13 +13316,13 @@ if F then G,H=mobShape(F)end
 
 
 
-local I=am.Allows"close"
+local K=am.Allows"close"
 
-local J=math.clamp(G,6,30)
+local L=math.clamp(I,6,30)
 
 
-local K=am.Value"keepAway"
-if type(K)=="number"then J=math.max(J,K)end
+local M=am.Value"keepAway"
+if type(M)=="number"then L=math.max(L,M)end
 
 
 
@@ -13672,8 +13330,8 @@ if type(K)=="number"then J=math.max(J,K)end
 
 
 
-local L=am.Value"stand"
-if type(L)=="number"then J=L end
+local N=am.Value"stand"
+if type(N)=="number"then L=N end
 
 
 
@@ -13692,15 +13350,15 @@ if type(L)=="number"then J=L end
 
 
 
-local M=I and math.min(H+1,8)or(H+1)
+local O=K and math.min(J+1,8)or(J+1)
 
 
 
 
 
 
-local N=am.Value"hover"
-if type(N)=="number"then M=N end
+local P=am.Value"hover"
+if type(P)=="number"then O=P end
 
 
 
@@ -13717,83 +13375,43 @@ if type(N)=="number"then M=N end
 
 
 
-local O=D.Y+M
-aU.hover,aU.raiser,aU.raiseH=M,"-",0
-for P,Q in ipairs(mobGuards())do
+local Q=F.Y+O
+aW.hover,aW.raiser,aW.raiseH=O,"-",0
+for R,T in ipairs(mobGuards())do
 
 
 
 
 
 
-local R=I and F~=nil and Q.mob==F
-local T=R and math.huge
-or Vector3.new(D.X-Q.pos.X,0,D.Z-Q.pos.Z).Magnitude
+local U=K and H~=nil and T.mob==H
+local V=U and math.huge
+or Vector3.new(F.X-T.pos.X,0,F.Z-T.pos.Z).Magnitude
 
 
-if T<Q.radius+4 then
-local U=Q.pos.Y+Q.height+1
-if U>O then
-O=U
-aU.raiser,aU.raiseH=Q.name or"?",Q.height
+if V<T.radius+4 then
+local W=T.pos.Y+T.height+1
+if W>Q then
+Q=W
+aW.raiser,aW.raiseH=T.name or"?",T.height
 end
 end
 end
 
 
 
-local P=am.Active()
+local R=am.Active()
 
 
-local Q=not(P and P.groundOnly)
-and af.CeilingNear(D,J+26)or nil
-local R=false
-if Q and Q+3>O then
-O=Q+3
-R=true
-end
-
-aU.topY=O
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local T
-
+local T=not(R and R.groundOnly)
+and af.CeilingNear(F,L+26)or nil
 local U=false
-if P and P.groundOnly then
-local V=ab.HRP()and ab.HRP().Position or D
-
-local W=Vector3.new(V.X-D.X,0,V.Z-D.Z)
-if W.Magnitude<1 then W=Vector3.new(1,0,0)end
-W=W.Unit
-
-if E then J=J+40 end
-for X=0,11 do
-local Y=(X%2==0 and 1 or-1)*math.rad(30*math.ceil(X/2))
-local Z=CFrame.Angles(0,Y,0)*W
-local _=af.GroundAt(D.X+Z.X*J,
-D.Z+Z.Z*J,D.Y)
-if _ and P.allow(_)then T=_ break end
+if T and T+3>Q then
+Q=T+3
+U=true
 end
 
-T=T or af.GroundAt(D.X,D.Z,D.Y)
+aW.topY=Q
 
 
 
@@ -13801,21 +13419,61 @@ T=T or af.GroundAt(D.X,D.Z,D.Y)
 
 
 
-if not T or(P.hardAllow and not P.hardAllow(T))then
-T=af.GroundAt(P.center.X,P.center.Z,P.center.Y)
-or T or Vector3.new(D.X,O,D.Z)
+
+
+
+
+
+
+
+
+
+
+
+
+
+local V
+
+local W=false
+if R and R.groundOnly then
+local X=ab.HRP()and ab.HRP().Position or F
+
+local Y=Vector3.new(X.X-F.X,0,X.Z-F.Z)
+if Y.Magnitude<1 then Y=Vector3.new(1,0,0)end
+Y=Y.Unit
+
+if G then L=L+40 end
+for Z=0,11 do
+local _=(Z%2==0 and 1 or-1)*math.rad(30*math.ceil(Z/2))
+local bl=CFrame.Angles(0,_,0)*Y
+local bm=af.GroundAt(F.X+bl.X*L,
+F.Z+bl.Z*L,F.Y)
+if bm and R.allow(bm)then V=bm break end
+end
+
+V=V or af.GroundAt(F.X,F.Z,F.Y)
+
+
+
+
+
+
+
+if not V or(R.hardAllow and not R.hardAllow(V))then
+V=af.GroundAt(R.center.X,R.center.Z,R.center.Y)
+or V or Vector3.new(F.X,Q,F.Z)
 end
 else
 
 
-if E then
-local V=ab.HRP()and ab.HRP().Position or D
-local W=Vector3.new(V.X-D.X,0,V.Z-D.Z)
-if W.Magnitude<1 then W=Vector3.new(1,0,0)end
-W=W.Unit*(J+46)
-T=Vector3.new(D.X+W.X,O,D.Z+W.Z)
+if G then
+local bl=ab.HRP()and ab.HRP().Position or F
+local bm=Vector3.new(bl.X-F.X,0,bl.Z-F.Z)
+if bm.Magnitude<1 then bm=Vector3.new(1,0,0)end
+bm=bm.Unit*(L+46)
+V=Vector3.new(F.X+bm.X,Q,F.Z+bm.Z)
 else
-T=Vector3.new(D.X,O,D.Z)
+V=Vector3.new(F.X,Q,F.Z)
 
 
 
@@ -13845,50 +13503,50 @@ T=Vector3.new(D.X,O,D.Z)
 
 
 
-local V,W,X,Y,Z=
+local bl,bm,X,Y,Z=
 am.Orbit(aB and aB.Name)
-if V and V>0 and orbiting()then
-U=Z==true
+if bl and bl>0 and orbiting()then
+W=Z==true
 local _=am.Active()
 
 
 
-local bl=O+(X or 0)
+local bn=Q+(X or 0)
 
-local function spot(bm,bn)
-bn=bn or V
-local bo=Vector3.new(
-D.X+math.cos(bm)*bn,bl,D.Z+math.sin(bm)*bn)
-if _ and _.hardAllow and not _.hardAllow(bo)then
+local function spot(bo,bp)
+bp=bp or bl
+local bq=Vector3.new(
+F.X+math.cos(bo)*bp,bn,F.Z+math.sin(bo)*bp)
+if _ and _.hardAllow and not _.hardAllow(bq)then
 return nil
 end
-return bo
+return bq
 end
 
 
 
-if a1~=aB or not a0 then
-local bm=ab.HRP()and ab.HRP().Position or D
-local bn=Vector3.new(bm.X-D.X,0,bm.Z-D.Z)
-a0=(bn.Magnitude>0.1)
-and math.atan2(bn.Z,bn.X)or 0
-a_=a_ or 1
-a1=aB
+if a3~=aB or not a2 then
+local bo=ab.HRP()and ab.HRP().Position or F
+local bp=Vector3.new(bo.X-F.X,0,bo.Z-F.Z)
+a2=(bp.Magnitude>0.1)
+and math.atan2(bp.Z,bp.X)or 0
+a1=a1 or 1
+a3=aB
 end
 
-local bm=(W/V)*math.clamp(x or 1.6666666666666665E-2,0,0.1)
+local bo=(bm/bl)*math.clamp(z or 1.6666666666666665E-2,0,0.1)
 
 
 
 
 
 
-local bn=math.max(bm*30,0.35)
+local bp=math.max(bo*30,0.35)
 
-local function clearAhead(bo,bp)
-for bq=1,4 do
-local br=spot(a0+bo*bn*bq/4,bp)
-if not br or not af.IsSafe(br,ar)or crowded(br)then
+local function clearAhead(bq,br)
+for bs=1,4 do
+local bt=spot(a2+bq*bp*bs/4,br)
+if not bt or not af.IsSafe(bt,ar)or crowded(bt)then
 return false
 end
 end
@@ -13923,30 +13581,30 @@ end
 
 
 
-local bo=shelterFromNamed(bl)
-if bo then
-T=bo
-a0=nil
-elseif Y then
-a0=a0+a_*bm
-local bp=spot(a0,V)
-if bp then
-T=bp
-else
-a_=-a_
-end
-elseif not clearAhead(a_,V)then
-if clearAhead(-a_,V)then
-a_=-a_
-else
-
-
-
-
-
-for bp,bq in ipairs{V+12,V-8,V+22}do
-if bq>4 and clearAhead(a_,bq)then
+local bq=shelterFromNamed(bn)
+if bq then
 V=bq
+a2=nil
+elseif Y then
+a2=a2+a1*bo
+local br=spot(a2,bl)
+if br then
+V=br
+else
+a1=-a1
+end
+elseif not clearAhead(a1,bl)then
+if clearAhead(-a1,bl)then
+a1=-a1
+else
+
+
+
+
+
+for br,bs in ipairs{bl+12,bl-8,bl+22}do
+if bs>4 and clearAhead(a1,bs)then
+bl=bs
 break
 end
 end
@@ -13961,15 +13619,15 @@ end
 
 
 
-if not Y and not bo then
-a0=a0+a_*bm
-local bp=spot(a0,V)
-if bp then
-T=bp
+if not Y and not bq then
+a2=a2+a1*bo
+local br=spot(a2,bl)
+if br then
+V=br
 else
 
 
-a_=-a_
+a1=-a1
 end
 end
 end
@@ -13987,18 +13645,18 @@ end
 
 
 
-local bl=not(V and V>0 and orbiting())and am.Value"sideStep"or nil
-if bl and bl>0 then
-local bm=ab.HRP()and ab.HRP().Position or D
-local bn=Vector3.new(bm.X-D.X,0,bm.Z-D.Z)
-if bn.Magnitude<1 then bn=Vector3.new(1,0,0)end
-bn=bn.Unit*bl
-T=Vector3.new(D.X+bn.X,O,D.Z+bn.Z)
+local bn=not(bl and bl>0 and orbiting())and am.Value"sideStep"or nil
+if bn and bn>0 then
+local bo=ab.HRP()and ab.HRP().Position or F
+local bp=Vector3.new(bo.X-F.X,0,bo.Z-F.Z)
+if bp.Magnitude<1 then bp=Vector3.new(1,0,0)end
+bp=bp.Unit*bn
+V=Vector3.new(F.X+bp.X,Q,F.Z+bp.Z)
 end
 end
 end
 local bl=aC
-and Vector3.new(T.X-aC.X,0,T.Z-aC.Z).Magnitude
+and Vector3.new(V.X-aC.X,0,V.Z-aC.Z).Magnitude
 or math.huge
 
 
@@ -14008,10 +13666,10 @@ or math.huge
 
 
 
-if U or bl>f then
-aC=T
+if W or bl>h then
+aC=V
 else
-aC=Vector3.new(aC.X,T.Y,aC.Z)
+aC=Vector3.new(aC.X,V.Y,aC.Z)
 end
 local bm=aC
 
@@ -14083,12 +13741,12 @@ local bp=am.Value"reach"
 if type(bp)~="number"then bp=22 end
 for bq=6,bp,2 do
 local br=math.max(8,math.floor(2*math.pi*bq/3))
-for V=0,br-1 do
-local W=math.rad((360/br)*V)
+for bs=0,br-1 do
+local bt=math.rad((360/br)*bs)
 local X=Vector3.new(
-D.X+math.cos(W)*bq,
+F.X+math.cos(bt)*bq,
 bm.Y,
-D.Z+math.sin(W)*bq)
+F.Z+math.sin(bt)*bq)
 if af.IsSafe(X,ar)and not crowded(X)then
 bo=X
 break
@@ -14101,8 +13759,8 @@ end
 if bo then
 ah.Clear(aH)
 aC=bo
-ae.Where"подъём от серпов"
-ae.Pin(bo,D)
+ae.Where"s35"
+ae.Pin(bo,F)
 return
 end
 end
@@ -14140,10 +13798,10 @@ if type(bq)~="number"then bq=22 end
 local br=am.Value"floorMargin"
 if type(br)~="number"then br=3 end
 
-ae.Where"наземная стойка"
+ae.Where"s36"
 aC=ah.Step{
-pos=D,
-here=ab.HRP()and ab.HRP().Position or D,
+pos=F,
+here=ab.HRP()and ab.HRP().Position or F,
 reach=bq,
 margin=br,
 crowded=crowded,
@@ -14166,14 +13824,14 @@ escape=function()
 if af.IsSafe(bm,ar)and not crowded(bm)then
 return bm
 end
-local V=ab.HRP()and ab.HRP().Position or D
-local W=af.GroundAt(D.X,D.Z,D.Y)
-return af.SafePointAround(D,{
-from=V,
-min=J,
+local bs=ab.HRP()and ab.HRP().Position or F
+local bt=af.GroundAt(F.X,F.Z,F.Y)
+return af.SafePointAround(F,{
+from=bs,
+min=L,
 max=bq+30,
 margin=br,
-baseY=W and W.Y or V.Y,
+baseY=bt and bt.Y or bs.Y,
 guards=mobGuards(),
 })
 end,
@@ -14193,8 +13851,8 @@ ah.Clear(aH)
 
 if am.Allows"perch"then
 aC=bm
-ae.Where"зависание над боссом"
-ae.Pin(bm,D)
+ae.Where"s37"
+ae.Pin(bm,F)
 return
 end
 end
@@ -14226,7 +13884,7 @@ local bo
 
 
 
-local bp=J+26
+local bp=L+26
 
 
 
@@ -14253,8 +13911,8 @@ if br then bp=math.max(bp,br+25)end
 
 
 
-local V=(P and P.groundOnly)and 140 or av
-if br then V=math.max(V,br+40)end
+local bs=(R and R.groundOnly)and 140 or av
+if br then bs=math.max(bs,br+40)end
 
 
 
@@ -14280,24 +13938,24 @@ if br then V=math.max(V,br+40)end
 
 
 if am.Allows"legacy"then
-local W={dodgeAt=aS,dodgeStand=aR}
-ae.Where"старое уклонение"
+local bt={dodgeAt=aU,dodgeStand=aT}
+ae.Where"s38"
 bm=ag.Step{
-stand=bm,pos=D,here=bn,
-keepAway=J,reach=bp,margin=ar,
+stand=bm,pos=F,here=bn,
+keepAway=L,reach=bp,margin=ar,
 hold=as,crowded=crowded,guards=mobGuards,
-state=W,
+state=bt,
 
 
 keepFar=am.Allows"keepFar",
 log=aq.enabled and aq.Log or nil,
 }
-aS,aR=W.dodgeAt,W.dodgeStand
+aU,aT=bt.dodgeAt,bt.dodgeStand
 aC=bm
 return
 end
 
-local W=(os.clock()-aS)<as
+local bt=(os.clock()-aU)<as
 
 
 
@@ -14315,10 +13973,10 @@ local W=(os.clock()-aS)<as
 
 local function findEscape()
 local X=os.clock()
-if aO and X-aO<0.05 then
-return aP,aQ
+if aQ and X-aQ<0.05 then
+return aR,aS
 end
-aO=X
+aQ=X
 
 
 
@@ -14344,41 +14002,39 @@ local Z=bn or bm
 
 
 
-local _,bs=pcall(af.EscapeStep,Z,1,Y)
-if not _ then bs=nil end
+local _,bu=pcall(af.EscapeStep,Z,1,Y)
+if not _ then bu=nil end
 
-local bt=am.Active()
-local bu=not(bt and bt.hardAllow)
-or(bs and bt.hardAllow(bs))
-if bs and bu
-and af.HasFloor(bs)
-
-
-and not af.CrossesBorder(Z,bs)
-and not crowded(bs)then
-aP,aQ=bs,af.IsSafe(bs,ar)
+local bv=am.Active()
+local bw=not(bv and bv.hardAllow)
+or(bu and bv.hardAllow(bu))
+if bu and bw
+and af.HasFloor(bu)
 
 
+and not af.CrossesBorder(Z,bu)
+and not crowded(bu)then
+aR,aS=bu,af.IsSafe(bu,ar)
 
-if aq.enabled and(os.clock()-a5)>0.5 then
-a5=os.clock()
-aq.Log(("ШАГ В СТОРОНУ: %.0f,%.0f,%.0f | на %.1f студа | чисто=%s")
-:format(bs.X,bs.Y,bs.Z,(bs-Z).Magnitude,
-tostring(aQ)))
+
+
+if aq.enabled and(os.clock()-a7)>0.5 then
+a7=os.clock()
+
 end
-return aP,aQ
+return aR,aS
 end
 end
 
-aP,aQ=af.SafePointAround(D,{
+aR,aS=af.SafePointAround(F,{
 from=bn or bm,
-min=J,
+min=L,
 max=bp,
 margin=ar,
 baseY=bm.Y,
 guards=mobGuards(),
 })
-return aP,aQ
+return aR,aS
 end
 
 
@@ -14395,7 +14051,7 @@ end
 
 
 if dodgeAllowed()then
-if W and aR then
+if bt and aT then
 
 
 
@@ -14426,10 +14082,10 @@ if W and aR then
 
 
 
-local bs=am.Value"minionGuard"~=nil
-if af.IsSafe(aR,ar)
-and not(bs and crowded(aR))then
-bm=aR
+local bu=am.Value"minionGuard"~=nil
+if af.IsSafe(aT,ar)
+and not(bu and crowded(aT))then
+bm=aT
 else
 
 
@@ -14449,17 +14105,17 @@ else
 
 
 
-local bt=af.ZoneAt(aR,0)~=nil
-local bu,X=findEscape()
+local bv=af.ZoneAt(aT,0)~=nil
+local bw,X=findEscape()
 local Y=false
-if bu and(bu-D).Magnitude<=V then
-Y=X or bt
-or af.ThreatAt(bu,ar)
-<af.ThreatAt(aR,ar)
+if bw and(bw-F).Magnitude<=bs then
+Y=X or bv
+or af.ThreatAt(bw,ar)
+<af.ThreatAt(aT,ar)
 end
 if Y then
-aR,bm=bu,bu
-aS=os.clock()
+aT,bm=bw,bw
+aU=os.clock()
 aE=os.clock()
 
 
@@ -14469,67 +14125,61 @@ aE=os.clock()
 
 
 
-if aq.enabled and(os.clock()-aZ)>0.5 then
-aZ=os.clock()
-aq.Log(("DODGE! точку накрыло, ухожу -> %.0f,%.0f,%.0f (чистая=%s)")
-:format(bu.X,bu.Y,bu.Z,tostring(X)))
+if aq.enabled and(os.clock()-a0)>0.5 then
+a0=os.clock()
+
 end
 else
-bo=bu
-and(("нашёл выход, но он не лучше (чисто=%s, далеко=%.0f)")
-:format(tostring(X),(bu-D).Magnitude))
-or"выхода НЕ НАЙДЕНО (выдержка)"
-bm=aR
+bo=bw
+and(("s39")
+:format(tostring(X),(bw-F).Magnitude))
+or"s40"
+bm=aT
 end
 end
-elseif not W and af.IsSafe(bm,ar)and not crowded(bm)then
-aR=nil
-elseif aR
-and af.IsSafe(aR,ar)
-and not crowded(aR)
-and(aR-D).Magnitude<=bp
+elseif not bt and af.IsSafe(bm,ar)and not crowded(bm)then
+aT=nil
+elseif aT
+and af.IsSafe(aT,ar)
+and not crowded(aT)
+and(aT-F).Magnitude<=bp
 then
-bm=aR
+bm=aT
 elseif not af.IsSafe(bm,ar)or crowded(bm)then
 
 
 
-local bs,bt=findEscape()
+local bu,bv=findEscape()
 
-aS=os.clock()+(bt and 0 or(au-as))
-if bs and(bs-D).Magnitude>V then
+aU=os.clock()+(bv and 0 or(au-as))
+if bu and(bu-F).Magnitude>bs then
 if aq.enabled then
-aq.Log(("DODGE отброшен: %.0f студов от цели, предел %d"):format(
-(bs-D).Magnitude,V))
+
 end
-bo=("выход отброшен: %.0f студов, предел %d"):format(
-(bs-D).Magnitude,V)
-bs=nil
+bo=("s41"):format(
+(bu-F).Magnitude,bs)
+bu=nil
 end
-if not bs then
-bo="выхода НЕ НАЙДЕНО (основной поиск)"
+if not bu then
+bo="s42"
 end
-if bs then
-aR=bs
-bm=bs
+if bu then
+aT=bu
+bm=bu
 aE=os.clock()
 if aq.enabled then
 
 
-local bu="-"
-local X=workspace:Raycast(bs,Vector3.new(0,-300,0))
+local bw="-"
+local X=workspace:Raycast(bu,Vector3.new(0,-300,0))
 if X then
-bu=("%.0f"):format(bs.Y-X.Position.Y)
+bw=("%.0f"):format(bu.Y-X.Position.Y)
 end
-aq.Log(('DODGE -> %.0f,%.0f,%.0f | \u{434}\u{43e} \u{446}\u{435}\u{43b}\u{438} %.0f | \u{438}\u{437} %s | \u{437}\u{43e}\u{43d}=%d | \u{432}\u{435}\u{442}\u{43a}\u{430}=%s | \u{43d}\u{430}\u{434} \u{43f}\u{43e}\u{43b}\u{43e}\u{43c} %s'
-):format(
-bs.X,bs.Y,bs.Z,(bs-D).Magnitude,
-af.Describe(bn or bm),af.Count(),
-af.LastPick(),bu))
+
 end
 end
 else
-aR=nil
+aT=nil
 end
 end
 
@@ -14541,10 +14191,9 @@ end
 
 if af.IsSafe(bm,ar)then
 if aD and aq.enabled then
-local bs=(os.clock()-aD)*1000
-if bs>120 then
-aq.Log(("РЕАКЦИЯ %.0f мс под ударом | причина: %s"):format(
-bs,bo or"ветка без поиска"))
+local bu=(os.clock()-aD)*1000
+if bu>120 then
+
 end
 end
 aD=nil
@@ -14570,13 +14219,13 @@ local bo=ab.HRP()and ab.HRP().Position or nil
 
 
 
-local bp=aR~=nil or R or a9 or bg==nil
+local bp=aT~=nil or U or ba or bi==nil
 if bo and not bp then
 local bq=bn-bo
-local br=a8*x
+local br=b*z
 if bq.Magnitude>br then bn=bo+bq.Unit*br end
 end
-a9=false
+ba=false
 
 
 
@@ -14596,12 +14245,12 @@ a9=false
 
 
 local bq=12
-if bn.Y<D.Y-bq then
+if bn.Y<F.Y-bq then
 if aq.enabled then
-aq.Log(("UNDER перенос отменён: y=%.0f, цель на %.0f"):format(bn.Y,D.Y))
+
 end
-bn=Vector3.new(bn.X,D.Y,bn.Z)
-aR=nil
+bn=Vector3.new(bn.X,F.Y,bn.Z)
+aT=nil
 end
 
 
@@ -14645,8 +14294,7 @@ end
 if aq.enabled and af.ZoneAt(bn,0)
 and(os.clock()-aG)>1 then
 aG=os.clock()
-aq.Log(("ВНУТРИ ОБЪЁМА: правило=%s, выдержка=%.2fс"):format(
-tostring(am.Allows"rescue"),os.clock()-aF))
+
 end
 
 if am.Allows"rescue"and dodgeAllowed()
@@ -14656,8 +14304,7 @@ if br and not af.IsSafe(br,ar)then br=nil end
 if br then
 aF=os.clock()
 if aq.enabled then
-aq.Log(("СПАСЕНИЕ: точка была внутри зоны, ухожу -> %.0f,%.0f,%.0f")
-:format(br.X,br.Y,br.Z))
+
 end
 bn=br
 end
@@ -14700,9 +14347,9 @@ local bt=Vector3.new(bn.X-bs.X,0,bn.Z-bs.Z)
 local bu=bt.Magnitude
 if bu>1 then
 bt=bt.Unit
-for V,W in ipairs{0.75,0.5,0.3,0.15}do
-local X=Vector3.new(bs.X+bt.X*bu*W,bn.Y,
-bs.Z+bt.Z*bu*W)
+for bv,bw in ipairs{0.75,0.5,0.3,0.15}do
+local X=Vector3.new(bs.X+bt.X*bu*bw,bn.Y,
+bs.Z+bt.Z*bu*bw)
 local Y=af.GroundAt(X.X,X.Z,bs.Y)
 if Y and br.hardAllow(Y)then
 bn=Y
@@ -14714,8 +14361,7 @@ if not br.hardAllow(bn)then
 bn=af.GroundAt(bs.X,bs.Z,bs.Y)or bn
 end
 if aq.enabled then
-aq.Log(("ГРАНИЦА: точку вернули внутрь арены -> %.0f,%.0f,%.0f")
-:format(bn.X,bn.Y,bn.Z))
+
 end
 end
 
@@ -14751,11 +14397,11 @@ end
 
 
 
-local bs=D
+local bs=F
 local bt=LocalPlayer:FindFirstChild"PlayerGui"
 if bt and bt:FindFirstChild"firstBossLookAwayGui"then
-bs=bn+(bn-D)
-if aq.enabled then aq.Log"LOOKAWAY вспышка — отворачиваюсь"end
+bs=bn+(bn-F)
+if aq.enabled then aq.Log"s43"end
 end
 
 
@@ -14823,7 +14469,7 @@ Default=false,Flag="AutoFarm",
 Callback=function(bn)
 S.autoFarm=false
 setWalkFarm(bn)
-if not bn then drop"тоггл Auto Farm"end
+if not bn then drop"s44"end
 end,
 }
 
@@ -14911,7 +14557,7 @@ local bn=ab.HRP()
 if not bn or not IN_MATCH or not ac.Started()then return end
 if af.IsSafe(bn.Position,ar)then return end
 
-ae.Where"уклонение без цели"
+ae.Where"s45"
 local bo=af.SafePoint(bn.Position,ar)
 
 
@@ -14947,18 +14593,11 @@ if bn and bo then
 
 
 
-local bp=am.Active()
-local bq="-"
-local br=workspace:Raycast(bn.Position,Vector3.new(0,-300,0))
-if br then bq=("%.0f"):format(bn.Position.Y-br.Position.Y)end
-aq.Log(('HEIGHT \u{43d}\u{430}\u{434} \u{446}\u{435}\u{43b}\u{44c}\u{44e} %.1f | \u{446}\u{435}\u{43b}\u{44c} %s y=%.0f | hover=%.0f topY=%.0f | \u{437}\u{430}\u{434}\u{440}\u{430}\u{43b} %s (h=%.0f) | dodge=%s | \u{43f}\u{440}\u{430}\u{432}\u{438}\u{43b}\u{430}=%s ground=%s | \u{43d}\u{430}\u{434} \u{43f}\u{43e}\u{43b}\u{43e}\u{43c} %s'
-)
-:format(bn.Position.Y-bo.Y,aB.Name,bo.Y,
-aU.hover,aU.topY,aU.raiser,aU.raiseH,
-aR and("да, y="..math.floor(aR.Y))or"нет",
-bp and(bp.name or"есть")or"НЕТ",
-tostring(bp and bp.groundOnly),
-bq))
+am.Active()
+local bp="-"
+local bq=workspace:Raycast(bn.Position,Vector3.new(0,-300,0))
+if bq then bp=("%.0f"):format(bn.Position.Y-bq.Position.Y)end
+
 end
 end
 end)
@@ -15012,13 +14651,13 @@ local bs=(2*math.pi)/br
 local bt=2*bp*math.sin(bs/2)+0.2
 
 for bu=1,br do
-local x=bu*bs
-local y=Vector3.new(math.cos(x)*bp,0,math.sin(x)*bp)
+local bv=bu*bs
+local bw=Vector3.new(math.cos(bv)*bp,0,math.sin(bv)*bp)
 local z=Instance.new"Part"
 z.Name="ApelMark"
 z.Size=Vector3.new(bt,0.3,0.3)
 
-z.CFrame=CFrame.lookAt(y,y+Vector3.new(math.cos(x),0,math.sin(x)))
+z.CFrame=CFrame.lookAt(bw,bw+Vector3.new(math.cos(bv),0,math.sin(bv)))
 z.Anchored,z.CanCollide=true,false
 z.CanQuery,z.CanTouch=false,false
 z.Material=Enum.Material.Neon
@@ -15081,7 +14720,7 @@ Desc="flies over every group in the room to pull them into one pile before killi
 Default=false,Flag="AgroSweep",
 Callback=function(bp)
 S.agroSweep=bp
-if not bp then bg,bi=nil,nil end
+if not bp then bi,bk=nil,nil end
 end,
 }
 
@@ -15139,7 +14778,7 @@ if typeof(bu)=="Instance"then
 bs=bu
 br=("%s/%s"):format(bu.Parent and bu.Parent.Name or"?",bu.Name)
 else
-br="след:"..tostring(bu.name)
+br="s46"..tostring(bu.name)
 end
 end
 end))
@@ -15148,13 +14787,13 @@ spawnLoop(function()
 local bt,bu
 while not _apelStopped do
 task.wait(0.25)
-local x=ab.Humanoid()
-if x and x~=bt then
-bt,bu=x,x.Health
-regConn(x.HealthChanged:Connect(function(y)
-local z=bu or y
-bu=y
-if y>=z then return end
+local bv=ab.Humanoid()
+if bv and bv~=bt then
+bt,bu=bv,bv.Health
+regConn(bv.HealthChanged:Connect(function(bw)
+local z=bu or bw
+bu=bw
+if bw>=z then return end
 
 local A=ab.HRP()
 local B,C=(-1)
@@ -15214,26 +14853,26 @@ end
 local K=A and("%.0f,%.0f,%.0f"):format(
 A.Position.X,A.Position.Y,A.Position.Z)or"-"
 
-local L=("DAMAGE -%.0f -> %.0f | zoneAgo=%.2fs (%s) | УБИЛА: %s | тут %s | mob=%s @%.0f | zones=%d | вокруг: %s | решение: %s | y=%.0f floor=%.0f arena=%s state=%s | атака: %s | %s"):format(
-z-y,y,
+local L=("s47"):format(
+z-bw,bw,
 os.clock()-bq,br,
 af.PartInfo and af.PartInfo(bs)or"-",
 K,
-C and C.Name or"нет",B or-1,
+C and C.Name or"s3",B or-1,
 af.Count(),J,
 af.NotesText and af.NotesText()or"-",
 D,E,F,
-tostring(x:GetState()):gsub("Enum.HumanoidStateType.",""),
+tostring(bv:GetState()):gsub("Enum.HumanoidStateType.",""),
 H,
 ((af.SafeTrail and af.SafeTrail(1.5)or"-")
-..(af.SinceHop and(" | с прыжка %.2fс"):format(af.SinceHop())or"")))
-aq.Log(L)
+..(af.SinceHop and("s48"):format(af.SinceHop())or"")))
 
 
 
-if y<=0 then
+
+if bw<=0 then
 aq.Death(L.." | "..(workspace:FindFirstChild"dungeon"
-and"подземелье"or"лобби"))
+and"s49"or"s50"))
 end
 
 
@@ -15258,8 +14897,7 @@ T.TimePosition)
 end
 end
 end
-aq.Log(("АНИМАЦИЯ ВРАГА: %s | %s"):format(M.Name,
-#O>0 and table.concat(O,", ")or"ничего не играет"))
+
 end
 
 
@@ -15270,14 +14908,9 @@ end
 
 
 if A then
-local N=af.ZoneAt(A.Position,0)
-local O=af.ZoneAt(A.Position,ar)
-aq.Log(("ВНУТРИ ЗОНЫ: вплотную=%s | с запасом %d=%s"):format(
-N and(tostring(N.Parent and N.Parent.Name)
-.."/"..tostring(N.Name))or"НЕТ",
-ar,
-O and(tostring(O.Parent and O.Parent.Name)
-.."/"..tostring(O.Name))or"НЕТ"))
+af.ZoneAt(A.Position,0)
+af.ZoneAt(A.Position,ar)
+
 end
 
 
@@ -15288,20 +14921,20 @@ end
 
 
 if aq.enabled then
-aq.Log("НАКРЫТИЕ: "..af.CoverReport())
+
 end
 
-if y<=0 and A then
+if bw<=0 and A then
 for N,O in ipairs(af.NearestZones(A.Position,6))do
-aq.Log("  БЛИЖАЙШАЯ ЗОНА: "..O)
+
 end
 end
 
-if y<=0 then
+if bw<=0 then
 local N=af.RecentAdds(2)
-aq.Log(("ПОЯВИЛОСЬ ЗА 2с ДО СМЕРТИ: %d"):format(#N))
+
 for O=1,math.min(#N,20)do
-aq.Log("  "..N[O])
+
 end
 end
 
@@ -15311,7 +14944,7 @@ end
 
 
 
-if A and y<=0 then
+if A and bw<=0 then
 
 
 
@@ -15339,20 +14972,17 @@ end
 end
 end
 table.sort(N,function(O,P)return O.gap<P.gap end)
-aq.Log(("СНИМОК СМЕРТИ: деталей в 45 студах — %d"):format(#N))
-for O=1,math.min(#N,30)do
-local P=N[O].part
-aq.Log(("  %5.1f  %s | %s | size=%s | %s | trans=%.2f | зона=%s"):format(
-N[O].gap,P:GetFullName():gsub("^Workspace%.",""),
-P.ClassName,tostring(P.Size),tostring(P.Material),
-P.Transparency,tostring(af.IsZone(P))))
+
+for O=1,math.min(#N,30)do local P=
+N[O].part
+
 end
 end
 
 
 
 
-aq.Log("      рядом: "..af.Nearby(A and A.Position or Vector3.zero,60))
+
 end))
 end
 end
@@ -15370,18 +15000,18 @@ while not _apelStopped do
 task.wait(0.2)
 
 if not(S.autoFarm and IN_MATCH)then
-drop"не в матче или фарм выключен"
+drop"s51"
 elseif not aa:IsTop"AutoFarm"then
 
 
 
 
-drop(not ab.Alive()and"персонаж мёртв"
-or ac.Finished()and"прогон окончен"
-or not ac.Started()and"прогон ещё не начат"
-or"предикат AutoFarm ложен")
+drop(not ab.Alive()and"s52"
+or ac.Finished()and"s53"
+or not ac.Started()and"s54"
+or"s55")
 elseif not ab.Alive()then
-drop"персонаж мёртв"
+drop"s52"
 bp:Set"Dead — waiting to respawn"
 else
 
@@ -15396,14 +15026,14 @@ if not aB and not ae.IsPinning()then
 local bt=ab.HRP()
 if bt and not af.HasFloor(bt.Position)then
 local bu=ac.NextRoomWithEnemies(false)or ac.Rooms()[1]
-local x=bu and bu.startPart
-if x then
-local y=x.Position+Vector3.new(0,4,0)
+local bv=bu and bu.startPart
+if bv then
+local bw=bv.Position+Vector3.new(0,4,0)
 
 
 
-aC=y
-ae.Pin(y,y+bt.CFrame.LookVector)
+aC=bw
+ae.Pin(bw,bw+bt.CFrame.LookVector)
 bp:Set"Stepped off the map — recovering"
 end
 end
@@ -15422,14 +15052,14 @@ pcall(function()
 
 
 
-if aB and not e[tostring(aB.Name):lower()]then
+if aB and not g[tostring(aB.Name):lower()]then
 local bt=ab.HRP()
 if bt then
-local bu,x=pickTarget(ac.Targets(),bt.Position)
-if x and bu and bu~=aB then
+local bu,bv=pickTarget(ac.Targets(),bt.Position)
+if bv and bu and bu~=aB then
 acquire(bu)
 if aq.enabled then
-aq.Log("PRIORITY переключаемся на "..bu.Name)
+
 end
 end
 end
@@ -15445,10 +15075,10 @@ end
 local bt=stallLeft()
 
 do
-local bu,x=ac.NextRoomWithEnemies(bt>0)
+local bu,bv=ac.NextRoomWithEnemies(bt>0)
 if bu then
 enterRoom(bu)
-trySweep(bu,x)
+trySweep(bu,bv)
 end
 end
 
@@ -15466,24 +15096,24 @@ local bu=ab.HRP()
 
 
 
-local x=ac.Targets()
-local y=bu and pickTarget(x,bu.Position)or nil
-if y then
-acquire(y)
-bp:Set(("Wave %d — %d left"):format(ac.Wave(),#x))
+local bv=ac.Targets()
+local bw=bu and pickTarget(bv,bu.Position)or nil
+if bw then
+acquire(bw)
+bp:Set(("Wave %d — %d left"):format(ac.Wave(),#bv))
 end
 end
 
 if not aB then
-local bu,x=ac.NextRoomWithEnemies(bt>0)
+local bu,bv=ac.NextRoomWithEnemies(bt>0)
 if bu then
-local y=ab.HRP()
+local bw=ab.HRP()
 local z,A=false
-if y then A,z=pickTarget(x,y.Position)end
+if bw then A,z=pickTarget(bv,bw.Position)end
 if A then
 acquire(A)
 bp:Set(("Clearing %s — %d left%s"):format(
-bu.name,#x,z and"  ·  priority target"or""))
+bu.name,#bv,z and"  ·  priority target"or""))
 end
 elseif bt>0 then
 bp:Set(("Stalling — %d s before the boss"):format(
@@ -15508,9 +15138,9 @@ return
 end
 
 local bu=ac.Rooms()
-local x=bu[#bu]
-local y=ab.HRP()
-if x and x.startPart and y then
+local bv=bu[#bu]
+local bw=ab.HRP()
+if bv and bv.startPart and bw then
 bp:Set(ac.FightingBoss()and"Waiting for the boss to spawn"
 or"Moving to the boss room")
 
@@ -15519,9 +15149,9 @@ or"Moving to the boss room")
 
 
 
-local z=x.startPart.Position+Vector3.new(0,4,0)
+local z=bv.startPart.Position+Vector3.new(0,4,0)
 aC=z
-ae.Pin(z,z+y.CFrame.LookVector)
+ae.Pin(z,z+bw.CFrame.LookVector)
 else
 bp:Set"Nothing to clear"
 end
@@ -15605,10 +15235,10 @@ end
 
 local function gearOptions()
 local bu={}
-local x=gearGui()
-local y=x and x:FindFirstChild"Frame"
-if y then
-for z,A in ipairs(y:GetChildren())do
+local bv=gearGui()
+local bw=bv and bv:FindFirstChild"Frame"
+if bw then
+for z,A in ipairs(bw:GetChildren())do
 if A:FindFirstChild"button"then bu[#bu+1]=A.Name end
 end
 end
@@ -15654,13 +15284,13 @@ local bu=0
 local function answerGear()
 if not(S.autoGear and S.gearSet)then return false end
 if Window:IsLoadingConfig()then return false end
-local x=gearGui()
-if not(x and x.Enabled)then return false end
+local bv=gearGui()
+if not(bv and bv.Enabled)then return false end
 if(os.clock()-bu)<2 then return false end
 
 bu=os.clock()
 aw.Fire("equipSet",S.gearSet)
-x.Enabled=false
+bv.Enabled=false
 return true
 end
 
@@ -15674,13 +15304,13 @@ end)
 
 
 spawnLoop(function()
-local x=false
-while not _apelStopped and not x do
+local bv=false
+while not _apelStopped and not bv do
 task.wait(2)
-local y=gearOptions()
-if#y>0 then
-pcall(function()bt:SetOptions(y)end)
-x=true
+local bw=gearOptions()
+if#bw>0 then
+pcall(function()bt:SetOptions(bw)end)
+bv=true
 end
 end
 end)
@@ -15712,7 +15342,7 @@ end)
 end)
 
 spawnLoop(function()
-local x,y=0,0
+local bv,bw=0,0
 while not _apelStopped do
 task.wait(1)
 if IN_MATCH and not Window:IsLoadingConfig()then
@@ -15720,13 +15350,13 @@ local z=LocalPlayer:FindFirstChild"PlayerGui"
 if z then
 
 
-if S.autoReady and z:FindFirstChild"readyButton"and(os.clock()-x)>3 then
-x=os.clock()
+if S.autoReady and z:FindFirstChild"readyButton"and(os.clock()-bv)>3 then
+bv=os.clock()
 aw.Fire"readyUp"
 end
-if S.autoStart and z:FindFirstChild"startButton"and(os.clock()-y)>3
+if S.autoStart and z:FindFirstChild"startButton"and(os.clock()-bw)>3
 and ac.IsOwner()and not gearPending()and not holdingForFriends()then
-y=os.clock()
+bw=os.clock()
 aw.Fire"changeStartValue"
 end
 end
@@ -15748,14 +15378,14 @@ end)
 
 if aq.enabled then
 spawnLoop(function()
-local x=false
+local bv=false
 while not _apelStopped do
 task.wait(1)
-local y=IN_MATCH and ac.Started()and not ac.Finished()
-if y and not x then
-aq.Log(("=== ПРОГОН НАЧАТ · %s %s"):format(ac.Name(),ac.Difficulty()))
+local bw=IN_MATCH and ac.Started()and not ac.Finished()
+if bw and not bv then
+
 end
-x=y
+bv=bw
 end
 end)
 end
@@ -15768,7 +15398,6 @@ local function afterRun()
 
 
 
-aq.Log"=== ПРОГОН ОКОНЧЕН"
 
 
 
@@ -15778,8 +15407,9 @@ aq.Log"=== ПРОГОН ОКОНЧЕН"
 
 
 
-local x=S.smartDungeon and S.autoStartLobby
-if not(S.autoReplay or x)then return end
+
+local bv=S.smartDungeon and S.autoStartLobby
+if not(S.autoReplay or bv)then return end
 
 
 
@@ -15789,8 +15419,8 @@ if not(S.autoReplay or x)then return end
 
 
 
-if x then
-local y=an.BestDifficultyFor(ac.Name(),ab.Level())
+if bv then
+local bw=an.BestDifficultyFor(ac.Name(),ab.Level())
 local z=ac.Difficulty()
 
 
@@ -15807,16 +15437,16 @@ drop()
 aw.Fire"ReturnToLobbyEvent"
 return
 end
-if y and z~=""and an.DifficultyRank(y)>an.DifficultyRank(z)then
-Notify(("Smart Dungeon: %s is unlocked — returning to the lobby"):format(y))
+if bw and z~=""and an.DifficultyRank(bw)>an.DifficultyRank(z)then
+Notify(("Smart Dungeon: %s is unlocked — returning to the lobby"):format(bw))
 drop()
 aw.Fire"ReturnToLobbyEvent"
 return
 end
 end
 
-local y=ac.ReplayData()
-if not y.dungeonName or y.dungeonName==""then return end
+local bw=ac.ReplayData()
+if not bw.dungeonName or bw.dungeonName==""then return end
 
 if not ac.IsOwner()then
 Notify"Replay: only the run owner can replay this dungeon"
@@ -15824,7 +15454,7 @@ return
 end
 
 drop()
-aw.Fire("replayDungeon",y)
+aw.Fire("replayDungeon",bw)
 end
 
 
@@ -15910,14 +15540,14 @@ end
 
 
 spawnLoop(function()
-local x
+local bv
 while not _apelStopped do
 task.wait(2)
 if IN_MATCH and S.smartDungeon then
-local y=ac.Name()
-if y~=""and y~=x then
-x=y
-pcall(function()an.Stats(y)end)
+local bw=ac.Name()
+if bw~=""and bw~=bv then
+bv=bw
+pcall(function()an.Stats(bw)end)
 end
 end
 end
@@ -15925,7 +15555,7 @@ end)
 
 
 
-local x=aA:Label"Waiting for a dungeon"
+local bv=aA:Label"Waiting for a dungeon"
 
 spawnLoop(function()
 while not _apelStopped do
@@ -15941,9 +15571,9 @@ pcall(function()
 
 
 
-local y=ac.Rooms()
+local bw=ac.Rooms()
 local z,A=0,0
-for B,C in ipairs(y)do
+for B,C in ipairs(bw)do
 if C.enemies then
 z=z+1
 A=A+#ac.AliveIn(C)
@@ -15958,7 +15588,7 @@ end
 if not ac.Started()or ac.Finished()then forgetRooms()end
 local B=clearedRooms()
 local C=ac.TimeLeft()
-x:Set(table.concat({
+bv:Set(table.concat({
 ("<b>%s</b>%s"):format(ac.Name()~=""and ac.Name()or"—",
 ac.Hardcore()and"  ·  Hardcore"or""),
 ("Rooms %d/%d   ·   Enemies left %d"):format(B,z,A),
@@ -15968,7 +15598,7 @@ or(ac.Started()and"in progress"or"waiting"))),
 },"\n"))
 end)
 else
-x:Set"Not in a dungeon"
+bv:Set"Not in a dungeon"
 end
 end
 end)
@@ -16625,8 +16255,7 @@ end
 
 if not ao then
 if ad.enabled then
-ad.Log(("ЗАЯВКА мимо списка: пришло %q, ждём %s"):format(
-am,table.concat(wanted(),", ")))
+
 end
 return
 end
@@ -17022,13 +16651,13 @@ au=nil
 end
 
 function aa.Build()
-if aw then return false,"уже идёт"end
+if aw then return false,"s71"end
 local aA=LocalPlayer.Character
 and LocalPlayer.Character:FindFirstChild"HumanoidRootPart"
-if not aA then return false,"нет персонажа"end
+if not aA then return false,"s72"end
 
 local aB=floorUnder(aA.Position)
-if not aB then return false,"пол под ногами не найден"end
+if not aB then return false,"s73"end
 
 
 
@@ -17085,8 +16714,8 @@ ar=aE
 
 
 for aH,aI in ipairs(aD)do
-for aJ,aK in ipairs(aI:GetChildren())do
-pcall(function()aK.Parent=ar end)
+for aJ,aM in ipairs(aI:GetChildren())do
+pcall(function()aM.Parent=ar end)
 end
 pcall(function()aI:Destroy()end)
 end
@@ -17105,8 +16734,8 @@ paintBounds()
 
 local aH=0
 for aI,aJ in ipairs(targets())do
-for aK,aL in ipairs(aJ:GetDescendants())do
-if handle(aL,aB)then
+for aM,aN in ipairs(aJ:GetDescendants())do
+if handle(aN,aB)then
 aH=aH+1
 if aH%ae==0 then task.wait()end
 end
@@ -17117,8 +16746,8 @@ end
 as=regConn(workspace.DescendantAdded:Connect(function(aI)
 if not aw or not aI:IsA"BasePart"then return end
 local aJ=false
-for aK,aL in ipairs(targets())do
-if aI:IsDescendantOf(aL)then aJ=true break end
+for aM,aN in ipairs(targets())do
+if aI:IsDescendantOf(aN)then aJ=true break end
 end
 if not aJ then return end
 
@@ -17138,9 +16767,9 @@ collectBounds()
 paintBounds()
 for aI,aJ in ipairs(targets())do
 if not aw then break end
-for aK,aL in ipairs(aJ:GetDescendants())do
+for aM,aN in ipairs(aJ:GetDescendants())do
 if not aw then break end
-handle(aL,ax or 0)
+handle(aN,ax or 0)
 end
 end
 end
@@ -17257,14 +16886,12 @@ local aB=5
 
 local function segHitsBox(aC,aD,aE)
 local aF,aG,aH=aD.X,aD.Y,aD.Z
-local aI,aJ,aK=aE.X,aE.Y,aE.Z
+local aI,aJ,aM=aE.X,aE.Y,aE.Z
 if(aF<aC.minX and aI<aC.minX)or(aF>aC.maxX and aI>aC.maxX)then return false end
 if(aG<aC.minY and aJ<aC.minY)or(aG>aC.maxY and aJ>aC.maxY)then return false end
-if(aH<aC.minZ and aK<aC.minZ)or(aH>aC.maxZ and aK>aC.maxZ)then return false end
+if(aH<aC.minZ and aM<aC.minZ)or(aH>aC.maxZ and aM>aC.maxZ)then return false end
 
-local aL=aC.cf:PointToObjectSpace(aD)
-
-
+local aN=aC.cf:PointToObjectSpace(aD)
 
 
 
@@ -17275,48 +16902,50 @@ local aL=aC.cf:PointToObjectSpace(aD)
 
 
 
-if math.abs(aL.X)<=aC.hx and math.abs(aL.Y)<=aC.hy
-and math.abs(aL.Z)<=aC.hz then
+
+
+if math.abs(aN.X)<=aC.hx and math.abs(aN.Y)<=aC.hy
+and math.abs(aN.Z)<=aC.hz then
 return false
 end
 
-local aM=aC.cf:PointToObjectSpace(aE)
-local aN,aO=0,1
+local aO=aC.cf:PointToObjectSpace(aE)
+local aP,aQ=0,1
 
-local aP,aQ,aR=aL.X,aM.X-aL.X,aC.hx
-if math.abs(aQ)<af then
-if aP<-aR or aP>aR then return false end
+local aR,aS,aT=aN.X,aO.X-aN.X,aC.hx
+if math.abs(aS)<af then
+if aR<-aT or aR>aT then return false end
 else
-local aS=1/aQ
-local aT,aU=(-aR-aP)*aS,(aR-aP)*aS
-if aT>aU then aT,aU=aU,aT end
-if aT>aN then aN=aT end
-if aU<aO then aO=aU end
-if aN>aO then return false end
+local aU=1/aS
+local aV,aW=(-aT-aR)*aU,(aT-aR)*aU
+if aV>aW then aV,aW=aW,aV end
+if aV>aP then aP=aV end
+if aW<aQ then aQ=aW end
+if aP>aQ then return false end
 end
 
-aP,aQ,aR=aL.Y,aM.Y-aL.Y,aC.hy
-if math.abs(aQ)<af then
-if aP<-aR or aP>aR then return false end
+aR,aS,aT=aN.Y,aO.Y-aN.Y,aC.hy
+if math.abs(aS)<af then
+if aR<-aT or aR>aT then return false end
 else
-local aS=1/aQ
-local aT,aU=(-aR-aP)*aS,(aR-aP)*aS
-if aT>aU then aT,aU=aU,aT end
-if aT>aN then aN=aT end
-if aU<aO then aO=aU end
-if aN>aO then return false end
+local aU=1/aS
+local aV,aW=(-aT-aR)*aU,(aT-aR)*aU
+if aV>aW then aV,aW=aW,aV end
+if aV>aP then aP=aV end
+if aW<aQ then aQ=aW end
+if aP>aQ then return false end
 end
 
-aP,aQ,aR=aL.Z,aM.Z-aL.Z,aC.hz
-if math.abs(aQ)<af then
-if aP<-aR or aP>aR then return false end
+aR,aS,aT=aN.Z,aO.Z-aN.Z,aC.hz
+if math.abs(aS)<af then
+if aR<-aT or aR>aT then return false end
 else
-local aS=1/aQ
-local aT,aU=(-aR-aP)*aS,(aR-aP)*aS
-if aT>aU then aT,aU=aU,aT end
-if aT>aN then aN=aT end
-if aU<aO then aO=aU end
-if aN>aO then return false end
+local aU=1/aS
+local aV,aW=(-aT-aR)*aU,(aT-aR)*aU
+if aV>aW then aV,aW=aW,aV end
+if aV>aP then aP=aV end
+if aW<aQ then aQ=aW end
+if aP>aQ then return false end
 end
 
 return true
@@ -17449,7 +17078,7 @@ function aa.Ready()return an end
 function aa.Building()return ao end
 
 function aa.Stats()
-return("стен %d, дверей %d, углов %d"):format(#ag,#ah,al)
+return("s173"):format(#ag,#ah,al)
 end
 
 
@@ -17473,22 +17102,22 @@ for aE=1,#ag do
 local aF=ag[aE]
 local aG,aH=aF.hx+ac,aF.hz+ac
 for aI,aJ in ipairs{-1,1}do
-for aK,aL in ipairs{-1,1}do
-local aM=(aF.cf*CFrame.new(aJ*aG,0,aL*aH)).Position
-local aN=Vector3.new(aM.X,am,aM.Z)
+for aM,aN in ipairs{-1,1}do
+local aO=(aF.cf*CFrame.new(aJ*aG,0,aN*aH)).Position
+local aP=Vector3.new(aO.X,am,aO.Z)
 
 
 
 
 
-local aO=false
-for aP=1,#ai do
-local aQ=ai[aP]
-local aR,aS=aQ.X-aN.X,aQ.Z-aN.Z
-if aR*aR+aS*aS<aA then aO=true break end
+local aQ=false
+for aR=1,#ai do
+local aS=ai[aR]
+local aT,aU=aS.X-aP.X,aS.Z-aP.Z
+if aT*aT+aU*aU<aA then aQ=true break end
 end
-if not aO and not insideAnyWall(aN)then
-ai[#ai+1]=aN
+if not aQ and not insideAnyWall(aP)then
+ai[#ai+1]=aP
 end
 end
 end
@@ -17510,9 +17139,9 @@ local aH=ai[aG]
 if not blockedByWalls(aF,aH)then
 local aI=(aF-aH).Magnitude
 local aJ=aj[aE]
-local aK=aj[aG]
+local aM=aj[aG]
 aJ[#aJ+1]={aG,aI}
-aK[#aK+1]={aE,aI}
+aM[#aM+1]={aE,aI}
 end
 end
 breathe()
@@ -17546,39 +17175,39 @@ local aJ=1
 aF[1],aG[1]=0,aH
 
 while aJ>0 do
-local aK,aL=aF[1],aG[1]
-local aM,aN=aF[aJ],aG[aJ]
+local aM,aN=aF[1],aG[1]
+local aO,aP=aF[aJ],aG[aJ]
 aJ=aJ-1
 if aJ>0 then
-aF[1],aG[1]=aM,aN
-local aO=1
+aF[1],aG[1]=aO,aP
+local aQ=1
 while true do
-local aP,aQ=aO*2,aO*2+1
-local aR=aO
-if aP<=aJ and aF[aP]<aF[aR]then aR=aP end
-if aQ<=aJ and aF[aQ]<aF[aR]then aR=aQ end
-if aR==aO then break end
-aF[aR],aF[aO]=aF[aO],aF[aR]
-aG[aR],aG[aO]=aG[aO],aG[aR]
-aO=aR
+local aR,aS=aQ*2,aQ*2+1
+local aT=aQ
+if aR<=aJ and aF[aR]<aF[aT]then aT=aR end
+if aS<=aJ and aF[aS]<aF[aT]then aT=aS end
+if aT==aQ then break end
+aF[aT],aF[aQ]=aF[aQ],aF[aT]
+aG[aT],aG[aQ]=aG[aQ],aG[aT]
+aQ=aT
 end
 end
 
-if aK<=ak[aI+aL]then
-for aO,aP in ipairs(aj[aL])do
-local aQ,aR=aP[1],aP[2]
-local aS=aK+aR
-if aS<ak[aI+aQ]then
-ak[aI+aQ]=aS
+if aM<=ak[aI+aN]then
+for aQ,aR in ipairs(aj[aN])do
+local aS,aT=aR[1],aR[2]
+local aU=aM+aT
+if aU<ak[aI+aS]then
+ak[aI+aS]=aU
 aJ=aJ+1
-local aT=aJ
-aF[aT],aG[aT]=aS,aQ
-while aT>1 do
-local aU=aT//2
-if aF[aU]<=aF[aT]then break end
-aF[aU],aF[aT]=aF[aT],aF[aU]
-aG[aU],aG[aT]=aG[aT],aG[aU]
-aT=aU
+local aV=aJ
+aF[aV],aG[aV]=aU,aS
+while aV>1 do
+local aW=aV//2
+if aF[aW]<=aF[aV]then break end
+aF[aW],aF[aV]=aF[aV],aF[aW]
+aG[aW],aG[aV]=aG[aV],aG[aW]
+aV=aW
 end
 end
 end
@@ -17606,7 +17235,7 @@ end)
 ao=false
 if not aD then
 an=false
-if type(dbg)=="function"then dbg("Route: сборка сорвалась: "..tostring(aE))end
+if type(dbg)=="function"then dbg("s174"..tostring(aE))end
 end
 end)
 end
@@ -17652,11 +17281,11 @@ for aG,aH in ipairs(ax)do
 aF={}
 for aI=1,al do
 local aJ=ai[aI]
-local aK=(aC-aJ).Magnitude
-if aK<=aH and(not aE or aK>aB)then
-local aL
-if aD then aL=aa.Clear(aC,aJ)else aL=not blockedByWalls(aC,aJ)end
-if aL then aF[#aF+1]={aI,aK}end
+local aM=(aC-aJ).Magnitude
+if aM<=aH and(not aE or aM>aB)then
+local aN
+if aD then aN=aa.Clear(aC,aJ)else aN=not blockedByWalls(aC,aJ)end
+if aN then aF[#aF+1]={aI,aM}end
 end
 end
 if#aF>0 then break end
@@ -17694,34 +17323,34 @@ if#aG==0 then return nil,"we are boxed in"end
 local aH=visibleAround(aF,false)
 if#aH==0 then return nil,"target boxed in"end
 
-local aI,aJ,aK=math.huge
-for aL,aM in ipairs(aG)do
-local aN,aO=aM[1],aM[2]
-local aP=(aN-1)*al
-for aQ,aR in ipairs(aH)do
-local aS=aO+ak[aP+aR[1] ]+aR[2]
-if aS<aI then aI,aJ,aK=aS,aN,aR[1]end
+local aI,aJ,aM=math.huge
+for aN,aO in ipairs(aG)do
+local aP,aQ=aO[1],aO[2]
+local aR=(aP-1)*al
+for aS,aT in ipairs(aH)do
+local aU=aQ+ak[aR+aT[1] ]+aT[2]
+if aU<aI then aI,aJ,aM=aU,aP,aT[1]end
 end
 end
 if not aJ then return nil,"no path"end
 
-local aL={}
-local aM,aN=aJ,0
-while aM~=aK and aN<al do
-aL[#aL+1]=ai[aM]
-local aO,aP=math.huge
-for aQ,aR in ipairs(aj[aM])do
-local aS,aT=aR[1],aR[2]
-local aU=aT+ak[(aS-1)*al+aK]
-if aU<aO then aO,aP=aU,aS end
+local aN={}
+local aO,aP=aJ,0
+while aO~=aM and aP<al do
+aN[#aN+1]=ai[aO]
+local aQ,aR=math.huge
+for aS,aT in ipairs(aj[aO])do
+local aU,aV=aT[1],aT[2]
+local aW=aV+ak[(aU-1)*al+aM]
+if aW<aQ then aQ,aR=aW,aU end
 end
-if not aP then break end
-aM=aP
-aN=aN+1
+if not aR then break end
+aO=aR
+aP=aP+1
 end
-aL[#aL+1]=ai[aK]
-aL[#aL+1]=aD
-return aL,"via corners"
+aN[#aN+1]=ai[aM]
+aN[#aN+1]=aD
+return aN,"via corners"
 end
 
 
@@ -18039,18 +17668,18 @@ local aG,aH={},{}
 
 
 local aI,aJ={},{}
-local aK=0
-
-local aL=0
-
-
-
 local aM=0
-local aN,aO=false,false
-local aP,aQ=0,0
-local aR=0
-local aS=0
-local aT,aU,aV=1
+
+local aN=0
+
+
+
+local aO=0
+local aP,aQ=false,false
+local aR,aS=0,0
+local aT=0
+local aU=0
+local aV,aW,aX=1
 
 
 
@@ -18088,8 +17717,8 @@ local aT,aU,aV=1
 
 
 
-local aW,aX=0
-local aY,aZ=0.5,2
+local aY,aZ=0
+local a_,a0=0.5,2
 
 
 
@@ -18105,62 +17734,62 @@ local aY,aZ=0.5,2
 
 
 
-local a_=0.3
-local a0=12
-local a1=0
-local a2=0
-local a3
-local a4,a5=0
+local a1=0.3
+local a2=12
+local a3=0
+local a4=0
+local a5
+local a6,a7=0
 
-local a6
-
-
+local a8
 
 
 
-function ab.SetFloorFilter(a7)
-LPH_ATTRIBUTES(VM(NONE))a6=a7 end
 
-local a7={
+
+function ab.SetFloorFilter(a9)
+LPH_ATTRIBUTES(VM(NONE))a8=a9 end
+
+local a9={
 "ApelArenaFloor","ApelArenaWalls","ApelCastRing",
 "ApelEditFloor","ApelEditWalls","ApelNavDots","ApelStepProbe","ApelNavProbe",
 }
 
 
-local a8={}
-local a9={}
+local b={}
+local ba={}
 
-local b=RaycastParams.new()
-b.FilterType=Enum.RaycastFilterType.Exclude
-b.IgnoreWater=true
-
-
+local bb=RaycastParams.new()
+bb.FilterType=Enum.RaycastFilterType.Exclude
+bb.IgnoreWater=true
 
 
-local ba=OverlapParams.new()
-ba.FilterType=Enum.RaycastFilterType.Exclude
-pcall(function()ba.RespectCanCollide=true end)
+
+
+local bc=OverlapParams.new()
+bc.FilterType=Enum.RaycastFilterType.Exclude
+pcall(function()bc.RespectCanCollide=true end)
 
 local function refreshFilter()
 LPH_ATTRIBUTES(VM(NONE))
-local bb={}
-local bc=LocalPlayer and LocalPlayer.Character
-if bc then bb[#bb+1]=bc end
-for bd,be in ipairs(a7)do
-local bf=workspace:FindFirstChild(be)
-if bf then bb[#bb+1]=bf end
+local bd={}
+local be=LocalPlayer and LocalPlayer.Character
+if be then bd[#bd+1]=be end
+for bf,bg in ipairs(a9)do
+local bh=workspace:FindFirstChild(bg)
+if bh then bd[#bd+1]=bh end
 end
-if a6 then
-local bd,be=pcall(a6)
-if bd and type(be)=="table"then
-for bf,bg in ipairs(be)do bb[#bb+1]=bg end
+if a8 then
+local bf,bg=pcall(a8)
+if bf and type(bg)=="table"then
+for bh,bi in ipairs(bg)do bd[#bd+1]=bi end
 end
 end
-a9=bb
-b.FilterDescendantsInstances=bb
-ba.FilterDescendantsInstances=bb
+ba=bd
+bb.FilterDescendantsInstances=bd
+bc.FilterDescendantsInstances=bd
 
-a8={}
+b={}
 end
 
 
@@ -18168,12 +17797,12 @@ end
 
 
 
-local function addSkip(bb)
+local function addSkip(bd)
 LPH_ATTRIBUTES(VM(NONE))
-a9[#a9+1]=bb
-local bc=pcall(function()b:AddToFilter(bb)end)
-if not bc then b.FilterDescendantsInstances=a9 end
-ba.FilterDescendantsInstances=a9
+ba[#ba+1]=bd
+local be=pcall(function()bb:AddToFilter(bd)end)
+if not be then bb.FilterDescendantsInstances=ba end
+bc.FilterDescendantsInstances=ba
 end
 
 
@@ -18189,46 +17818,46 @@ end
 
 
 
-local bb
-local bc,bd={},-99
-local be=0.1
-local bf=90
+local bd
+local be,bf={},-99
+local bg=0.1
+local bh=90
 
-function ab.SetDanger(bg)
-LPH_ATTRIBUTES(VM(NONE))bb=bg end
-
-
+function ab.SetDanger(bi)
+LPH_ATTRIBUTES(VM(NONE))bd=bi end
 
 
 
 
 
-local bg
 
-function ab.SetNoGo(bh)
-LPH_ATTRIBUTES(VM(NONE))bg=(bh and#bh>0)and bh or nil end
 
-local function inNoGo(bh,bi)
+local bi
+
+function ab.SetNoGo(bj)
+LPH_ATTRIBUTES(VM(NONE))bi=(bj and#bj>0)and bj or nil end
+
+local function inNoGo(bj,bk)
 LPH_ATTRIBUTES(VM(NONE))
-if not bg then return false end
-for bj,bk in ipairs(bg)do
-if bh>=bk[1]and bh<=bk[2]and bi>=bk[3]and bi<=bk[4]then return true end
+if not bi then return false end
+for bl,bm in ipairs(bi)do
+if bj>=bm[1]and bj<=bm[2]and bk>=bm[3]and bk<=bm[4]then return true end
 end
 return false
 end
 
-function ab.InNoGo(bh)
-LPH_ATTRIBUTES(VM(NONE))return inNoGo(bh.X,bh.Z)end
+function ab.InNoGo(bj)
+LPH_ATTRIBUTES(VM(NONE))return inNoGo(bj.X,bj.Z)end
 
-local function cellOf(bh)
-LPH_ATTRIBUTES(VM(NONE))return math.floor(bh/ac+0.5)end
-local function worldOf(bh)
-LPH_ATTRIBUTES(VM(NONE))return bh*ac end
+local function cellOf(bj)
+LPH_ATTRIBUTES(VM(NONE))return math.floor(bj/ac+0.5)end
+local function worldOf(bj)
+LPH_ATTRIBUTES(VM(NONE))return bj*ac end
 
-local function at(bh,bi)
+local function at(bj,bk)
 LPH_ATTRIBUTES(VM(NONE))
-local bj=aF[bh]
-return bj and bj[bi]or nil
+local bl=aF[bj]
+return bl and bl[bk]or nil
 end
 
 
@@ -18264,39 +17893,39 @@ end
 
 
 
-local function passThrough(bh)
+local function passThrough(bj)
 LPH_ATTRIBUTES(VM(NONE))
-return bh:IsA"BasePart"and not bh.CanCollide and bh~=workspace.Terrain
+return bj:IsA"BasePart"and not bj.CanCollide and bj~=workspace.Terrain
 end
 
-local function liveRoot(bh)
+local function liveRoot(bj)
 LPH_ATTRIBUTES(VM(NONE))
-local bi=a8[bh]
-if bi~=nil then return bi or nil end
-local bj=false
-local bk=bh
-while bk and bk~=workspace do
-if bk:IsA"Model"and bk:FindFirstChildOfClass"Humanoid"then
-bj=bk
+local bk=b[bj]
+if bk~=nil then return bk or nil end
+local bl=false
+local bm=bj
+while bm and bm~=workspace do
+if bm:IsA"Model"and bm:FindFirstChildOfClass"Humanoid"then
+bl=bm
 break
 end
-bk=bk.Parent
+bm=bm.Parent
 end
-a8[bh]=bj
-return bj or nil
+b[bj]=bl
+return bl or nil
 end
 
 
-local bh=4
+local bj=4
 
-local function castFloor(bi,bj)
+local function castFloor(bk,bl)
 LPH_ATTRIBUTES(VM(NONE))
-for bk=1,bh do
-local bl=workspace:Raycast(bi,Vector3.new(0,-bj,0),b)
-if not bl then return nil end
-local bm=liveRoot(bl.Instance)
-if not bm and not passThrough(bl.Instance)then return bl.Position.Y end
-addSkip(bm or bl.Instance)
+for bm=1,bj do
+local bn=workspace:Raycast(bk,Vector3.new(0,-bl,0),bb)
+if not bn then return nil end
+local bo=liveRoot(bn.Instance)
+if not bo and not passThrough(bn.Instance)then return bn.Position.Y end
+addSkip(bo or bn.Instance)
 end
 return nil
 end
@@ -18311,7 +17940,7 @@ end
 
 
 
-local bi=4.93
+local bk=4.93
 
 
 
@@ -18326,7 +17955,7 @@ local bi=4.93
 
 
 
-local bj=2.22
+local bl=2.22
 
 
 
@@ -18348,7 +17977,7 @@ local bj=2.22
 
 
 
-local bk=2.68
+local bm=2.68
 
 
 
@@ -18362,7 +17991,7 @@ local bk=2.68
 
 
 
-local bl=2.0
+local bn=2.0
 
 
 
@@ -18375,43 +18004,43 @@ local bl=2.0
 
 
 
-local bm
-local bn=false
-
-
-
-local bo=0.25
+local bo
 local bp=false
+
+
+
+local bq=0.25
+local br=false
 
 local function fitBox()
 LPH_ATTRIBUTES(VM(NONE))
-if bm and bm.Parent then return bm end
-local bq,br=pcall(function()
-local bq=Instance.new"Part"
-bq.Name="ApelNavProbe"
-bq.Anchored=true
-bq.CanCollide=false
-bq.CanQuery=false
-bq.CanTouch=false
-bq.Transparency=1
-bq.Size=Vector3.new(bj,bi-bl,bj)
-bq.Parent=workspace
-return bq
+if bo and bo.Parent then return bo end
+local bs,bt=pcall(function()
+local bs=Instance.new"Part"
+bs.Name="ApelNavProbe"
+bs.Anchored=true
+bs.CanCollide=false
+bs.CanQuery=false
+bs.CanTouch=false
+bs.Transparency=1
+bs.Size=Vector3.new(bl,bk-bn,bl)
+bs.Parent=workspace
+return bs
 end)
-bm=bq and br or nil
-return bm
+bo=bs and bt or nil
+return bo
 end
 
 
 
-local function fitsAt(bq,br,bs)
+local function fitsAt(bs,bt,bu)
 LPH_ATTRIBUTES(VM(NONE))
-local bt=bi-bl
-local bu=CFrame.new(bq,br+bl+bt*0.5,bs)
+local bv=bk-bn
+local bw=CFrame.new(bs,bt+bn+bv*0.5,bu)
 local c=fitBox()
 if c then
-c.CFrame=bu
-local d,e=pcall(function()return workspace:GetPartsInPart(c,ba)end)
+c.CFrame=bw
+local d,e=pcall(function()return workspace:GetPartsInPart(c,bc)end)
 if d and type(e)=="table"then
 for f,g in ipairs(e)do
 if g~=c and g.CanCollide and g~=workspace.Terrain and not liveRoot(g)then
@@ -18427,9 +18056,9 @@ end
 
 
 
-if not bn then
-bn=true
-aa.Log"Nav: GetPartsInPart недоступен — дорожки внутри клеток отключены"
+if not bp then
+bp=true
+
 end
 return true
 end
@@ -18439,49 +18068,49 @@ end
 
 
 
-local bq=1.4
-local br={
+local bs=1.4
+local bt={
 {0,0},
-{bq,0},{-bq,0},{0,bq},{0,-bq},
-{bq,bq},{bq,-bq},{-bq,bq},{-bq,-bq},
+{bs,0},{-bs,0},{0,bs},{0,-bs},
+{bs,bs},{bs,-bs},{-bs,bs},{-bs,-bs},
 }
 
 
-local function setLane(bs,bt,bu,c)
+local function setLane(bu,bv,bw,c)
 LPH_ATTRIBUTES(VM(NONE))
-local d=aI[bs]
-if not d then d={}aI[bs]=d end
-local e=aJ[bs]
-if not e then e={}aJ[bs]=e end
-if d[bt]==nil and(bu~=0 or c~=0)then aK=aK+1 end
-d[bt],e[bt]=bu,c
+local d=aI[bu]
+if not d then d={}aI[bu]=d end
+local e=aJ[bu]
+if not e then e={}aJ[bu]=e end
+if d[bv]==nil and(bw~=0 or c~=0)then aM=aM+1 end
+d[bv],e[bv]=bw,c
 end
 
-local function laneOf(bs,bt,bu)
+local function laneOf(bu,bv,bw)
 LPH_ATTRIBUTES(VM(NONE))
-local c=aI[bs]
-if c and c[bt]~=nil then return c[bt],aJ[bs][bt]end
-local d,e=bs*ac,bt*ac
+local c=aI[bu]
+if c and c[bv]~=nil then return c[bv],aJ[bu][bv]end
+local d,e=bu*ac,bv*ac
 local f,g=0,0
-if not bp then
-for h=1,#br do
-local i=br[h]
-if fitsAt(d+i[1],bu,e+i[2])then
+if not br then
+for h=1,#bt do
+local i=bt[h]
+if fitsAt(d+i[1],bw,e+i[2])then
 f,g=i[1],i[2]
-if h>1 then aK=aK+1 end
+if h>1 then aM=aM+1 end
 break
 end
 end
-if aK>ao*bo then
-bp=true
-aa.Log(("Nav: дорожек вышло %d — проверка объёма врёт, отключаю их"):format(aK))
+if aM>ao*bq then
+br=true
+
 end
 end
-if not c then c={}aI[bs]=c end
-c[bt]=f
-local h=aJ[bs]
-if not h then h={}aJ[bs]=h end
-h[bt]=g
+if not c then c={}aI[bu]=c end
+c[bv]=f
+local h=aJ[bu]
+if not h then h={}aJ[bu]=h end
+h[bv]=g
 return f,g
 end
 
@@ -18501,7 +18130,7 @@ end
 
 
 
-local bs={{0,0},{1,0},{-1,0},{0,1},{0,-1}}
+local bu={{0,0},{1,0},{-1,0},{0,1},{0,-1}}
 
 
 
@@ -18515,11 +18144,11 @@ local bs={{0,0},{1,0},{-1,0},{0,1},{0,-1}}
 
 
 
-local function probe(bt,bu,c)
+local function probe(bv,bw,c)
 LPH_ATTRIBUTES(VM(NONE))
-local d,e=worldOf(bt),worldOf(bu)
+local d,e=worldOf(bv),worldOf(bw)
 local f
-for g,h in ipairs(bs)do
+for g,h in ipairs(bu)do
 f=castFloor(Vector3.new(d+h[1],c+ad,e+h[2]),
 ad+ae)
 if f then break end
@@ -18550,10 +18179,10 @@ if not f then return nil end
 
 
 if math.abs(f-c)>0.3 then
-for g=2,#bs do
-local h=bs[g]
-local i=castFloor(Vector3.new(d+h[1],f+bl,e+h[2]),bl+0.7)
-if i and i>f and(i-f)<=bl then f=i end
+for g=2,#bu do
+local h=bu[g]
+local i=castFloor(Vector3.new(d+h[1],f+bn,e+h[2]),bn+0.7)
+if i and i>f and(i-f)<=bn then f=i end
 end
 end
 
@@ -18564,10 +18193,10 @@ end
 
 
 
-if bp or(f-c)<=bl then return f,0,0 end
+if br or(f-c)<=bn then return f,0,0 end
 if fitsAt(d,f,e)then return f,0,0 end
-for g=2,#br do
-local h=br[g]
+for g=2,#bt do
+local h=bt[g]
 local i=castFloor(Vector3.new(d+h[1],c+ad,e+h[2]),
 ad+ae)
 if i and fitsAt(d+h[1],i,e+h[2])then return i,h[1],h[2]end
@@ -18575,7 +18204,7 @@ end
 return f,0,0
 end
 
-local bt=true
+local bv=true
 
 
 
@@ -18584,7 +18213,7 @@ local bt=true
 
 
 
-local bu=false
+local bw=false
 
 
 
@@ -18595,7 +18224,7 @@ local bu=false
 
 local function blocked(c,d,e,f,g,h)
 LPH_ATTRIBUTES(VM(NONE))
-local i=math.max(e,h or e)+bl
+local i=math.max(e,h or e)+bn
 
 
 
@@ -18604,25 +18233,25 @@ local i=math.max(e,h or e)+bl
 local j,k=laneOf(c,d,e)
 local l,m=0,0
 if h then l,m=laneOf(c+f,d+g,h)end
-local n=Vector3.new(worldOf(c)+j,i+bk/2,worldOf(d)+k)
+local n=Vector3.new(worldOf(c)+j,i+bm/2,worldOf(d)+k)
 local o=Vector3.new(worldOf(c+f)+l-(worldOf(c)+j),0,
 worldOf(d+g)+m-(worldOf(d)+k))
 
-for p=1,bh do
+for p=1,bj do
 local q
-if bu or not bt then
-q=workspace:Raycast(n,o,b)
+if bw or not bv then
+q=workspace:Raycast(n,o,bb)
 else
 local r,s=pcall(function()
 return workspace:Blockcast(CFrame.new(n),
-Vector3.new(bj,bk,bj),o,b)
+Vector3.new(bl,bm,bl),o,bb)
 end)
 if r then
 q=s
 else
-bt=false
-aa.Log"Nav: Blockcast недоступен, иду лучом — маршрут будет жаться к стенам"
-q=workspace:Raycast(n,o,b)
+bv=false
+
+q=workspace:Raycast(n,o,bb)
 end
 end
 if not q then return false end
@@ -18728,7 +18357,7 @@ local o,p=worldOf(g+i),worldOf(h+j)
 
 
 
-local q=math.min(math.max(k,l)+bl,math.min(k,l)+f)
+local q=math.min(math.max(k,l)+bn,math.min(k,l)+f)
 local r=q-(math.min(k,l)-ae)
 local s=k
 for u=1,d do
@@ -18784,8 +18413,8 @@ for r=1,n do
 local s,u=g.X+l*r,g.Z+m*r
 local v=Vector3.new(p,o+e+0.3,q)
 local w=Vector3.new(s-p,0,u-q)
-for x=1,bh do
-local y=workspace:Raycast(v,w,b)
+for x=1,bj do
+local y=workspace:Raycast(v,w,bb)
 if not y then break end
 local z=liveRoot(y.Instance)
 if not z and not passThrough(y.Instance)then return false end
@@ -18802,7 +18431,7 @@ end
 local function probeDeep(g,h,i)
 LPH_ATTRIBUTES(VM(NONE))
 local j,k=worldOf(g),worldOf(h)
-for l,m in ipairs(bs)do
+for l,m in ipairs(bu)do
 local n=castFloor(Vector3.new(j+m[1],i+ad,k+m[2]),
 ad+ai)
 if n then return n end
@@ -18921,7 +18550,7 @@ LPH_ATTRIBUTES(VM(NONE))
 local m=at(k,l)
 if not m then return false end
 
-local n=bl*0.5
+local n=bn*0.5
 local o,p=at(k-1,l),at(k+1,l)
 if o and p and(m-o)>n and(m-p)>n then return true end
 local q,r=at(k,l-1),at(k,l+1)
@@ -18947,9 +18576,9 @@ local function flood(k,l)
 LPH_ATTRIBUTES(VM(NONE))
 local m,n,o={},{},{}
 local p=0
-aM=0
+aO=0
 
-aI,aJ,aK,bp={},{},0,false
+aI,aJ,aM,br={},{},0,false
 
 local function gAt(q,r)
 local s=m[q]
@@ -18988,11 +18617,11 @@ local C=math.abs(w-v)
 
 
 
-if bu or C<=bl or C>ad then
+if bw or C<=bn or C>ad then
 B=ad
 elseif sheerEdge(q,r,s,u,v,w)then
-B=bl
-aM=aM+1
+B=bn
+aO=aO+1
 else
 B=ad
 end
@@ -19039,11 +18668,11 @@ if u then setLane(q,r,v or 0,w or 0)end
 
 
 local function seeCell(x,y)
-local z=Vector3.new(k.X,s+bl+bk/2,k.Z)
-local A=Vector3.new(worldOf(x),s+bl+bk/2,worldOf(y))-z
+local z=Vector3.new(k.X,s+bn+bm/2,k.Z)
+local A=Vector3.new(worldOf(x),s+bn+bm/2,worldOf(y))-z
 if A.Magnitude<0.1 then return true end
-for B=1,bh do
-local C=workspace:Raycast(z,A,b)
+for B=1,bj do
+local C=workspace:Raycast(z,A,bb)
 if not C then return true end
 local D=liveRoot(C.Instance)
 if not D and not passThrough(C.Instance)then return false end
@@ -19076,7 +18705,7 @@ break
 end
 end
 end
-if not u then return false,"под ногами нет пола"end
+if not u then return false,"s144"end
 
 local x,y=q,r
 gPut(q,r,u)
@@ -19197,7 +18826,7 @@ if G and B>G then break end
 if os.clock()-D>aq then
 task.wait()
 D=os.clock()
-if _apelStopped then return false,"хаб выгружен"end
+if _apelStopped then return false,"s145"end
 end
 end
 
@@ -19299,10 +18928,10 @@ end
 
 
 
-if p<ar and not bu then
-bu=true
+if p<ar and not bw then
+bw=true
 local I,J=flood(k,l)
-bu=false
+bw=false
 return I,J
 end
 
@@ -19316,21 +18945,21 @@ end
 
 
 
-if p<ar and aL>=ar and at(cellOf(k.X),cellOf(k.Z))then
-return false,("сетка вышла крошечной (%d клеток), прежняя ещё держит"):format(p)
+if p<ar and aN>=ar and at(cellOf(k.X),cellOf(k.Z))then
+return false,("s146"):format(p)
 end
 
-aF,aL,aG,aH=m,p,n,o
-aP,aQ=x,y
+aF,aN,aG,aH=m,p,n,o
+aR,aS=x,y
 return true
 end
 
 
 
 function ab.Ready()
-LPH_ATTRIBUTES(VM(NONE))return aN end
+LPH_ATTRIBUTES(VM(NONE))return aP end
 function ab.Building()
-LPH_ATTRIBUTES(VM(NONE))return aO end
+LPH_ATTRIBUTES(VM(NONE))return aQ end
 
 function ab.Stats()
 LPH_ATTRIBUTES(VM(NONE))
@@ -19343,8 +18972,8 @@ for n in pairs(m)do
 if ridgeAt(l,n)then k=k+1 end
 end
 end
-return("клеток %d, центр %d:%d, радиус %d студов, отвесных граней %d, дорожек %d, гребней %d"):format(
-aL,aP,aQ,an*ac,aM,aK,k)
+return("s147"):format(
+aN,aR,aS,an*ac,aO,aM,k)
 end
 
 
@@ -19364,7 +18993,7 @@ end
 
 function ab.Reachable(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aN then return false end
+if not aP then return false end
 local m,n=cellOf(k.X),cellOf(k.Z)
 local o=l or 3
 for p=-o,o do
@@ -19396,7 +19025,7 @@ end
 
 function ab.Clear(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aN then return false end
+if not aP then return false end
 
 
 local m,n=k.X/ac+0.5,k.Z/ac+0.5
@@ -19508,7 +19137,7 @@ if T>O or T<-af then return false end
 
 
 
-if G>0.15 and T>bl*0.5 then
+if G>0.15 and T>bn*0.5 then
 local U=(M~=0)and 0 or((A<0 and-1)or(A>0 and 1)or 0)
 local V=(N~=0)and 0 or((B<0 and-1)or(B>0 and 1)or 0)
 if U~=0 or V~=0 then
@@ -19571,7 +19200,7 @@ end
 
 function ab.NearestWhere(k,l,m)
 LPH_ATTRIBUTES(VM(NONE))
-if not aN then return nil end
+if not aP then return nil end
 local n,o=cellOf(k.X),cellOf(k.Z)
 local p=math.max(1,math.floor((l or 40)/ac+0.5))
 for q=1,p do
@@ -19595,7 +19224,7 @@ end
 
 function ab.RoomAt(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aN then return false end
+if not aP then return false end
 local m,n=cellOf(k.X),cellOf(k.Z)
 local o=at(m,n)
 if not o then return false end
@@ -19652,12 +19281,12 @@ end
 
 local function hotCells()
 LPH_ATTRIBUTES(VM(NONE))
-if os.clock()-bd<be then return bc end
-bd=os.clock()
-bc={}
-if not bb then return bc end
-local k,l=pcall(bb)
-if not k or type(l)~="table"then return bc end
+if os.clock()-bf<bg then return be end
+bf=os.clock()
+be={}
+if not bd then return be end
+local k,l=pcall(bd)
+if not k or type(l)~="table"then return be end
 
 for m,n in ipairs(l)do
 local o,p=n.cf,n.size
@@ -19693,7 +19322,7 @@ E=math.abs(F.X)<=p.X*0.5
 and math.abs(F.Y)<=q
 and math.abs(F.Z)<=p.Z*0.5
 end
-if E then bc[z*1000000+B]=true end
+if E then be[z*1000000+B]=true end
 end
 end
 end
@@ -19701,7 +19330,7 @@ end
 end
 end
 end
-return bc
+return be
 end
 
 function ab.HotAt(k)
@@ -19740,7 +19369,7 @@ local k=12
 
 local function segHot(l,m,n)
 LPH_ATTRIBUTES(VM(NONE))
-if not bb then return false end
+if not bd then return false end
 local o=hotCells()
 local p,q=m.X-l.X,m.Z-l.Z
 local r=math.sqrt(p*p+q*q)
@@ -19889,7 +19518,7 @@ and linked(z+E[1],A,0,E[2])or nil
 
 
 
-if J and K and L then I=math.min(J,K,L,bl)end
+if J and K and L then I=math.min(J,K,L,bn)end
 end
 end
 if I then
@@ -19915,7 +19544,7 @@ local R=ridgeAt(F,G)and ak or 0
 
 local T=v[B]+E[3]
 +L*ag+Q*aj+R
-+(p[K]and bf or 0)
++(p[K]and bh or 0)
 if T<(v[K]or math.huge)then
 v[K]=T
 w[K],x[K]=z,A
@@ -19950,12 +19579,12 @@ end
 
 function ab.Path(l,m)
 LPH_ATTRIBUTES(VM(NONE))
-a3=m
-a4=(Vector3.new(m.X,0,m.Z)-Vector3.new(l.X,0,l.Z)).Magnitude
-if not aN then return nil,"нет сетки"end
+a5=m
+a6=(Vector3.new(m.X,0,m.Z)-Vector3.new(l.X,0,l.Z)).Magnitude
+if not aP then return nil,"s148"end
 
 local n,o=nearestCell(l,4,l.Y-al)
-if not n then a2=os.clock()a5="старт вне сетки"return nil,a5 end
+if not n then a4=os.clock()a7="s149"return nil,a7 end
 local p,q=nearestCell(m,8,nil,true)
 
 
@@ -19968,8 +19597,8 @@ local p,q=nearestCell(m,8,nil,true)
 
 local r=false
 if not p then
-a2=os.clock()
-a5="ЦЕЛЬ ВНЕ СЕТКИ"
+a4=os.clock()
+a7="s150"
 ab.Grow()
 
 
@@ -20037,17 +19666,17 @@ s[u]=x and{x,y,math.sqrt(w)}or nil
 end
 local u=s[2]
 if s[1]and(not u or s[1][3]<=u[3]*1.5+20)then u=s[1]end
-if not u then return nil,a5 end
+if not u then return nil,a7 end
 local v,w=u[1],u[2]
 p,q,r=v,w,true
 end
 
 local s=astar(n,o,p,q)
 if not s then
-a2=os.clock()
-a5="цель в сетке, но пути к ней нет"
+a4=os.clock()
+a7="s151"
 ab.Grow()
-return nil,a5
+return nil,a7
 end
 
 local u=simplify(s)
@@ -20066,10 +19695,9 @@ if not r then u[#u]=m end
 local v=(Vector3.new(m.X,0,m.Z)-Vector3.new(l.X,0,l.Z)).Magnitude
 local w=(#s-1)*ac
 if v>12 and w>v*1.6 then
-aa.Log(("Nav: крюк %.0f%% — по клеткам %.0f при прямой %.0f, точек %d")
-:format((w/v-1)*100,w,v,#u))
+
 end
-return u,r and"до края доступного"or"ok"
+return u,r and"s152"or"ok"
 end
 
 function ab.Step(l,m)
@@ -20098,7 +19726,7 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 local n=false
-if bb then
+if bd then
 local o=hotCells()
 local p,q=m.X-l.X,m.Z-l.Z
 local r=math.sqrt(p*p+q*q)
@@ -20130,13 +19758,13 @@ if walkable(l,o)then return o,p end
 
 
 
-if aU then
-for q=math.min(aT,#aU),1,-1 do
-local r=aU[q]
+if aW then
+for q=math.min(aV,#aW),1,-1 do
+local r=aW[q]
 local s,u=r.X-l.X,r.Z-l.Z
 if math.sqrt(s*s+u*u)>1.5 and walkable(l,r)then
-aT=q
-return r,"назад по маршруту"
+aV=q
+return r,"s153"
 end
 end
 end
@@ -20150,7 +19778,7 @@ end
 
 
 
-local q=(aU and aU[math.min(aT,#aU)])or m
+local q=(aW and aW[math.min(aV,#aW)])or m
 local r,s=cellOf(l.X),cellOf(l.Z)
 local u=l.Y-al
 local v,w,x
@@ -20182,11 +19810,10 @@ if v then
 
 
 if aa.enabled then
-aa.Log(("СХОЖУ С ГРАНИ: шаг упирался телом, отступаю на клетку %d:%d")
-:format(worldOf(v),worldOf(w)))
+
 end
 return pointOf(v,w)or Vector3.new(worldOf(v),at(v,w)+al,worldOf(w)),
-"схожу с грани"
+"s154"
 end
 
 return o,p
@@ -20198,10 +19825,10 @@ end
 local function trace(o,p)
 ab.Last={
 why=p,
-at=aT,
-n=aU and#aU or 0,
+at=aV,
+n=aW and#aW or 0,
 step=o,
-node=aU and aU[math.min(aT,math.max(1,#aU))],
+node=aW and aW[math.min(aV,math.max(1,#aW))],
 }
 return o,p
 end
@@ -20209,32 +19836,32 @@ end
 
 local function deliver(o,p)
 local q,r=pick(o,p)
-if not q then aX=nil return trace(q,r)end
+if not q then aZ=nil return trace(q,r)end
 local s=os.clock()
 
 
 
 
-if aX and(s-aW)<aY then
-local u,v=aX.X-l.X,aX.Z-l.Z
+if aZ and(s-aY)<a_ then
+local u,v=aZ.X-l.X,aZ.Z-l.Z
 if math.sqrt(u*u+v*v)>aC then
 
-local w,x=q.X-aX.X,q.Z-aX.Z
-if math.sqrt(w*w+x*x)<=aZ then aX=q end
-return trace(aX,r)
+local w,x=q.X-aZ.X,q.Z-aZ.Z
+if math.sqrt(w*w+x*x)<=a0 then aZ=q end
+return trace(aZ,r)
 end
 end
-aX,aW=q,s
+aZ,aY=q,s
 return trace(q,r)
 end
 
 if not n and ab.Clear(l,m)then
-aU,aV=nil,nil
+aW,aX=nil,nil
 return deliver(m,"direct")
 end
-if not aN then
-if ab.Clear(l,m)then return m,"direct, сетки нет"end
-return nil,"нет сетки"
+if not aP then
+if ab.Clear(l,m)then return m,"s155"end
+return nil,"s148"
 end
 
 
@@ -20269,10 +19896,10 @@ end
 
 
 local function advance()
-while aT<=#aU do
-local o=aU[aT]
-local p=aU[aT-1]
-local q=aU[aT+1]
+while aV<=#aW do
+local o=aW[aV]
+local p=aW[aV-1]
+local q=aW[aV+1]
 
 
 
@@ -20322,7 +19949,7 @@ if v>w then break end
 
 if o.Y-l.Y>math.max(0.6,v*0.5)then break end
 end
-aT=aT+1
+aV=aV+1
 end
 end
 
@@ -20365,7 +19992,7 @@ return Vector3.new(l.X+p*s,o.Y,l.Z+q*s)
 end
 
 local function aimOf(o)
-local p=aU and aU[o]
+local p=aW and aW[o]
 if not p then return nil end
 local function farEnough(q)
 local r,s=q.X-l.X,q.Z-l.Z
@@ -20377,8 +20004,8 @@ if farEnough(p)then return p end
 
 
 local q,r,s=p,o,0
-while aU[r+1]and s<aB do
-local u,v=aU[r],aU[r+1]
+while aW[r+1]and s<aB do
+local u,v=aW[r],aW[r+1]
 local w,x,y=v.X-u.X,v.Y-u.Y,v.Z-u.Z
 local z=math.sqrt(w*w+y*y)
 if z>0.01 then
@@ -20406,8 +20033,8 @@ local o
 
 
 
-for p=aT,#aU do
-if ab.ClearSafe(l,aU[p])and not segHot(l,aU[p],k)then
+for p=aV,#aW do
+if ab.ClearSafe(l,aW[p])and not segHot(l,aW[p],k)then
 o=p
 else break end
 end
@@ -20450,22 +20077,22 @@ if o then return o end
 
 
 
-if aU[aT]and ab.Clear(l,aU[aT])
-and not segHot(l,aU[aT],k)then
+if aW[aV]and ab.Clear(l,aW[aV])
+and not segHot(l,aW[aV],k)then
 if aa.enabled then
-aa.Log"СРЕЗКА СКВОЗЬ УДАР: чистой хорды нет, иду по узлам маршрута"
+
 end
-return aT
+return aV
 end
-if aU[aT]and aa.enabled then
-aa.Log"ШАГА НЕТ: даже ближайший узел ведёт сквозь удар"
+if aW[aV]and aa.enabled then
+
 end
-for p=aT,#aU do
-if ab.ClearSafe(l,aU[p])then o=p else break end
+for p=aV,#aW do
+if ab.ClearSafe(l,aW[p])then o=p else break end
 end
 if o then return o end
-for p=aT,#aU do
-if ab.Clear(l,aU[p])then o=p else break end
+for p=aV,#aW do
+if ab.Clear(l,aW[p])then o=p else break end
 end
 if o then return o end
 
@@ -20507,11 +20134,11 @@ local r,s=q.X-l.X,q.Z-l.Z
 if math.sqrt(r*r+s*s)<=aw*0.5 then return nil end
 return q
 end
-for p=aT-1,1,-1 do
+for p=aV-1,1,-1 do
 local q=far(p)
 if q and ab.ClearSafe(l,q)then return p end
 end
-for p=aT-1,1,-1 do
+for p=aV-1,1,-1 do
 local q=far(p)
 if q and ab.Clear(l,q)then return p end
 end
@@ -20530,25 +20157,25 @@ end
 
 
 local o=math.max(aE,(m-l).Magnitude*0.1)
-if aU and aV and(m-aV).Magnitude<=o then
+if aW and aX and(m-aX).Magnitude<=o then
 advance()
 local function keeps(p)
 if not p then return false end
 local q,r=m.X-l.X,m.Z-l.Z
 local s,u=m.X-p.X,m.Z-p.Z
 return math.sqrt(s*s+u*u)
-<=math.sqrt(q*q+r*r)+a0
+<=math.sqrt(q*q+r*r)+a2
 end
-local p=aT<=#aU and furthest()or nil
+local p=aV<=#aW and furthest()or nil
 local q=p and aimOf(p)
 if q and keeps(q)then
-aT=p
+aV=p
 return deliver(q,"via cell")
 end
 
-if(p or aU[aT])and(os.clock()-a1)>a_ then
-a1=os.clock()
-aU,aV=nil,nil
+if(p or aW[aV])and(os.clock()-a3)>a1 then
+a3=os.clock()
+aW,aX=nil,nil
 end
 
 
@@ -20565,9 +20192,9 @@ end
 
 
 
-local r=aU and aU[aT]and aimOf(aT)
+local r=aW and aW[aV]and aimOf(aV)
 if r and keeps(r)then
-return deliver(r,"по узлам маршрута")
+return deliver(r,"s156")
 end
 end
 
@@ -20576,15 +20203,15 @@ if not p or#p==0 then
 
 
 if ab.Clear(l,m)then
-return m,n and"direct сквозь атаку, обхода нет"or"direct по кромке"
+return m,n and"s157"or"s158"
 end
-return nil,"маршрута нет"
+return nil,"s159"
 end
-aU,aV,aT=p,m,1
+aW,aX,aV=p,m,1
 
-aX=nil
+aZ=nil
 advance()
-if aT>#aU then
+if aV>#aW then
 
 
 
@@ -20600,11 +20227,11 @@ if aT>#aU then
 
 
 
-return aU[#aU],"до края доступного"
+return aW[#aW],"s152"
 end
 local q=furthest()
-if q then aT=q end
-local r=aimOf(aT)
+if q then aV=q end
+local r=aimOf(aV)
 
 
 
@@ -20616,15 +20243,15 @@ local r=aimOf(aT)
 
 
 
-return deliver(r or aU[aT],"via cell")
+return deliver(r or aW[aV],"via cell")
 end
 
 
 
 function ab.Rebuild(l,m)
 LPH_ATTRIBUTES(VM(NONE))
-if aO then return end
-aO=true
+if aQ then return end
+aQ=true
 
 
 
@@ -20634,26 +20261,23 @@ aO=true
 task.spawn(function()
 
 
-local n=tick()
-local o,p=pcall(function()
-local o=LocalPlayer and LocalPlayer.Character
-local p=o and o:FindFirstChild"HumanoidRootPart"
-if not p then error"нет персонажа"end
+tick()local
+n=pcall(function()
+local n=LocalPlayer and LocalPlayer.Character
+local o=n and n:FindFirstChild"HumanoidRootPart"
+if not o then error"s72"end
 refreshFilter()
-local q,r=flood(p.Position,m)
-if not q then error(r)end
+local p,q=flood(o.Position,m)
+if not p then error(q)end
 end)
-aO=false
-aN=aL>0
-if o then
-aa.Log(("Nav: сетка построена за %.0f мс %s— %s"):format(
-(tick()-n)*1000,
-m and"(до цели) "or"",
-ab.Stats()))
+aQ=false
+aP=aN>0
+if n then
 
-aU,aV,aT=nil,nil,1
-else
-aa.Log("Nav: сборка не принята:",tostring(p))
+
+aW,aX,aV=nil,nil,1
+
+
 end
 end)
 end
@@ -20676,27 +20300,26 @@ end
 
 function ab.Grow()
 LPH_ATTRIBUTES(VM(NONE))
-if aO or not aN then return end
-if os.clock()-aS<av then return end
-aS=os.clock()
+if aQ or not aP then return end
+if os.clock()-aU<av then return end
+aU=os.clock()
 
 
-aa.Log(("Nav: маршрут не нашёлся (%s, до цели %.0f студов) — пересобираю")
-:format(tostring(a5),a4))
-ab.Rebuild(nil,a3)
+
+ab.Rebuild(nil,a5)
 end
 
 function ab.Refresh(l)
 LPH_ATTRIBUTES(VM(NONE))
-if aO then return end
-if os.clock()-aR<au then return end
+if aQ then return end
+if os.clock()-aT<au then return end
 
 local m=LocalPlayer and LocalPlayer.Character
 local n=m and m:FindFirstChild"HumanoidRootPart"
 if not n then return end
 
-local o=(cellOf(n.Position.X)-aP)*ac
-local p=(cellOf(n.Position.Z)-aQ)*ac
+local o=(cellOf(n.Position.X)-aR)*ac
+local p=(cellOf(n.Position.Z)-aS)*ac
 local q=math.sqrt(o*o+p*p)
 
 
@@ -20705,404 +20328,32 @@ local q=math.sqrt(o*o+p*p)
 
 
 
-local r=(os.clock()-a2)<au
+local r=(os.clock()-a4)<au
 
 
 
 local s=ab.HeightAt(n.Position)==nil
 if not r and q<as and not s then return end
 
-aR=os.clock()
+aT=os.clock()
 
 
-aa.Log(("Nav: пересборка — %s (отход %.0f студов, я на %.0f,%.0f,%.0f)"):format(
-r and"маршрут не нашёлся"
-or(s and"подо мной нет клетки"or"ушли далеко"),
-q,n.Position.X,n.Position.Y,n.Position.Z))
+
 ab.Rebuild(l)
 end
 
 function ab.Clear_Held()
 LPH_ATTRIBUTES(VM(NONE))
-aU,aV,aT=nil,nil,1
-aX=nil
+aW,aX,aV=nil,nil,1
+aZ=nil
 end
 
 return ab end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local aa=a.l()
-
-local ab={}
-
-local ac="ApelHub"
-local ad=ac.."/anim_table.json"
-local ae=ac.."/anim_table.txt"
-local af=10
-
-local ag=3
-
-
-local ah={}
-local ai,aj=0,0
-local ak=false
-local al=setmetatable({},{__mode="k"})
-local am={}
-local an=setmetatable({},{__mode="k"})
-
-local function canWrite()
-return type(writefile)=="function"and type(isfile)=="function"
-end
-
-local function note(ao,ap)
-if type(ap)~="number"then return ao end
-if not ao then return{min=ap,max=ap,sum=ap,n=1}end
-if ap<ao.min then ao.min=ap end
-if ap>ao.max then ao.max=ap end
-ao.sum,ao.n=ao.sum+ap,ao.n+1
-return ao
-end
-
-local function fmt(ao)
-if not ao then return"-"end
-return("%.2f..%.2f (сред %.2f, замеров %d)"):format(ao.min,ao.max,ao.sum/ao.n,ao.n)
-end
-
-local function slot(ao,ap)
-local aq=ah[ao]
-if not aq then aq={}ah[ao]=aq end
-local ar=aq[ap]
-if not ar then ar={n=0,follows={}}aq[ap]=ar end
-return ar
-end
-
-
-
-
-
-local function reviveStat(ao)
-if type(ao)~="table"or type(ao.n)~="number"then return nil end
-return{min=ao.min,max=ao.max,n=ao.n,sum=(ao.avg or ao.min or 0)*ao.n}
-end
-
-local function load()
-if not canWrite()or not isfile(ad)then return end
-local ao,ap=pcall(function()
-return game:GetService"HttpService":JSONDecode(readfile(ad))
-end)
-if not ao or type(ap)~="table"then return end
-for aq,ar in pairs(ap)do
-for as,au in pairs(ar)do
-local av=slot(aq,as)
-av.n=(av.n or 0)+(tonumber(au.n)or 0)
-av.size=av.size or au.size
-if type(au.follows)=="table"then
-for aw,ax in pairs(au.follows)do av.follows[aw]=(av.follows[aw]or 0)+ax end
-end
-for aw,ax in ipairs{"gap","lead","toHit","reach","hitFrom","dmg"}do
-local ay=reviveStat(au[ax])
-if ay then
-if av[ax]then
-av[ax].min=math.min(av[ax].min,ay.min)
-av[ax].max=math.max(av[ax].max,ay.max)
-av[ax].sum=av[ax].sum+ay.sum
-av[ax].n=av[ax].n+ay.n
-else
-av[ax]=ay
-end
-end
-end
-end
-end
-end
-
-
-local function flat(ao)
-if not ao then return nil end
-return{min=ao.min,max=ao.max,avg=ao.sum/ao.n,n=ao.n}
-end
-
-local function readable()
-local ao={("== ТАБЛИЦА АНИМАЦИЙ ==  проигрышей %d, связей %d"):format(ai,aj)}
-local ap={}
-for aq in pairs(ah)do ap[#ap+1]=aq end
-table.sort(ap)
-for aq,ar in ipairs(ap)do
-ao[#ao+1]=("\n[%s]"):format(ar)
-local as={}
-for au in pairs(ah[ar])do as[#as+1]=au end
-table.sort(as,function(au,av)return ah[ar][au].n>ah[ar][av].n end)
-for au,av in ipairs(as)do
-local aw=ah[ar][av]
-ao[#ao+1]=("  анимация %s — сыграна %dx"):format(av,aw.n)
-ao[#ao+1]=("     период между повторами: %s"):format(fmt(aw.gap))
-if aw.lead then ao[#ao+1]=("     фора до детали:          %s"):format(fmt(aw.lead))end
-if aw.toHit then ao[#ao+1]=("     фора до урона:           %s"):format(fmt(aw.toHit))end
-if aw.reach then ao[#ao+1]=("     дальность от моба:       %s"):format(fmt(aw.reach))end
-if aw.hitFrom then ao[#ao+1]=("     бил с дистанции:         %s"):format(fmt(aw.hitFrom))end
-if aw.dmg then ao[#ao+1]=("     урон:                    %s"):format(fmt(aw.dmg))end
-if aw.size then ao[#ao+1]=("     размер детали:           %s"):format(aw.size)end
-local ax={}
-for ay,az in pairs(aw.follows)do ax[#ax+1]=("%s x%d"):format(ay,az)end
-table.sort(ax)
-if#ax>0 then ao[#ao+1]=("     следом появлялось:       %s"):format(table.concat(ax,", "))end
-end
-end
-return table.concat(ao,"\n")
-end
-
-function ab.Save()
-if not canWrite()then return false end
-local ao={}
-for ap,aq in pairs(ah)do
-ao[ap]={}
-for ar,as in pairs(aq)do
-ao[ap][ar]={
-n=as.n,size=as.size,follows=as.follows,
-gap=flat(as.gap),lead=flat(as.lead),toHit=flat(as.toHit),
-reach=flat(as.reach),hitFrom=flat(as.hitFrom),dmg=flat(as.dmg),
-}
-end
-end
-local ap=pcall(function()
-writefile(ad,game:GetService"HttpService":JSONEncode(ao))
-end)
-local aq=pcall(function()writefile(ae,readable())end)
-return ap and aq
-end
-
-
-local function isPlayerChar(ao)
-if ao==LocalPlayer.Character then return true end
-return Players:GetPlayerFromCharacter(ao)~=nil
-end
-
-local function eachMob(ao)
-for ap,aq in ipairs(workspace:GetChildren())do
-if aq:IsA"Model"and not isPlayerChar(aq)and aq:FindFirstChildOfClass"Humanoid"then
-ao(aq)
-end
-end
-local ap=workspace:FindFirstChild"dungeon"
-if not ap then return end
-for aq,ar in ipairs(ap:GetChildren())do
-local as=ar:FindFirstChild"enemyFolder"
-if as then
-for au,av in ipairs(as:GetChildren())do
-if av:IsA"Model"and av:FindFirstChildOfClass"Humanoid"then ao(av)end
-end
-end
-end
-end
-
-local function casterOf(ao,ap)
-local aq,ar
-eachMob(function(as)
-local au=as:FindFirstChild"HumanoidRootPart"or as.PrimaryPart
-if not au then return end
-local av=(au.Position-ao).Magnitude
-if av<=(ap or 90)and(not ar or av<ar)then aq,ar=as,av end
-end)
-return aq,ar
-end
-
-local function isAttackPart(ao)
-if not ao:IsA"BasePart"then return false end
-local ap=tostring(ao.Name):lower()
-if ap:find("hitbox",1,true)or ap:find("precast",1,true)
-or ap:find("indicator",1,true)then return true end
-local aq=ao.Parent and tostring(ao.Parent.Name):lower()or""
-return aq:find"strike"~=nil or aq:find"shot"~=nil
-or aq:find"blast"~=nil or aq:find"slam"~=nil
-or aq:find"beam"~=nil
-end
-
-
-local function hook(ao)
-if al[ao]then return end
-local ap=ao:FindFirstChildOfClass"Humanoid"
-local aq=ap and ap:FindFirstChildOfClass"Animator"
-if not aq then return end
-al[ao]=true
-
-regConn(aq.AnimationPlayed:Connect(function(ar)
-if _apelStopped or not ak then return end
-pcall(function()
-local as=tostring(ar.Animation and ar.Animation.AnimationId or"?")
-:gsub("rbxassetid://",""):gsub("http://www%.roblox%.com/asset/%?id=","")
-local au=slot(ao.Name,as)
-local av=os.clock()
-
-
-
-local aw=an[ao]
-if not aw then aw={}an[ao]=aw end
-if aw[as]then
-local ax=av-aw[as]
-if ax<60 then au.gap=note(au.gap,ax)end
-end
-aw[as]=av
-
-au.n=au.n+1
-ai=ai+1
-
-local ax=ao:FindFirstChild"HumanoidRootPart"or ao.PrimaryPart
-am[#am+1]={mob=ao.Name,id=as,at=av,model=ao,
-pos=ax and ax.Position or nil}
-while am[1]and av-am[1].at>3 do table.remove(am,1)end
-end)
-end))
-end
-
-local function linkPart(ao)
-if not ak or not isAttackPart(ao)then return end
-local ap=("%s/%s"):format(ao.Parent and ao.Parent.Name or"?",ao.Name)
-
-
-
-
-
-
-local aq=casterOf(ao.Position,90)
-if not aq then return end
-
-
-
-
-
-
-
-local ar=os.clock()
-local as
-for au=#am,1,-1 do
-local av=am[au]
-if ar-av.at>ag then break end
-if av.model==aq then as=av break end
-end
-if not as then return end
-
-
-
-
-
-
-as.linked=as.linked or{}
-if as.linked[ap]then return end
-as.linked[ap]=true
-
-local au=slot(as.mob,as.id)
-au.lead=note(au.lead,ar-as.at)
-au.follows[ap]=(au.follows[ap]or 0)+1
-
-
-
-
-
-local av=ao.Size.X*ao.Size.Y*ao.Size.Z
-if not au.size or(au.vol or 0)<av then
-au.size=("%.1f x %.1f x %.1f"):format(ao.Size.X,ao.Size.Y,ao.Size.Z)
-au.vol=av
-end
-if as.pos then au.reach=note(au.reach,(ao.Position-as.pos).Magnitude)end
-aj=aj+1
-end
-
-function ab.Start()
-if ak then return end
-ak=true
-load()
-
-eachMob(hook)
-regConn(workspace.DescendantAdded:Connect(function(ao)pcall(linkPart,ao)end))
-
-spawnLoop(function()
-while not _apelStopped and ak do
-task.wait(1)
-pcall(function()eachMob(hook)end)
-end
-end)
-
-spawnLoop(function()
-local ao
-while not _apelStopped and ak do
-task.wait(0.05)
-local ap=LocalPlayer.Character
-local aq=ap and ap:FindFirstChildOfClass"Humanoid"
-local ar=ap and ap:FindFirstChild"HumanoidRootPart"
-if aq and ar then
-local as=aq.Health
-if ao and as<ao-1 then
-local au,av=casterOf(ar.Position,60)
-if au then
-for aw=#am,1,-1 do
-if am[aw].model==au then
-local ax=slot(am[aw].mob,am[aw].id)
-ax.dmg=note(ax.dmg,ao-as)
-ax.hitFrom=note(ax.hitFrom,av or 0)
-ax.toHit=note(ax.toHit,os.clock()-am[aw].at)
-break
-end
-end
-end
-end
-ao=as
-end
-end
-end)
-
-spawnLoop(function()
-while not _apelStopped and ak do
-task.wait(af)
-if ai>0 then pcall(ab.Save)end
-end
-end)
-
-aa.Log("РЕКОРДЕР АНИМАЦИЙ: включён, пишу в "..ae)
-end
-
-function ab.Stop()
-if not ak then return end
-ak=false
-pcall(ab.Save)
-aa.Log(("РЕКОРДЕР АНИМАЦИЙ: выключен, проигрышей %d, связей %d"):format(ai,aj))
-end
-
-function ab.Stats()
-local ao,ap=0,0
-for aq,ar in pairs(ah)do
-ao=ao+1
-for as in pairs(ar)do ap=ap+1 end
-end
-return ao,ap,ai,aj
-end
-
-return ab end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
+local aa={}
+function aa.Start()end
+function aa.Stop()end
+return aa end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -21177,11 +20428,11 @@ local an,ao
 function ac.Running()return ag~=nil end
 
 function ac.Stats()
-if not ag then return"сигнал выключен"end
-return("сигналов %d (куб %d, круг %d), опоздавших %d, фора %s / худшая %s")
+if not ag then return"s166"end
+return("s167")
 :format(aj,ak,al,am,
-an and("%.2fс"):format(an)or"-",
-ao and("%.2fс"):format(ao)or"-")
+an and("s99"):format(an)or"-",
+ao and("s99"):format(ao)or"-")
 end
 
 local function onSignal(ap)
@@ -21208,23 +20459,23 @@ al=al+1
 
 local ay=CFrame.new(aw)*CFrame.Angles(0,0,math.pi/2)
 aa.Foresee(ay,Vector3.new(0.5,ax*2,ax*2),
-av,"сигнал:круг",0,af,true)
+av,"s168",0,af,true)
 return
 end
 
 local aw,ax=ap.cframe,ap.size
 if typeof(aw)~="CFrame"or typeof(ax)~="Vector3"then return end
 ak=ak+1
-aa.Foresee(aw,ax,av,"сигнал:куб",0,af,false)
+aa.Foresee(aw,ax,av,"s169",0,af,false)
 end
 
 function ac.Start()
-if ag then return true,"уже слушаем"end
+if ag then return true,"s170"end
 
 local ap,aq=pcall(function()
 local ap=ab:WaitForChild("Utility",5)
 local aq=ap and ap:FindFirstChild"BridgeNet2"
-if not aq then error"BridgeNet2 не найден"end
+if not aq then error"s171"end
 local ar=require(aq)
 ah=ar.ReferenceBridge"precastHitbox"
 ai=ar.ReferenceIdentifier"action"
@@ -21239,7 +20490,7 @@ return false,tostring(aq)
 end
 aj,ak,al,am=0,0,0,0
 an,ao=nil,nil
-return true,"слушаем"
+return true,"s172"
 end
 
 function ac.Stop()
@@ -21280,18 +20531,16 @@ local ac=a.v()
 local ad=a.x()
 local ae=a.K()
 local af=a.L()
-local ag=a.M()
-local ah=a.N()
-local ai=a.O()
-local aj=a.l()
+local ag=a.M()a.N()
 
-local ak=game:GetService"RunService"
+local ah=a.O()
+local ai=a.l()
 
-local al=32
-local am=1.2
-local an=14
+local aj=game:GetService"RunService"
 
-
+local ak=32
+local al=1.2
+local am=14
 
 
 
@@ -21305,9 +20554,9 @@ local an=14
 
 
 
-local ao=3
 
 
+local an=3
 
 
 
@@ -21335,11 +20584,13 @@ local ao=3
 
 
 
-local ap={king=
+
+
+local ao={king=
 {{-33,-24,-17,8}},
 }
 
-local aq={
+local ap={
 ["Spider Queen"]=Vector3.new(-205,237,-868),
 }
 
@@ -21357,9 +20608,9 @@ local aq={
 
 
 
-local ar=45
+local aq=45
 
-local as={
+local ar={
 
 
 
@@ -21370,7 +20621,7 @@ local as={
 ["Northern Warrior"]=20,
 }
 
-local au={
+local as={
 ["Ice Elemental"]=true,
 
 
@@ -21400,9 +20651,9 @@ local au={
 
 
 
-local av={25,35,50}
+local au={25,35,50}
 
-local aw=4
+local av=4
 
 
 
@@ -21412,12 +20663,12 @@ local aw=4
 
 
 
-local ax=0.5
+local aw=0.5
 
 
 
-local ay=16
-local az=3
+local ax=16
+local ay=3
 
 
 
@@ -21469,7 +20720,7 @@ local az=3
 
 
 
-local aA=0
+local az=0
 
 
 
@@ -21500,7 +20751,7 @@ local aA=0
 
 
 
-local aB=3
+local aA=3
 
 
 
@@ -21515,7 +20766,7 @@ local aB=3
 
 
 
-local aC=13
+local aB=13
 
 
 
@@ -21537,9 +20788,9 @@ local aC=13
 
 
 
-local aD=3
+local aC=3
 
-local aE=4
+local aD=4
 
 
 
@@ -21550,7 +20801,7 @@ local aE=4
 
 
 
-local aF=6
+local aE=6
 
 
 
@@ -21558,14 +20809,14 @@ local aF=6
 
 
 
-local aG=1.5
+local aF=1.5
 
 
 
-local aH=60
-local aI=12
+local aG=60
+local aH=12
 
-local aJ=0.4
+local aI=0.4
 
 
 
@@ -21575,11 +20826,11 @@ local aJ=0.4
 
 
 
-local aK=60
+local aJ=60
 
 
-local aL=55
-local aM=200
+local aM=55
+local aN=200
 
 
 
@@ -21623,7 +20874,7 @@ math.rad(50)
 
 
 
-local aN=8
+local aO=8
 
 
 
@@ -21638,9 +20889,9 @@ local aN=8
 
 
 
-local aO=0.35
+local aP=0.35
 
-local aP=0.2
+local aQ=0.2
 
 
 
@@ -21668,8 +20919,8 @@ local aP=0.2
 
 
 
-local aQ=2
-local aR=1.5
+local aR=2
+local aS=1.5
 
 
 
@@ -21678,15 +20929,15 @@ local aR=1.5
 
 
 
-local aS=5
-local aT=10
+local aT=5
+local aU=10
 
 
 
 
 
 
-local aU={8,5,3,0}
+local aV={8,5,3,0}
 
 
 
@@ -21703,8 +20954,8 @@ local aU={8,5,3,0}
 
 
 
-local aV=1.6
-local aW=2
+local aW=1.6
+local aX=2
 
 
 
@@ -21724,13 +20975,13 @@ local aW=2
 
 
 
-local aX=0.5
+local aY=0.5
 
-local aY=1.5
+local aZ=1.5
 
-local aZ=4
+local a_=4
 
-local a_=6
+local a0=6
 
 
 
@@ -21743,15 +20994,15 @@ local a_=6
 
 
 
-local a0=25
-local a1=5
+local a1=25
+local a2=5
 
-local a2=4
+local a3=4
 
 
 
 
-local a3=0.5
+local a4=0.5
 
 
 
@@ -21760,7 +21011,7 @@ local a3=0.5
 
 
 
-local a4=0.66
+local a5=0.66
 
 
 
@@ -21797,7 +21048,7 @@ local a4=0.66
 
 local function showDots()
 LPH_ATTRIBUTES(VM(NONE))
-if aj.enabled then return S.testDots==true end
+if ai.enabled then return S.testDots==true end
 return S.testWalk==true
 end
 
@@ -21809,32 +21060,24 @@ end
 
 local function showRoute()
 LPH_ATTRIBUTES(VM(NONE))
-if aj.enabled then return S.testDots==true end
+if ai.enabled then return S.testDots==true end
 return S.testWalk==true
 end
 local function showZones()
-LPH_ATTRIBUTES(VM(NONE))return aj.enabled and S.testZones==true end
+LPH_ATTRIBUTES(VM(NONE))return ai.enabled and S.testZones==true end
 
-local a5=0
 local a6=0
 local a7=0
-
 local a8=0
 
-
-
-
-
-
-local a9,b={},0
-
+local a9=0
 
 
 
 
 
 
-local ba,bb,bc=0,0
+local b,ba={},0
 
 
 
@@ -21842,21 +21085,29 @@ local ba,bb,bc=0,0
 
 
 
-local bd,be,bf={},{},{}
-local bg=0
-local bh="нет"
-local function noteBranch(bi)
+local bb,bc,bd=0,0
+
+
+
+
+
+
+
+local be,bf,bg={},{},{}
+local bh=0
+local bi="s3"
+local function noteBranch(bj)
 LPH_ATTRIBUTES(VM(NONE))
-a9[bi]=(a9[bi]or 0)+1
-if bi~="ВСЕГО кадров под ударом"then
-bh=bi
+b[bj]=(b[bj]or 0)+1
+if bj~="s58"then
+bi=bj
 
 
-ad.Note("ветка",bi)
+
 end
 end
 
-local bi=0.2
+local bj=0.2
 
 
 
@@ -21897,12 +21148,12 @@ ag.SetFloorFilter(ad.FloorIgnore)
 
 ag.SetDanger(function()
 LPH_ATTRIBUTES(VM(NONE))
-local bj=ab.HRP()
-if not bj then return{}end
-return ad.ZoneShapes(bj.Position,150,0)
+local bk=ab.HRP()
+if not bk then return{}end
+return ad.ZoneShapes(bk.Position,150,0)
 end)
 
-return function(bj)
+return function(bk)
 LPH_ATTRIBUTES(VM(NONE))
 
 
@@ -21911,16 +21162,15 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 spawnLoop(function()
-local bk=false
+local bl=false
 while not _apelStopped do
-if not bk then
-local bl=tostring(aa.Name and aa.Name()or""):lower()
-for bm,bn in pairs(ap)do
-if bl~=""and bl:find(bm,1,true)then
-ag.SetNoGo(bn)
-bk=true
-aj.Log(("ЗАПРЕТНОЕ МЕСТО: включено для карты %s, квадратов %d")
-:format(bl,#bn))
+if not bl then
+local bm=tostring(aa.Name and aa.Name()or""):lower()
+for bn,bo in pairs(ao)do
+if bm~=""and bm:find(bn,1,true)then
+ag.SetNoGo(bo)
+bl=true
+
 break
 end
 end
@@ -21928,7 +21178,7 @@ end
 task.wait(2)
 end
 end)
-local bk=bj.Test
+
 
 local bl,bm={}
 
@@ -22084,8 +21334,6 @@ math.huge
 
 
 
-
-
 local function mobKeeps()
 local bp={}
 for bq,br in ipairs(bn)do
@@ -22107,7 +21355,7 @@ if bs then
 
 bp[#bp+1]={
 at=Vector3.new(bs.X,0,bs.Z),
-keep=as[br.Name]or 0,
+keep=ar[br.Name]or 0,
 }
 end
 end
@@ -22172,7 +21420,7 @@ local function ensureDots()
 if bm and bm.Parent then return end
 bm=freshFolder"ApelTestDots"
 bl={}
-for br=1,al*(#av+1)do
+for br=1,ak*(#au+1)do
 local bs=Instance.new"Part"
 
 
@@ -22184,7 +21432,7 @@ local bs=Instance.new"Part"
 
 
 bs.Name="ApelMark"
-bs.Size=Vector3.new(am,am,am)
+bs.Size=Vector3.new(al,al,al)
 bs.Anchored,bs.CanCollide,bs.CanQuery,bs.CanTouch=true,false,false,false
 bs.Material=Enum.Material.Neon
 bs.Transparency=0.3
@@ -22212,7 +21460,7 @@ end
 
 local function drawRoute(bt,bu)
 if not showRoute()or not bu or#bu==0 then
-for c,d in ipairs(br)do d.Transparency=1 end
+for bv,bw in ipairs(br)do bw.Transparency=1 end
 return
 end
 if not bs or not bs.Parent then
@@ -22220,41 +21468,41 @@ bs=freshFolder"ApelRouteView"
 br={}
 end
 
-local c=0
-local function put(d,e)
-c=c+1
-local f=br[c]
-if not f or not f.Parent then
-f=Instance.new"Part"
-f.Name="ApelMark"
-f.Anchored,f.CanCollide=true,false
-f.CanQuery,f.CanTouch=false,false
-f.Material=Enum.Material.Neon
-f.Parent=bs
-br[c]=f
+local bv=0
+local function put(bw,c)
+bv=bv+1
+local d=br[bv]
+if not d or not d.Parent then
+d=Instance.new"Part"
+d.Name="ApelMark"
+d.Anchored,d.CanCollide=true,false
+d.CanQuery,d.CanTouch=false,false
+d.Material=Enum.Material.Neon
+d.Parent=bs
+br[bv]=d
 end
 
-f.Size=e and Vector3.new(1.6,1.6,1.6)or Vector3.new(0.7,0.7,0.7)
-f.Color=e and Color3.fromRGB(255,150,40)
+d.Size=c and Vector3.new(1.6,1.6,1.6)or Vector3.new(0.7,0.7,0.7)
+d.Color=c and Color3.fromRGB(255,150,40)
 or Color3.fromRGB(255,220,120)
-f.Transparency=0.3
-f.Position=d
+d.Transparency=0.3
+d.Position=bw
 end
 
-local d=bt
-for e,f in ipairs(bu)do
-local g=(f-d).Magnitude
-if g>0.01 then
-local h=math.floor(g/aw)
-for i=1,h do
-put(d:Lerp(f,(i*aw)/g),false)
+local bw=bt
+for c,d in ipairs(bu)do
+local e=(d-bw).Magnitude
+if e>0.01 then
+local f=math.floor(e/av)
+for g=1,f do
+put(bw:Lerp(d,(g*av)/e),false)
 end
 end
-put(f,true)
-d=f
-if c>200 then break end
+put(d,true)
+bw=d
+if bv>200 then break end
 end
-for e=c+1,#br do br[e].Transparency=1 end
+for c=bv+1,#br do br[c].Transparency=1 end
 end
 
 local function clearMarks()
@@ -22280,16 +21528,16 @@ local bu={}
 
 
 
-local function legClear(c,d)
-local e=Vector3.new(d.X-c.X,0,d.Z-c.Z)
-local f=math.min(e.Magnitude,a0)
-if f<0.5 then return true end
-local g=e.Unit
-local h=a1
-while h<=f do
-local i=c+g*h
-if not ad.IsSafe(Vector3.new(i.X,c.Y,i.Z),aA)then return false end
-h=h+a1
+local function legClear(bv,bw)
+local c=Vector3.new(bw.X-bv.X,0,bw.Z-bv.Z)
+local d=math.min(c.Magnitude,a1)
+if d<0.5 then return true end
+local e=c.Unit
+local f=a2
+while f<=d do
+local g=bv+e*f
+if not ad.IsSafe(Vector3.new(g.X,bv.Y,g.Z),az)then return false end
+f=f+a2
 end
 return true
 end
@@ -22308,11 +21556,11 @@ end
 
 
 
-local function legOut(c,d)
-local e=Vector3.new(d.X-c.X,0,d.Z-c.Z)
-local f=math.min(e.Magnitude,a0)
-if f<0.5 then return true end
-local g=e.Unit
+local function legOut(bv,bw)
+local c=Vector3.new(bw.X-bv.X,0,bw.Z-bv.Z)
+local d=math.min(c.Magnitude,a1)
+if d<0.5 then return true end
+local e=c.Unit
 
 
 
@@ -22324,18 +21572,18 @@ local g=e.Unit
 
 
 
-local h=ab.Humanoid()
-local i=math.max((h and h.WalkSpeed)or ay,1)
-local j,k=a1,false
-while j<=f do
-local l=c+g*j
-local m=ad.PassAt(Vector3.new(l.X,c.Y,l.Z),aA,j/i)
-if m then
-k=true
-elseif k then
+local f=ab.Humanoid()
+local g=math.max((f and f.WalkSpeed)or ax,1)
+local h,i=a2,false
+while h<=d do
+local j=bv+e*h
+local k=ad.PassAt(Vector3.new(j.X,bv.Y,j.Z),az,h/g)
+if k then
+i=true
+elseif i then
 return false
 end
-j=j+a1
+h=h+a2
 end
 return true
 end
@@ -22350,16 +21598,16 @@ end
 
 
 
-local function pathGap(c,d,e)
-local f,g=c.X-e.X,c.Z-e.Z
-local h,i=d.X-e.X,d.Z-e.Z
-local j,k=h-f,i-g
-local l=j*j+k*k
-if l<1e-6 then return math.sqrt(f*f+g*g)end
-local m=-(f*j+g*k)/l
-if m<0 then m=0 elseif m>1 then m=1 end
-local n,o=f+j*m,g+k*m
-return math.sqrt(n*n+o*o)
+local function pathGap(bv,bw,c)
+local d,e=bv.X-c.X,bv.Z-c.Z
+local f,g=bw.X-c.X,bw.Z-c.Z
+local h,i=f-d,g-e
+local j=h*h+i*i
+if j<1e-6 then return math.sqrt(d*d+e*e)end
+local k=-(d*h+e*i)/j
+if k<0 then k=0 elseif k>1 then k=1 end
+local l,m=d+h*k,e+i*k
+return math.sqrt(l*l+m*m)
 end
 
 
@@ -22369,26 +21617,23 @@ end
 
 
 
-local c,d,e={},0
-local f,g,h,i,j=0,0,0,0,0
+local bv,bw,c={},0
+local d,e,f,g,h=0,0,0,0,0
+local i=0
+local j=0
 local k=0
 local l=0
 local m=0
-local n=0
-local o=0
-local p,q,r=0,0,0
+local n,o,p=0,0,0
 
 
 
 
 
 
-local s=0
-local u,v={},0
-local w=-99
-
-
-
+local q=0
+local r,s={},0
+local u=-99
 
 
 
@@ -22396,47 +21641,50 @@ local w=-99
 
 
 
-local x,y,z=0
 
-local function clearZones()
-if e then e:Destroy()e=nil end
-c={}
+
+
+local v,w,x=0
+
+
+
+
+
+
+
+
+
+
+
+
+local function drawZones(y)
+if not c or not c.Parent then
+c=freshFolder"ApelZoneView"
+bv={}
 end
 
-
-
-
-
-
-
-local function drawZones(A)
-if not e or not e.Parent then
-e=freshFolder"ApelZoneView"
-c={}
+local z=ad.ZoneShapes(y,90,az)
+for A,B in ipairs(z)do
+local C=bv[A]
+if not C or not C.Parent then
+C=Instance.new"Part"
+C.Name="ApelMark"
+C.Anchored,C.CanCollide=true,false
+C.CanQuery,C.CanTouch=false,false
+C.Material=Enum.Material.ForceField
+C.Parent=c
+bv[A]=C
 end
+C.Shape=B.cylinder and Enum.PartType.Cylinder or Enum.PartType.Block
+C.Size=B.size
+C.CFrame=B.cf
 
-local B=ad.ZoneShapes(A,90,aA)
-for C,D in ipairs(B)do
-local E=c[C]
-if not E or not E.Parent then
-E=Instance.new"Part"
-E.Name="ApelMark"
-E.Anchored,E.CanCollide=true,false
-E.CanQuery,E.CanTouch=false,false
-E.Material=Enum.Material.ForceField
-E.Parent=e
-c[C]=E
-end
-E.Shape=D.cylinder and Enum.PartType.Cylinder or Enum.PartType.Block
-E.Size=D.size
-E.CFrame=D.cf
-
-E.Color=D.ghost and Color3.fromRGB(90,160,255)
+C.Color=B.ghost and Color3.fromRGB(90,160,255)
 or Color3.fromRGB(255,220,60)
-E.Transparency=0.75
+C.Transparency=0.75
 end
-for C=#B+1,#c do
-if c[C]then c[C].Transparency=1 end
+for A=#z+1,#bv do
+if bv[A]then bv[A].Transparency=1 end
 end
 end
 
@@ -22457,8 +21705,8 @@ end
 
 
 
-local A=6
-local B=false
+local y=6
+local z=false
 
 
 
@@ -22471,50 +21719,50 @@ local B=false
 
 
 
-local function hopSpot(C,D,E)
-local F,G=math.huge
-local H=mobPoints()
+local function hopSpot(A,B,C)
+local D,E=math.huge
+local F=mobPoints()
 mobKeeps()
-local I=D and A or aC
-local J=D and(B and 0 or aD)or aE
-J=J+(E or 0)
-for K=6,aN,2 do
-for L=1,16 do
-local M=(L/16)*math.pi*2
-local N=C.X+math.cos(M)*K
-local O=C.Z+math.sin(M)*K
-local P=floorAt(N,O,C.Y)
+local G=B and y or aB
+local H=B and(z and 0 or aC)or aD
+H=H+(C or 0)
+for I=6,aO,2 do
+for J=1,16 do
+local K=(J/16)*math.pi*2
+local L=A.X+math.cos(K)*I
+local M=A.Z+math.sin(K)*I
+local N=floorAt(L,M,A.Y)
+if N then
+local O=Vector3.new(L,N+ay,M)
+
+
+
+
+
+
+local P=not ag.InNoGo(O)
+and ad.IsSafe(O,H)and Plan().Clear(A,O)
+and(z or Plan().RoomAt(O,aE))
 if P then
-local Q=Vector3.new(N,P+az,O)
-
-
-
-
-
-
-local R=not ag.InNoGo(Q)
-and ad.IsSafe(Q,J)and Plan().Clear(C,Q)
-and(B or Plan().RoomAt(Q,aF))
-if R then
-for T,U in ipairs(H)do
-if(Vector3.new(Q.X,0,Q.Z)-U).Magnitude<I then
-R=false break
+for Q,R in ipairs(F)do
+if(Vector3.new(O.X,0,O.Z)-R).Magnitude<G then
+P=false break
 end
 end
 end
-if R and K<F then G,F=Q,K end
+if P and I<D then E,D=O,I end
 end
 end
 
-if G then break end
+if E then break end
 end
-return G
+return E
 end
 
 
 
 
-local function hopSpotDeep(C,D)
+local function hopSpotDeep(A,B)
 
 
 
@@ -22532,68 +21780,68 @@ local function hopSpotDeep(C,D)
 
 
 
-for E,F in ipairs(aU)do
-local G=hopSpot(C,D,F)
-if G and ad.RoomSafe(G,2.5)then return G,F end
+for C,D in ipairs(aV)do
+local E=hopSpot(A,B,D)
+if E and ad.RoomSafe(E,2.5)then return E,D end
 end
-for E,F in ipairs(aU)do
-local G=hopSpot(C,D,F)
-if G then return G,F end
+for C,D in ipairs(aV)do
+local E=hopSpot(A,B,D)
+if E then return E,D end
 end
-if not D then return nil end
-B=true
-local E=hopSpot(C,D,0)
-B=false
-return E,false
+if not B then return nil end
+z=true
+local C=hopSpot(A,B,0)
+z=false
+return C,false
 end
 
 
 
 
-local function leastThreat(C)
-local D=ad.ThreatAt(C,0)
-if D<=0 then return nil end
-local E,F=D
-local G=mobPoints()
+local function leastThreat(A)
+local B=ad.ThreatAt(A,0)
+if B<=0 then return nil end
+local C,D=B
+local E=mobPoints()
 mobKeeps()
-for H=6,aN,2 do
-for I=1,16 do
-local J=(I/16)*math.pi*2
-local K=C.X+math.cos(J)*H
-local L=C.Z+math.sin(J)*H
-local M=floorAt(K,L,C.Y)
+for F=6,aO,2 do
+for G=1,16 do
+local H=(G/16)*math.pi*2
+local I=A.X+math.cos(H)*F
+local J=A.Z+math.sin(H)*F
+local K=floorAt(I,J,A.Y)
+if K then
+local L=Vector3.new(I,K+ay,J)
+if Plan().Clear(A,L)and not ag.InNoGo(L)then
+local M=true
+for N,O in ipairs(E)do
+if(Vector3.new(L.X,0,L.Z)-O).Magnitude<y then
+M=false break
+end
+end
+
+
 if M then
-local N=Vector3.new(K,M+az,L)
-if Plan().Clear(C,N)and not ag.InNoGo(N)then
-local O=true
-for P,Q in ipairs(G)do
-if(Vector3.new(N.X,0,N.Z)-Q).Magnitude<A then
-O=false break
-end
-end
-
-
-if O then
-local P=ad.ThreatAt(N,0)
-if P<E-1 then F,E=N,P end
+local N=ad.ThreatAt(L,0)
+if N<C-1 then D,C=L,N end
 end
 end
 end
 end
 end
-return F
+return D
 end
 
 
 
 local function groundNow()
 if ae.Running()then
-local C=ae.Ground()
-if C then return C end
+local A=ae.Ground()
+if A then return A end
 end
-local C=ab.HRP()
-if not C then return nil end
-return floorAt(C.Position.X,C.Position.Z,C.Position.Y)
+local A=ab.HRP()
+if not A then return nil end
+return floorAt(A.Position.X,A.Position.Z,A.Position.Y)
 end
 
 
@@ -22605,9 +21853,9 @@ end
 
 
 
-local function pickSpot(C,D,E,F)
-local G=ab.HRP()and ab.HRP().Position
-if not G then return nil end
+local function pickSpot(A,B,C,D)
+local E=ab.HRP()and ab.HRP().Position
+if not E then return nil end
 if showDots()then ensureDots()end
 
 
@@ -22621,8 +21869,8 @@ if showDots()then ensureDots()end
 
 
 
-local H=not ad.IsSafe(G,0)
-local I=H and 200 or 8
+local F=not ad.IsSafe(E,0)
+local G=F and 200 or 8
 
 
 
@@ -22638,9 +21886,9 @@ local I=H and 200 or 8
 
 
 
-local J,K,L=-1,math.huge
+local H,I,J=-1,math.huge
 table.clear(bu)
-local M,N=math.huge
+local K,L=math.huge
 
 table.clear(bt)
 bt.total,bt.unsafe,bt.blocked=0,0,0
@@ -22655,17 +21903,17 @@ bt.legcut=0
 
 
 
-local O=mobPoints()
-local P=mobKeeps()
-local Q=math.huge
-for R,T in ipairs(O)do
-local U=(Vector3.new(G.X,0,G.Z)-T).Magnitude
-if U<Q then Q=U end
+local M=mobPoints()
+local N=mobKeeps()
+local O=math.huge
+for P,Q in ipairs(M)do
+local R=(Vector3.new(E.X,0,E.Z)-Q).Magnitude
+if R<O then O=R end
 end
-if Q==math.huge then
-Q=(Vector3.new(G.X,0,G.Z)-Vector3.new(C.X,0,C.Z)).Magnitude
+if O==math.huge then
+O=(Vector3.new(E.X,0,E.Z)-Vector3.new(A.X,0,A.Z)).Magnitude
 end
-local R=math.min(aC,Q)
+local P=math.min(aB,O)
 
 
 
@@ -22676,29 +21924,29 @@ local R=math.min(aC,Q)
 
 
 
-local T={E}
-if F then
-for U,V in ipairs(av)do
-if math.abs(V-E)>1 then T[#T+1]=V end
+local Q={C}
+if D then
+for R,T in ipairs(au)do
+if math.abs(T-C)>1 then Q[#Q+1]=T end
 end
 end
 
-for U=1,#T do
-local V=T[U]
-for W=1,al do
-local X=(U-1)*al+W
-local Y=(W/al)*math.pi*2
-local Z=C.X+math.cos(Y)*V
-local _=C.Z+math.sin(Y)*V
-local bv=floorAt(Z,_,C.Y)
+for R=1,#Q do
+local T=Q[R]
+for U=1,ak do
+local V=(R-1)*ak+U
+local W=(U/ak)*math.pi*2
+local X=A.X+math.cos(W)*T
+local Y=A.Z+math.sin(W)*T
+local Z=floorAt(X,Y,A.Y)
 
-local bw=bv and Vector3.new(Z,bv+az,_)or nil
+local _=Z and Vector3.new(X,Z+ay,Y)or nil
 
-if bw and ag.InNoGo(bw)then bw=nil end
+if _ and ag.InNoGo(_)then _=nil end
 bt.total=bt.total+1
-if not bw then bt.nofloor=bt.nofloor+1 end
-local bx=bw~=nil and ad.IsSafe(bw,aA)
-if bw and not bx then bt.unsafe=bt.unsafe+1 end
+if not _ then bt.nofloor=bt.nofloor+1 end
+local bx=_~=nil and ad.IsSafe(_,az)
+if _ and not bx then bt.unsafe=bt.unsafe+1 end
 
 
 
@@ -22707,14 +21955,14 @@ if bw and not bx then bt.unsafe=bt.unsafe+1 end
 
 
 
-local by=bx and Plan().Clear(G,bw)
+local by=bx and Plan().Clear(E,_)
 
 
 
-local bz=bw~=nil
-if bw then
-local bA=Vector3.new(bw.X,0,bw.Z)
-for bB,bC in ipairs(P)do
+local bz=_~=nil
+if _ then
+local bA=Vector3.new(_.X,0,_.Z)
+for bB,bC in ipairs(N)do
 
 
 
@@ -22726,10 +21974,10 @@ end
 end
 local bA=bx and by
 
-if showDots()and bl[X]then
-local bB=bl[X]
-if bw then
-bB.Position=bw
+if showDots()and bl[V]then
+local bB=bl[V]
+if _ then
+bB.Position=_
 bB.Transparency=0.3
 
 
@@ -22747,7 +21995,7 @@ bB.Transparency=1
 end
 end
 
-if bw and bx and not by then
+if _ and bx and not by then
 bt.blocked=bt.blocked+1
 end
 
@@ -22767,15 +22015,15 @@ local bB=0
 
 
 local bC=false
-for bD,bE in ipairs(O)do
-if pathGap(G,bw,bE)<R then bC=true break end
+for bD,bE in ipairs(M)do
+if pathGap(E,_,bE)<P then bC=true break end
 end
 if bC then
 bB=bB-5000
 bt.crossed=bt.crossed+1
 end
-if ad.IsSafe(bw,aE)then bB=bB+1000
-elseif ad.IsSafe(bw,aD)then
+if ad.IsSafe(_,aD)then bB=bB+1000
+elseif ad.IsSafe(_,aC)then
 
 
 bB=bB+400
@@ -22806,14 +22054,14 @@ else bt.close=bt.close+1 end
 
 
 local bD=0
-local bE=Vector3.new(bw.X,0,bw.Z)
-for bF,bG in ipairs(O)do
-if(bE-bG).Magnitude<=aL then
+local bE=Vector3.new(_.X,0,_.Z)
+for bF,bG in ipairs(M)do
+if(bE-bG).Magnitude<=aM then
 bD=bD+1
 end
 end
 if bD>1 then
-bB=bB-math.min(bD-1,4)*aM
+bB=bB-math.min(bD-1,4)*aN
 end
 
 
@@ -22833,7 +22081,7 @@ end
 
 
 
-if legClear(G,bw)then bB=bB+600
+if legClear(E,_)then bB=bB+600
 else
 bB=bB-5000
 bt.legcut=(bt.legcut or 0)+1
@@ -22843,7 +22091,7 @@ end
 
 
 
-if Plan().RoomAt(bw,aF)then bB=bB+1200
+if Plan().RoomAt(_,aE)then bB=bB+1200
 else bB=bB-800 end
 
 
@@ -22872,17 +22120,17 @@ else bB=bB-800 end
 
 
 
-local bF=(bw-G).Magnitude
-bB=bB-bF*I
+local bF=(_-E).Magnitude
+bB=bB-bF*G
 
 
 
 bu[#bu+1]={score=bB,far=bF}
 
-local bG=bB>J
-or(bB==J and bF<K)
-if L==nil or bG then
-L,J,K=bw,bB,bF
+local bG=bB>H
+or(bB==H and bF<I)
+if J==nil or bG then
+J,H,I=_,bB,bF
 bt.crowd=bD
 end
 elseif bx then
@@ -22892,20 +22140,20 @@ elseif bx then
 
 
 
-local bB=(bw-G).Magnitude
-if bB<M then N,M=bw,bB end
+local bB=(_-E).Magnitude
+if bB<K then L,K=_,bB end
 end
 end
 end
-bt.best=J
-bt.picked=L and"точка"or(N and"за стеной"or"НИЧЕГО")
-bt.at=L or N
-return L or N
+bt.best=H
+bt.picked=J and"s59"or(L and"s60"or"s61")
+bt.at=J or L
+return J or L
 end
 
-local function walkSet(bv)
-S.testWalk=bv
-if bv then
+local function walkSet(bx)
+S.testWalk=bx
+if bx then
 
 
 S.autoFarm=false
@@ -22918,9 +22166,9 @@ S.speedOn=false
 
 
 
-local bw,bx=ai.Start()
-if not bw then
-warn("Apel Hub: сигнал атак не подключился — "..tostring(bx))
+local by,bz=ah.Start()
+if not by then
+warn("s62"..tostring(bz))
 end
 
 
@@ -22931,91 +22179,39 @@ end
 
 Plan().Rebuild(groundNow())
 else
-ai.Stop()
+ah.Stop()
 bp=nil
 clearMarks()
-local bw=ab.Humanoid()
+local by=ab.Humanoid()
 
 
-if bw then bw.AutoRotate=true end
+if by then by.AutoRotate=true end
 end
 end
 S.walkSet=walkSet
 
-bk:Toggle{
-Name="Walk Farm",
-Desc="runs to the nearest mob on foot along a path; turn the normal Auto Farm off first",
-Default=false,Flag="TestWalk",
-Callback=walkSet,
-}
 
 
 
 
 
 
-bk:Toggle{
-Name="Rebuild Map",
-Desc="Desert Temple only: strips the map to a flat floor and plain white walls",
-Default=false,Flag="TestArena",
-Callback=function(bv)
-S.testArena=bv
-if not bv then ae.Stop()end
-end,
-}
 
 
 
 
 
 
-bk:Toggle{
-Name="Animation Recorder",
-Desc="records enemy animations: period, lead time, reach and damage -> ApelHub/anim_table.txt",
-Default=false,Flag="TestAnimRec",
-Callback=function(bv)
-S.animRec=bv
-if bv then ah.Start()else ah.Stop()end
-end,
-}
 
-local function hopSet(bv)
-S.testHop=bv
+local function hopSet(bx)
+S.testHop=bx
 end
 S.hopSet=hopSet
 
-bk:Toggle{
-Name="Emergency Hop",
-Desc="when walking cannot leave an attack in time, blinks up to 10 studs to a clear spot",
-Default=false,Flag="TestHop",
-Callback=hopSet,
-}
-
-bk:Toggle{
-Name="Show Danger",
-Desc="draws attack zones exactly as the dodge model sees them, margins included",
-Default=false,Flag="TestZones",
-Callback=function(bv)
-S.testZones=bv
-if not bv then clearZones()end
-end,
-}
-
-bk:Toggle{
-Name="Show Points",
-Desc="green is a spot it can stand on, red is covered by an attack; orange is the route",
 
 
 
-
-Default=false,Flag="TestDots",
-Callback=function(bv)
-S.testDots=bv
-if not bv then clearMarks()end
-end,
-}
-
-local bv=bk:Label"Idle"
+local bx
 
 
 
@@ -23023,15 +22219,15 @@ local bv=bk:Label"Idle"
 
 
 
-
-
-
-local bw=bk:Label"Signal: off"
-local bx=0
 
 
 
 local by
+local bz=0
+
+
+
+local bA
 spawnLoop(function()
 while not _apelStopped do
 task.wait(1)
@@ -23063,10 +22259,10 @@ if ae.Running()then af.Refresh(ae.Ground())end
 
 
 
-local bz=tostring(aa.Name())
-local bA=workspace:FindFirstChild"dungeon"
-if bz:lower():find("desert temple",1,true)
-and bA and by~=bA
+local bB=tostring(aa.Name())
+local bC=workspace:FindFirstChild"dungeon"
+if bB:lower():find("desert temple",1,true)
+and bC and bA~=bC
 then
 
 
@@ -23075,7 +22271,7 @@ then
 
 
 ae.Stop()
-local bB,bC=ae.Build()
+local bD,bE=ae.Build()
 
 
 
@@ -23083,29 +22279,29 @@ local bB,bC=ae.Build()
 
 
 
-if bB then
-by=bA
+if bD then
+bA=bC
 
 af.Rebuild(ae.Ground())
 end
-if bv then
-bv:Set(bB
-and("Map rebuilt on "..bz..", "..tostring(bC).." parts")
-or("Rebuild waiting: "..tostring(bC)))
+if bx then
+bx:Set(bD
+and("Map rebuilt on "..bB..", "..tostring(bE).." parts")
+or("Rebuild waiting: "..tostring(bE)))
 end
 end
 end
 end
 end)
 
-local bz,bA
-local bB=false
-local bC,bD=0,0
-local bE=false
+local bB,bC
+local bD=false
+local bE,bF=0,0
+local bG=false
 
-local bF
+local A
 
-local bG=0
+local B=0
 
 
 
@@ -23165,24 +22361,24 @@ local R=ad.ZoneAt(Q.Position,1.5)~=nil
 if R then M=M+1 else L=L+1 end
 
 local T=-1
-if bz and bz.Parent then
-local U=aa.PivotOf(bz)
+if bB and bB.Parent then
+local U=aa.PivotOf(bB)
 if U then
 T=(Vector3.new(U.X,0,U.Z)
 -Vector3.new(Q.Position.X,0,Q.Position.Z)).Magnitude
 end
 end
-local U=("ПРОПУСК: удар -%.0f hp | модель: %s | до моба %.1f | внутри %d, мимо %d")
-:format(P-O,R and"НАКРЫТ"or"чисто",T,M,L)
-aj.Log(U)
+("s63")
+:format(P-O,R and"s64"or"s65",T,M,L)
 
 
 
-local V=ad.NearestZones(Q.Position,3)
-if type(V)=="table"then
-for W,X in ipairs(V)do
-local Y=type(X)=="table"and(X.text or tostring(X.gap))or tostring(X)
-aj.Log("   "..tostring(Y))
+
+local U=ad.NearestZones(Q.Position,3)
+if type(U)=="table"then
+for V,W in ipairs(U)do local X=
+type(W)=="table"and(W.text or tostring(W.gap))or tostring(W)
+
 end
 end
 end))
@@ -23198,24 +22394,24 @@ N, O=0
 local function tryHop(P,Q,R)
 
 
-s=s*0.98+(Q and 0.02 or 0)
+q=q*0.98+(Q and 0.02 or 0)
 if Q then
-if p==0 then
-p=P
+if n==0 then
+n=P
 
 
 
-if aj.enabled and q>0 then
-aj.Log(("ПРЫЖОК ДЕРЖАЛСЯ %.2fс чистым"):format(P-q))
+if ai.enabled and o>0 then
+
 end
 end
 else
 
-if p>0 and aj.enabled and q<p
-and(P-p)<aX then
-aj.Log(("УШЁЛ НОГАМИ за %.2fс — прыжок не понадобился"):format(P-p))
+if n>0 and ai.enabled and o<n
+and(P-n)<aY then
+
 end
-p=0
+n=0
 end
 
 
@@ -23236,7 +22432,7 @@ end
 
 local T,U=math.huge
 for V,W in ipairs(bn)do
-local X=as[W.Name]
+local X=ar[W.Name]
 if X and W.Parent then
 local Y=aa.PivotOf(W)
 if Y then
@@ -23247,19 +22443,19 @@ end
 end
 end
 
-local V=S.testHop and Q and p>0
-and(P-q)>aO
-and P>=v
+local V=S.testHop and Q and n>0
+and(P-o)>aP
+and P>=s
 
 
 local W=false
 if not V and U and S.testHop and not Q
-and(P-q)>aV and P>=v then
+and(P-o)>aW and P>=s then
 local X=0
-for Y,Z in ipairs(u)do
-if P-Z<=aT then X=X+1 end
+for Y,Z in ipairs(r)do
+if P-Z<=aU then X=X+1 end
 end
-if X<=(aS-aW)then
+if X<=(aT-aX)then
 V,W=true,true
 end
 end
@@ -23268,25 +22464,25 @@ end
 
 
 if V then
-while u[1]and(P-u[1])>aT do
-table.remove(u,1)
+while r[1]and(P-r[1])>aU do
+table.remove(r,1)
 end
 local X=0
-for Y,Z in ipairs(u)do
-if P-Z<=aR then X=X+1 end
+for Y,Z in ipairs(r)do
+if P-Z<=aS then X=X+1 end
 end
 
 local Y
-if X>=aQ then
-Y=("%d за %.1f с — третий сервер откатывает"):format(X,aR)
-elseif#u>=aS then
-Y=("%d за %.0f с — предел скачки"):format(#u,aT)
+if X>=aR then
+Y=("s66"):format(X,aS)
+elseif#r>=aT then
+Y=("s67"):format(#r,aU)
 end
 if Y then
 V=false
-if aj.enabled and(P-k)>2 then
-k=P
-aj.Log("ПРЫЖОК ПРИДЕРЖАН: "..Y)
+if ai.enabled and(P-i)>2 then
+i=P
+
 end
 end
 end
@@ -23308,16 +22504,16 @@ local X,Y=hopSpotDeep(R.Position,true)
 if U then
 local Z=Vector3.new(U.X,0,U.Z)
 local _,bH=T
-for bI=aN,6,-2 do
+for bI=aO,6,-2 do
 for bJ=1,16 do
 local bK=(bJ/16)*math.pi*2
 local bL=R.Position.X+math.cos(bK)*bI
 local bM=R.Position.Z+math.sin(bK)*bI
 local bN=floorAt(bL,bM,R.Position.Y)
 if bN then
-local bO=Vector3.new(bL,bN+az,bM)
+local bO=Vector3.new(bL,bN+ay,bM)
 local bP=(Vector3.new(bL,0,bM)-Z).Magnitude
-if bP>_ and ad.IsSafe(bO,aD)
+if bP>_ and ad.IsSafe(bO,aC)
 and not ag.InNoGo(bO)and Plan().Clear(R.Position,bO)then
 bH,_=bO,bP
 end
@@ -23326,10 +22522,9 @@ end
 end
 if bH then
 X,Y=bH,0
-if aj.enabled and(P-o)>2 then
-o=P
-aj.Log(("ОТСКОК ОТ ПРЕСЛЕДОВАТЕЛЯ: был в %.1f, ухожу на %.1f")
-:format(T,_))
+if ai.enabled and(P-m)>2 then
+m=P
+
 end
 elseif W then
 
@@ -23354,38 +22549,38 @@ end
 
 
 local bH
-if not X and(P-w)>aZ then
+if not X and(P-u)>a_ then
 X=leastThreat(R.Position)
-if X then bH,w=true,P end
+if X then bH,u=true,P end
 end
 if not X then
-if aj.enabled then
-aj.Log"ПРЫЖОК НЕ ВЫШЕЛ: некуда — ни чистой точки, ни места полегче в 10 студах"
+if ai.enabled then
+
 end
 return
-end
+end local bI=
 
 
 
-local bI=(Vector3.new(X.X,0,X.Z)
--Vector3.new(R.Position.X,0,R.Position.Z)).Magnitude
-local bJ=P-p
+(Vector3.new(X.X,0,X.Z)
+-Vector3.new(R.Position.X,0,R.Position.Z)).Magnitude local bJ=
+P-n
 
 
 local bK=R.Position
 R.CFrame=CFrame.new(X)*(R.CFrame-R.CFrame.Position)
 R.AssemblyLinearVelocity=Vector3.zero
 R.AssemblyAngularVelocity=Vector3.zero
-q,p=P,0
-u[#u+1]=P
+o,n=P,0
+r[#r+1]=P
 if ad.NoteHop then ad.NoteHop()end
-y,x,z=X,P,ad.ZoneAt(bK,0)
+w,v,x=X,P,ad.ZoneAt(bK,0)
 
 
 
-if aj.enabled then
+if ai.enabled then
 local bL=X
-task.delay(aP,function()
+task.delay(aQ,function()
 local bM=ab.HRP()
 if not bM then return end
 local bN=(Vector3.new(bM.Position.X,0,bM.Position.Z)
@@ -23394,26 +22589,23 @@ local bO=(Vector3.new(bM.Position.X,0,bM.Position.Z)
 -Vector3.new(bL.X,0,bL.Z)).Magnitude
 if bN<3 and bO>4 then
 
-v=os.clock()+aY
-aj.Log(("ПРЫЖОК ОТКАЧЕН: сервер вернул на старт, прыжок был %.1f студа — придержу %.1f с")
-:format(bI,aY))
+s=os.clock()+aZ
+
 end
 end)
 end
-r=r+1
-if aj.enabled then
-aj.Log(("ПРЫЖОК %d%s%s: на %.1f студа, был внутри %.2fс")
-:format(r,(Y and Y>0)and(" (запас %d)"):format(Y)or"",
-bH and" (в место полегче)"or"",bI,bJ))
+p=p+1
+if ai.enabled then
+
 end
 end
 
-regConn(ak.Heartbeat:Connect(function()
+regConn(aj.Heartbeat:Connect(function()
 if _apelStopped or not S.testWalk then return end
 
-local bH,bI=ab.HRP(),ab.Humanoid()
-if not bH or not bI or not ab.Alive()then return end
-watchDamage(bI)
+local bH,bJ=ab.HRP(),ab.Humanoid()
+if not bH or not bJ or not ab.Alive()then return end
+watchDamage(bJ)
 
 
 
@@ -23443,7 +22635,7 @@ watchDamage(bI)
 
 
 
-if bI.AutoRotate then bI.AutoRotate=false end
+if bJ.AutoRotate then bJ.AutoRotate=false end
 
 
 
@@ -23455,24 +22647,24 @@ if bI.AutoRotate then bI.AutoRotate=false end
 
 
 
-local bJ=os.clock()
+local bK=os.clock()
 
 
 
 
 
-if showRoute()and bp and(bJ-f)>0.2 then
-f=bJ
+if showRoute()and bp and(bK-d)>0.2 then
+d=bK
 drawRoute(bH.Position,(Plan().Path(bH.Position,bp)))
 end
 
-if showZones()and(bJ-d)>0.1 then
-d=bJ
+if showZones()and(bK-bw)>0.1 then
+bw=bK
 drawZones(bH.Position)
 end
 
-if bw and(bJ-bx)>0.5 then
-bx=bJ
+if by and(bK-bz)>0.5 then
+bz=bK
 
 
 
@@ -23482,9 +22674,9 @@ bx=bJ
 
 
 if ad.Enabled()then
-bw:Set("Signal: "..ai.Stats())
+by:Set("Signal: "..ah.Stats())
 else
-bw:Set("Signal: "..ai.Stats()
+by:Set("Signal: "..ah.Stats()
 .." | DODGE OFF — turn on Auto Dodge, nothing is dodged")
 end
 end
@@ -23499,9 +22691,9 @@ end
 
 
 
-if not bz or not bz.Parent or(bJ-bC)>bi then
-bC=bJ
-bz=aa.Nearest(bH.Position)
+if not bB or not bB.Parent or(bK-bE)>bj then
+bE=bK
+bB=aa.Nearest(bH.Position)
 
 
 
@@ -23554,82 +22746,80 @@ if not S.testArena and ag.Ready()then
 
 
 
-local bK=60
-local bL=25
-local bM,bN,bO=math.huge,math.huge
-local bP=0
-local P,Q=math.huge
-local R=aa.AllAlive()
+local bL=60
+local bM=25
+local bN,bO,bP=math.huge,math.huge
+local P=0
+local Q,R=math.huge
+local T=aa.AllAlive()
 
 
 
-local T={}
-for U,V in ipairs(R)do
-local W=aa.PivotOf(V)
-T[U]=W and Vector3.new(W.X,0,W.Z)or nil
+local U={}
+for V,W in ipairs(T)do
+local X=aa.PivotOf(W)
+U[V]=X and Vector3.new(X.X,0,X.Z)or nil
 end
-for U,V in ipairs(R)do
-local W=aa.PivotOf(V)
-if W and T[U]and ag.Reachable(W,3)then
-local X=(W-bH.Position).Magnitude
-local Y=0
-for Z=1,#R do
-if Z~=U and T[Z]
-and(T[Z]-T[U]).Magnitude<=bK then
-Y=Y+1
-end
-end
-local Z=X+Y*bL
-if Z<bN then
-bO,bM,bN=V,X,Z
-bP=Y
-end
-if as[V.Name]and X<=ar and X<P then
-Q,P=V,X
+for V,W in ipairs(T)do
+local X=aa.PivotOf(W)
+if X and U[V]and ag.Reachable(X,3)then
+local Y=(X-bH.Position).Magnitude
+local Z=0
+for _=1,#T do
+if _~=V and U[_]
+and(U[_]-U[V]).Magnitude<=bL then
+Z=Z+1
 end
 end
+local _=Y+Z*bM
+if _<bO then
+bP,bN,bO=W,Y,_
+P=Z
 end
-if Q then bO,bM,bP=Q,P,-1 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local U,V=math.huge
-for W,X in ipairs(R)do
-if X.Name=="Northern Warrior"and T[W]then
-local Y=aa.PivotOf(X)
-if Y and ag.Reachable(Y,3)then
-local Z=(Y-bH.Position).Magnitude
-if Z<U then V,U=X,Z end
+if ar[W.Name]and Y<=aq and Y<Q then
+R,Q=W,Y
 end
 end
 end
-if V then bO,bM,bP=V,U,-1 end
-if aj.enabled and bO and(bJ-a5)>2 then
-a5=bJ
-aj.Log(("ЦЕЛЬ ПО ОДИНОЧЕСТВУ: %s в %.0f студах, соседей в 60 студах %s")
-:format(bO.Name,bM,
-bP<0 and"- (взят преследователь)"or tostring(bP)))
+if R then bP,bN,P=R,Q,-1 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local V,W=math.huge
+for X,Y in ipairs(T)do
+if Y.Name=="Northern Warrior"and U[X]then
+local Z=aa.PivotOf(Y)
+if Z and ag.Reachable(Z,3)then
+local _=(Z-bH.Position).Magnitude
+if _<V then W,V=Y,_ end
 end
-if bO then
-bz=bO
-bB=false
+end
+end
+if W then bP,bN,P=W,V,-1 end
+if ai.enabled and bP and(bK-a6)>2 then
+a6=bK
+
+end
+if bP then
+bB=bP
+bD=false
 else
 
 
 
 
-bB=true
+bD=true
 end
 end
 
@@ -23639,15 +22829,15 @@ end
 
 
 bn={}
-local bK=Vector3.new(bH.Position.X,0,bH.Position.Z)
-for bL,bM in ipairs(aa.AllAlive())do
-local bN=aa.PivotOf(bM)
-if bN and(Vector3.new(bN.X,0,bN.Z)-bK).Magnitude<=aK then
-bn[#bn+1]=bM
+local bL=Vector3.new(bH.Position.X,0,bH.Position.Z)
+for bM,bN in ipairs(aa.AllAlive())do
+local bO=aa.PivotOf(bN)
+if bO and(Vector3.new(bO.X,0,bO.Z)-bL).Magnitude<=aJ then
+bn[#bn+1]=bN
 end
 end
 end
-if not bz then
+if not bB then
 
 
 
@@ -23655,10 +22845,10 @@ if not bz then
 
 
 
-local bK=os.clock()
-local bL=not ad.IsSafe(bH.Position,aA)
+local bL=os.clock()
+local bM=not ad.IsSafe(bH.Position,az)
 or not ad.BoxSafe(bH.Position)
-if bL then
+if bM then
 
 
 
@@ -23668,62 +22858,61 @@ if bL then
 
 
 
-local bM=ad.EscapeStep(bH.Position,aA,aB)
+local bN=ad.EscapeStep(bH.Position,az,aA)
 
 
 
 
 
-if bM and not ad.BoxSafe(bM)then bM=nil end
-if not bM then
-for bN,bO in ipairs{6,10,14}do
-for bP=0,15 do
-local P=bP*math.pi/8
-local Q=Vector3.new(
-bH.Position.X+math.cos(P)*bO,
+if bN and not ad.BoxSafe(bN)then bN=nil end
+if not bN then
+for bO,bP in ipairs{6,10,14}do
+for P=0,15 do
+local Q=P*math.pi/8
+local R=Vector3.new(
+bH.Position.X+math.cos(Q)*bP,
 bH.Position.Y,
-bH.Position.Z+math.sin(P)*bO)
-if ad.BoxSafe(Q)and ad.IsSafe(Q,0)then
-bM=Q
+bH.Position.Z+math.sin(Q)*bP)
+if ad.BoxSafe(R)and ad.IsSafe(R,0)then
+bN=R
 break
 end
 end
-if bM then break end
+if bN then break end
 end
-if bM and aj.enabled and(bK-a6)>1 then
-a6=bK
-aj.Log"ПОСЛЕДНИЙ РУБЕЖ (без цели): выхода не было, ухожу перебором"
+if bN and ai.enabled and(bL-a7)>1 then
+a7=bL
+
 end
 end
-if bM then bI:MoveTo(bM)end
-if bv then bv:Set"No mob nearby — stepping out of an attack"end
+if bN then bJ:MoveTo(bN)end
+if bx then bx:Set"No mob nearby — stepping out of an attack"end
 else
-if bv then bv:Set"No mob nearby"end
+if bx then bx:Set"No mob nearby"end
 end
-tryHop(bK,bL,bH)
+tryHop(bL,bM,bH)
 bp=nil
 clearMarks()
 return
 end
 
-local bK=aa.PivotOf(bz)
-if not bK then return end
+local bL=aa.PivotOf(bB)
+if not bL then return end
 
 
 
-local bL=aq[bz.Name]
-if bL and not ag.HeightAt(bL)then bL=nil end
-if bL and(bJ-i)>5 and aj.enabled then
-i=bJ
-aj.Log(("ПОЗИЦИЯ: иду на боевую точку босса %s, до неё %.0f студов")
-:format(bz.Name,(bL-bH.Position).Magnitude))
+local bM=ap[bB.Name]
+if bM and not ag.HeightAt(bM)then bM=nil end
+if bM and(bK-g)>5 and ai.enabled then
+g=bK
+
 end
 
 
 
-local bM=Vector3.new(bK.X,bH.Position.Y,bK.Z)
-if(bM-bH.Position).Magnitude>0.1 then
-bH.CFrame=CFrame.new(bH.Position,bM)
+local bN=Vector3.new(bL.X,bH.Position.Y,bL.Z)
+if(bN-bH.Position).Magnitude>0.1 then
+bH.CFrame=CFrame.new(bH.Position,bN)
 end
 
 
@@ -23747,7 +22936,7 @@ end
 
 
 
-local bN=not ad.IsSafe(bH.Position,aA)
+local bO=not ad.IsSafe(bH.Position,az)
 or not ad.BoxSafe(bH.Position)
 
 
@@ -23762,14 +22951,14 @@ or not ad.BoxSafe(bH.Position)
 
 
 
-local bO=ad.IsSafe(bH.Position,aE)
+local bP=ad.IsSafe(bH.Position,aD)
 
 
 
-if bN then
-if p==0 then p=bJ end
+if bO then
+if n==0 then n=bK end
 else
-p=0
+n=0
 end
 
 
@@ -23788,7 +22977,7 @@ end
 
 
 
-if not bL then tryHop(bJ,bN,bH)end
+if not bM then tryHop(bK,bO,bH)end
 
 
 
@@ -23799,7 +22988,7 @@ if not bL then tryHop(bJ,bN,bH)end
 
 
 
-local bP=(Vector3.new(bK.X,0,bK.Z)
+local P=(Vector3.new(bL.X,0,bL.Z)
 -Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
 
 
@@ -23808,13 +22997,13 @@ local bP=(Vector3.new(bK.X,0,bK.Z)
 
 
 
-local P=mobPoints()
-local Q=bP
+local Q=mobPoints()
+local R=P
 do
-local R=Vector3.new(bH.Position.X,0,bH.Position.Z)
-for T,U in ipairs(P)do
-local V=(U-R).Magnitude
-if V<Q then Q=V end
+local T=Vector3.new(bH.Position.X,0,bH.Position.Z)
+for U,V in ipairs(Q)do
+local W=(V-T).Magnitude
+if W<R then R=W end
 end
 end
 
@@ -23825,48 +23014,18 @@ end
 
 
 
-local R=0
+local T=0
 if O then
-local T=bJ-N
-if T>0.01 then R=(O-Q)/T end
+local U=bK-N
+if U>0.01 then T=(O-R)/U end
 end
-if not O or(bJ-N)>0.05 then
-O,N=Q,bJ
-end
-
-
-local T=math.huge
-if R>0.5 then T=(Q-an)/R end
-
-
-
-
-
-
-
-
-
-
-
-
-local U=an+ao+10
-
-
-
-local V,W=true
-for X,Y in ipairs(aa.AllAlive())do
-local Z=aa.PivotOf(Y)
-if Z then
-local _=(Vector3.new(Z.X,0,Z.Z)
--Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
-if _<=Q+1 then
-W=W or Y.Name
-if not au[Y.Name]then V=false break end
-end
-end
+if not O or(bK-N)>0.05 then
+O,N=R,bK
 end
 
 
+local U=math.huge
+if T>0.5 then U=(R-am)/T end
 
 
 
@@ -23879,28 +23038,22 @@ end
 
 
 
+local V=am+an+10
 
 
 
-
-
-
-local X=an
+local W,X=true
 for Y,Z in ipairs(aa.AllAlive())do
-local _=as[Z.Name]
-if _ and _>X then
-local bQ=aa.PivotOf(Z)
-if bQ then
-local bR=(Vector3.new(bQ.X,0,bQ.Z)
+local _=aa.PivotOf(Z)
+if _ then
+local bQ=(Vector3.new(_.X,0,_.Z)
 -Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
-if bR<_ then X=_ end
+if bQ<=R+1 then
+X=X or Z.Name
+if not as[Z.Name]then W=false break end
 end
 end
 end
-if W and(as[W]or 0)>X then
-X=as[W]
-end
-local bQ=X+ao
 
 
 
@@ -23920,117 +23073,139 @@ local bQ=X+ao
 
 
 
-if bE then
-if Q>=bQ or V then bE=false end
-elseif not V
-and(Q<X or(T<ax and Q<U))then
-bE=true
-end
 
-
-
-
-
-
-
-
-
-local bR=bE and bQ or an
-local Y=bz and ad.HazardRadius and ad.HazardRadius(bz)
-if Y and Y+aD>bR then
-bR=Y+aD
-end
-local Z=bz and as[bz.Name]
-if Z and Z>bR then bR=Z end
-
-
-
-
-
-
-
-
-if bN then noteBranch"ВСЕГО кадров под ударом"end
-
-
-bg=bg%128+1
-bd[bg],be[bg],bf[bg]=bH.Position,bJ,bN
-local _,bS,bT=false
-for bU=1,128 do
-local bV=be[bU]
-if bV and(bJ-bV)<=0.5 then
-if not bT or bV<bT then bS,bT=bd[bU],bV end
-if bf[bU]then _=true end
+local bQ=am
+for Y,Z in ipairs(aa.AllAlive())do
+local _=ar[Z.Name]
+if _ and _>bQ then
+local bR=aa.PivotOf(Z)
+if bR then
+local bS=(Vector3.new(bR.X,0,bR.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
+if bS<_ then bQ=_ end
 end
 end
-local bU=false
-if bS and bT and(bJ-bT)>0.4 and _ then
-local bV=(Vector3.new(bH.Position.X,0,bH.Position.Z)
--Vector3.new(bS.X,0,bS.Z)).Magnitude
-bU=bV<2
-if bU and aj.enabled and(bJ-bb)>1 then
-bb=bJ
-aj.Log(("ЗАСТОЙ ПОД УДАРОМ: за %.2fс сдвинулся %.1f студа — прыгаю")
-:format(bJ-bT,bV))
 end
+if X and(ar[X]or 0)>bQ then
+bQ=ar[X]
+end
+local bR=bQ+an
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bG then
+if R>=bR or W then bG=false end
+elseif not W
+and(R<bQ or(U<aw and R<V))then
+bG=true
 end
 
 
-if bN then
-if ba==0 then
-ba,bc=bJ,bH.Position
-elseif(bJ-ba)>0.4 and bc then
-local bV=(Vector3.new(bH.Position.X,0,bH.Position.Z)
--Vector3.new(bc.X,0,bc.Z)).Magnitude
-if bV<1.5 and aj.enabled and(bJ-bb)>1 then
-bb=bJ
-local bW=bp and(Vector3.new(bp.X,0,bp.Z)
+
+
+
+
+
+
+
+local bS=bG and bR or am
+local Y=bB and ad.HazardRadius and ad.HazardRadius(bB)
+if Y and Y+aC>bS then
+bS=Y+aC
+end
+local Z=bB and ar[bB.Name]
+if Z and Z>bS then bS=Z end
+
+
+
+
+
+
+
+
+if bO then noteBranch"s58"end
+
+
+bh=bh%128+1
+be[bh],bf[bh],bg[bh]=bH.Position,bK,bO
+local _,bT,bU=false
+for bV=1,128 do
+local bW=bf[bV]
+if bW and(bK-bW)<=0.5 then
+if not bU or bW<bU then bT,bU=be[bV],bW end
+if bg[bV]then _=true end
+end
+end
+local bV=false
+if bT and bU and(bK-bU)>0.4 and _ then
+local bW=(Vector3.new(bH.Position.X,0,bH.Position.Z)
+-Vector3.new(bT.X,0,bT.Z)).Magnitude
+bV=bW<2
+if bV and ai.enabled and(bK-bc)>1 then
+bc=bK
+
+end
+end
+
+
+if bO then
+if bb==0 then
+bb,bd=bK,bH.Position
+elseif(bK-bb)>0.4 and bd then
+local bW=(Vector3.new(bH.Position.X,0,bH.Position.Z)
+-Vector3.new(bd.X,0,bd.Z)).Magnitude
+if bW<1.5 and ai.enabled and(bK-bc)>1 then
+bc=bK local bX=
+bp and(Vector3.new(bp.X,0,bp.Z)
 -Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude or-1
-aj.Log(("СТОЮ В УДАРЕ %.2fс: сдвинулся %.1f | ветка %s | цель в %.1f | зон %s | escaped=%s укрытие=%s стойка=%s")
-:format(bJ-ba,bV,bh,bW,
-tostring(ad.Count and ad.Count()or"?"),
-tostring(escaped),tostring(E~=nil),tostring(y~=nil)))
+
 end
 end
 else
-ba,bc=0,nil
+bb,bd=0,nil
 end
-if aj.enabled and(bJ-b)>30 then
-b=bJ
-local bV={}
-for bW,bX in pairs(a9)do bV[#bV+1]=("%s=%d"):format(bW,bX)end
-table.sort(bV)
-if#bV>0 then
-aj.Log("ВЕТКИ ПОД УДАРОМ: "..table.concat(bV," | "))
+if ai.enabled and(bK-ba)>30 then
+ba=bK
+local bW={}
+for bX,bY in pairs(b)do bW[#bW+1]=("%s=%d"):format(bX,bY)end
+table.sort(bW)
+if#bW>0 then
+
 end
-a9={}
+b={}
 end
 
-if(bN or not bO)and aj.enabled and(bJ-g)>1 then
-g=bJ
-aj.Log(("МОЗГ: накрыт=%s просторно=%s отход=%s до цели %.1f до ближайшего %.1f мобов рядом %d зон %s")
-:format(tostring(bN),tostring(bO),tostring(bE),
-bP,Q,#bn,
-tostring(select(1,ad.Count and ad.Count()or"?"))))
+if(bO or not bP)and ai.enabled and(bK-e)>1 then
+e=bK
 
 
-table.sort(bu,function(bV,bW)return bV.score>bW.score end)
-local bV={}
-for bW=1,math.min(5,#bu)do
-bV[#bV+1]=("%d@%.0f"):format(bu[bW].score,bu[bW].far)
+
+table.sort(bu,function(bW,bX)return bW.score>bX.score end)
+local bW={}
+for bX=1,math.min(5,#bu)do
+bW[#bW+1]=("%d@%.0f"):format(bu[bX].score,bu[bX].far)
 end
-if#bV>0 then
-aj.Log("КАНДИДАТЫ (очки@студы): "..table.concat(bV,"  "))
+if#bW>0 then
+
 end
 
-aj.Log(("ВЫБОР: всего %s | опасных %s, за стеной %s, тесных %s, близко к мобу %s, путь режет %s, дорога в удар %s, без пола %s | ТОЛПА У ТОЧКИ %s | взято %s со счётом %s")
-:format(tostring(bt.total),tostring(bt.unsafe),
-tostring(bt.blocked),tostring(bt.tight),
-tostring(bt.close),tostring(bt.crossed),
-tostring(bt.legcut),
-tostring(bt.nofloor),tostring(bt.crowd),
-tostring(bt.picked),
-tostring(bt.best)))
+
 end
 
 
@@ -24053,12 +23228,12 @@ if E then
 
 
 
-local bV
+local bW
 if typeof(F)=="Instance"then
-bV=not F.Parent or not ad.IsZone(F)
+bW=not F.Parent or not ad.IsZone(F)
 else
 
-bV=not bN
+bW=not bO
 end
 
 
@@ -24067,11 +23242,11 @@ end
 
 
 
-local bW=false
+local bX=false
 if typeof(F)=="Instance"then
-local bX=F.Parent
-local bY=tostring(bX and bX.Name or F.Name):lower()
-bW=ad.NamedZoneAt(E,0,bY)and true or false
+local bY=F.Parent
+local bZ=tostring(bY and bY.Name or F.Name):lower()
+bX=ad.NamedZoneAt(E,0,bZ)and true or false
 end
 
 
@@ -24089,13 +23264,9 @@ end
 
 
 
-if bV or bN or(bJ-D)>aI or bW then
-if aj.enabled then
-aj.Log(("УКРЫТИЕ снято: %s"):format(
-bV and"атака больше не опасна"
-or(bN and"саму щель накрыло — стоять нельзя"
-or((bJ-D)>aI and"вышло время"
-or"саму щель накрыло атакой"))))
+if bW or bO or(bK-D)>aH or bX then
+if ai.enabled then
+
 end
 E,F=nil,nil
 end
@@ -24116,15 +23287,15 @@ end
 
 
 
-local bV=an+ao
-local bW=Vector3.new(bK.X,0,bK.Z)
-local bX=E
-and(Vector3.new(E.X,0,E.Z)-bW).Magnitude>bV
+local bW=am+an
+local bX=Vector3.new(bL.X,0,bL.Z)
+local bY=E
+and(Vector3.new(E.X,0,E.Z)-bX).Magnitude>bW
 
-if bN and(not E or bX)
+if bO and(not E or bY)
 and(not bp or not ad.IsSafe(bp,0))
-and(bJ-G)>aJ then
-G=bJ
+and(bK-G)>aI then
+G=bK
 
 
 
@@ -24137,61 +23308,54 @@ G=bJ
 
 
 
-local function pick(bY,bZ,b_)
-return ag.NearestWhere(bH.Position,aH,function(b0)
-if not ad.IsSafe(b0,bY)then return false end
-if bZ and not ag.RoomAt(b0,aF)then return false end
-if b_ and(Vector3.new(b0.X,0,b0.Z)-bW).Magnitude>bV then
+local function pick(bZ,b_,b0)
+return ag.NearestWhere(bH.Position,aG,function(b1)
+if not ad.IsSafe(b1,bZ)then return false end
+if b_ and not ag.RoomAt(b1,aE)then return false end
+if b0 and(Vector3.new(b1.X,0,b1.Z)-bX).Magnitude>bW then
 return false
 end
 return true
 end)
 end
 
-local bY=pick(aD,true,true)
-or pick(aE,true,false)
-or pick(aD,false,false)
+local bZ=pick(aC,true,true)
+or pick(aD,true,false)
+or pick(aC,false,false)
 or pick(0,false,false)
 
 
-local bZ=bY
+local b_=bZ
 
-if bZ and ag.Path(bH.Position,bZ)then
-local b_=E
-E,D=bZ,bJ
+if b_ and ag.Path(bH.Position,b_)then
+
+E,D=b_,bK
 F=ad.ZoneAt(bH.Position,0)or F
-if aj.enabled then
-aj.Log(("УКРЫТИЕ%s: щель в %.0f студах, до моба %.0f — %s | прячусь от %s")
-:format(b_ and" (перевыбор)"or"",
-(bZ-bH.Position).Magnitude,
-(Vector3.new(bZ.X,0,bZ.Z)-bW).Magnitude,
-bY and"БЬЮ ОТТУДА"or"не достаю",
-typeof(F)=="Instance"
-and F:GetFullName()or"неизвестно"))
+if ai.enabled then
+
 end
-elseif bZ and aj.enabled then
-aj.Log(("УКРЫТИЕ: щель в %.0f студах есть, но маршрута к ней нет")
-:format((bZ-bH.Position).Magnitude))
+elseif b_ and ai.enabled then
+
 end
 end
 end
 
-local bV=false
-if not bN then bF=nil end
+local bW=false
+if not bO then A=nil end
 
 
 
-if bL then
-bp,H,bD,bA=bL,bJ,bJ,bK
-bV=true
-if bN then noteBranch"выход-post"end
-bF,E,F=nil,nil,nil
+if bM then
+bp,H,bF,bC=bM,bK,bK,bL
+bW=true
+if bO then noteBranch"s68"end
+A,E,F=nil,nil,nil
 elseif E then
 
 
-bp,H,bD,bA=E,D,bJ,bK
-bV=true
-if bN then noteBranch"укрытие"end
+bp,H,bF,bC=E,D,bK,bL
+bW=true
+if bO then noteBranch"s26"end
 end
 
 
@@ -24206,35 +23370,29 @@ end
 
 
 
-if bN and bF then
-local bW=(Vector3.new(bF.X,0,bF.Z)
--Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a2
-local bX=(bJ-bG)>C
-if bW or not Plan().Clear(bH.Position,bF)
-or not legOut(bH.Position,bF)
-or(bX and not ad.IsSafe(bF,aA))then
-bF=nil
+if bO and A then
+local bX=(Vector3.new(A.X,0,A.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a3
+local bY=(bK-B)>C
+if bX or not Plan().Clear(bH.Position,A)
+or not legOut(bH.Position,A)
+or(bY and not ad.IsSafe(A,az))then
+A=nil
 else
-bp,bD,bA=bF,bJ,bK
-bV=true
-noteBranch"побег-fleeTo"
+bp,bF,bC=A,bK,bL
+bW=true
+
 end
 end
 
-if bN and not bV then
+if bO and not bW then
 
 
 
 
 
-local bW=ad.EscapeStep(bH.Position,aA,aB)
-local bX=false
-
-
-
-
-
-
+local bX=ad.EscapeStep(bH.Position,az,aA)
+local bY=false
 
 
 
@@ -24245,277 +23403,47 @@ local bX=false
 
 
 
-if s>a4 then
-local bY,bZ=Vector3.zero,0
-for b_,b0 in ipairs(ad.ZoneShapes(bH.Position,60,0)or{})do
-local b1=b0.cf and b0.cf.Position
-if b1 then
-bY,bZ=bY+Vector3.new(b1.X,0,b1.Z),bZ+1
-end
-end
-if bZ>0 then
-local b_=bY/bZ
-local b0=Vector3.new(bH.Position.X,0,bH.Position.Z)
-local b1,b2=(b0-b_).Magnitude
-for b3=aN,6,-2 do
-for b4=1,16 do
-local b5=(b4/16)*math.pi*2
-local b6=bH.Position.X+math.cos(b5)*b3
-local b7=bH.Position.Z+math.sin(b5)*b3
-local b8=(Vector3.new(b6,0,b7)-b_).Magnitude
-if b8>b1 then
-local b9=floorAt(b6,b7,bH.Position.Y)
-if b9 then
-local ca=Vector3.new(b6,b9+az,b7)
-if not ag.InNoGo(ca)and Plan().Clear(bH.Position,ca)
-and ad.IsSafe(ca,0)then
-b2,b1=ca,b8
-end
-end
-end
-end
-end
+
+
+
+
+
+
+if q>a5 then
+local bZ,b_=Vector3.zero,0
+for b0,b1 in ipairs(ad.ZoneShapes(bH.Position,60,0)or{})do
+local b2=b1.cf and b1.cf.Position
 if b2 then
-bW,bX=b2,true
-if aj.enabled and(bJ-n)>2 then
-n=bJ
-aj.Log(("ЗАПЕРТ (%.0f%% кадров под ударом): ухожу от середины опасности, стало %.0f студов")
-:format(s*100,b1))
+bZ,b_=bZ+Vector3.new(b2.X,0,b2.Z),b_+1
 end
 end
-end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if bW then
-
-
-
-
-
-
-
-
-
-
-
-
-
-local bY=Vector3.new(bW.X-bH.Position.X,0,bW.Z-bH.Position.Z)
-if bY.Magnitude>0.1 and not ad.IsSafe(bW,aE)then
-for bZ,b_ in ipairs{4,8,12}do
-local b0=bW+bY.Unit*b_
-local b1=floorAt(b0.X,b0.Z,bW.Y)
-if b1 then
-local b2=Vector3.new(b0.X,b1+az,b0.Z)
-if ad.IsSafe(b2,aE)and not ag.InNoGo(b2)
-and Plan().Clear(bH.Position,b2)then
-bW=b2
-break
-end
-end
-end
-end
-
-local bZ
-for b_,b0 in ipairs{aE,2,0}do
-if ad.IsSafe(bW,b0)then bZ=b0 break end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if not bX and(not bZ or bZ<aE)
-and(bJ-m)>0.3 then
-m=bJ
-
-
-
-
-local b_,b0,b1=math.huge
-for b2,b3 in ipairs{aE,2}do
-for b4=6,aN,2 do
+if b_>0 then
+local b0=bZ/b_
+local b1=Vector3.new(bH.Position.X,0,bH.Position.Z)
+local b2,b3=(b1-b0).Magnitude
+for b4=aO,6,-2 do
 for b5=1,16 do
 local b6=(b5/16)*math.pi*2
 local b7=bH.Position.X+math.cos(b6)*b4
 local b8=bH.Position.Z+math.sin(b6)*b4
-local b9=floorAt(b7,b8,bH.Position.Y)
-if b9 then
-local ca=Vector3.new(b7,b9+az,b8)
-if b4<b_ and ad.IsSafe(ca,b3)
-and not ag.InNoGo(ca)
-and Plan().Clear(bH.Position,ca)then
-b0,b_,b1=ca,b4,b3
-end
-end
-end
-if b0 then break end
-end
-if b0 then break end
-end
-if b0 then
-bW,bZ=b0,b1
-if aj.enabled and(bJ-l)>1 then
-l=bJ
-aj.Log(("ВЫХОД С ЗАПАСОМ %d: место в %.0f студах")
-:format(b1,b_))
-end
-end
-end
-
-if not bZ then bW=nil end
-if bW and aj.enabled and bZ<aE and(bJ-l)>1 then
-l=bJ
-aj.Log(("ВЫХОД ТЕСНЫЙ: запас %d вместо %d — но внутри удара хуже")
-:format(bZ,aE))
-end
-end
-
-
-
-
-
-
-
-if not bW then
-local bY=ad.ZoneAt(bH.Position,0)
-
-
-
-
-local bZ=(typeof(bY)=="Instance"and bY:IsA"BasePart")and bY or nil
-local b_
-if bZ then b_=bZ.Position
-elseif typeof(bY)=="table"and bY.cf then b_=bY.cf.Position
-elseif typeof(bY)=="Instance"and bY:IsA"Model"then
-local b0,b1=pcall(function()return bY:GetPivot().Position end)
-b_=b0 and b1 or nil
-end
-if b_ then
-
-
-
-
-
-
-
-
-
-
-
-
-local b0=bZ and bZ.Size or(typeof(bY)=="table"and bY.size or nil)
-local b1=bZ and bZ.CFrame or(typeof(bY)=="table"and bY.cf or nil)
-local b2,b3
-local b4=Vector3.new(bH.Position.X-b_.X,0,bH.Position.Z-b_.Z)
-local b5=b0 and math.abs(b0.Z-b0.Y)<1 and b0.X<=8
-if b0 and b1 and not b5 then
-local b6=b1:PointToObjectSpace(bH.Position)
-local b7,b8=b0.X*0.5,b0.Z*0.5
-
-if(b7-math.abs(b6.X))<=(b8-math.abs(b6.Z))then
-b2=b1.RightVector*(b6.X>=0 and 1 or-1)
-b3=b7
-else
-b2=b1.LookVector*(b6.Z>=0 and 1 or-1)
-b3=b8
-end
-b2=Vector3.new(b2.X,0,b2.Z)
-end
-if not b2 or b2.Magnitude<0.1 then
-b2=b4
-b3=b0 and math.max(b0.X,b0.Z)*0.5 or 17
-end
-if b2.Magnitude<0.5 then
-b2=Vector3.new(bH.CFrame.LookVector.X,0,bH.CFrame.LookVector.Z)
-end
-if b2.Magnitude>0.1 then
-local b6=Vector3.new(b_.X,0,b_.Z)+b2.Unit*((b3 or 17)+6)
-local b7=floorAt(b6.X,b6.Z,bH.Position.Y)
-if b7 then
-local b8=Vector3.new(b6.X,b7+az,b6.Z)
-if not ag.InNoGo(b8)and Plan().Clear(bH.Position,b8)then
-bW=b8
-if aj.enabled and(bJ-l)>1 then
-l=bJ
-aj.Log(("ОТХОД ЧЕРЕЗ ГРАНЬ: %s, до грани %.0f, идём на %.0f")
-:format(typeof(bY)=="Instance"and bY.Name or"зона",b3 or 17,
-(Vector3.new(b8.X,0,b8.Z)
--Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude))
+local b9=(Vector3.new(b7,0,b8)-b0).Magnitude
+if b9>b2 then
+local ca=floorAt(b7,b8,bH.Position.Y)
+if ca then
+local cb=Vector3.new(b7,ca+ay,b8)
+if not ag.InNoGo(cb)and Plan().Clear(bH.Position,cb)
+and ad.IsSafe(cb,0)then
+b3,b2=cb,b9
 end
 end
 end
 end
 end
-end
+if b3 then
+bX,bY=b3,true
+if ai.enabled and(bK-l)>2 then
+l=bK
 
-
-
-
-
-
-
-
-
-if bW then
-local bY=Vector3.new(bW.X,0,bW.Z)
-local bZ=Vector3.new(bK.X,0,bK.Z)
-if(bY-bZ).Magnitude<aC then
-local b_=bY-bZ
-if b_.Magnitude<0.1 then
-b_=Vector3.new(bH.Position.X-bK.X,0,bH.Position.Z-bK.Z)
-end
-if b_.Magnitude>0.1 then
-local b0=bZ+b_.Unit*aC
-local b1=Vector3.new(b0.X,bW.Y,b0.Z)
-if ad.IsSafe(b1,aA)and Plan().Clear(bH.Position,b1)then
-bW=b1
 end
 end
 end
@@ -24538,66 +23466,48 @@ end
 
 
 
-if bW and ad.BoxSafe(bW)and not ad.RoomSafe(bW,2.5)then
-local bY
-for bZ,b_ in ipairs{3,2,1}do
-local b0=ad.EscapeStep(bH.Position,aA,aB+b_)
-if b0 and ad.BoxSafe(b0)and ad.RoomSafe(b0,b_)then
-bY=b0
+
+
+
+
+
+
+
+
+
+if bX then
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bZ=Vector3.new(bX.X-bH.Position.X,0,bX.Z-bH.Position.Z)
+if bZ.Magnitude>0.1 and not ad.IsSafe(bX,aD)then
+for b_,b0 in ipairs{4,8,12}do
+local b1=bX+bZ.Unit*b0
+local b2=floorAt(b1.X,b1.Z,bX.Y)
+if b2 then
+local b3=Vector3.new(b1.X,b2+ay,b1.Z)
+if ad.IsSafe(b3,aD)and not ag.InNoGo(b3)
+and Plan().Clear(bH.Position,b3)then
+bX=b3
 break
 end
 end
-if bY then
-bW=bY
-if aj.enabled and(bJ-a8)>2 then
-a8=bJ
-aj.Log"ПОБЕГ С ЗАПАСОМ: кромку заменил на место с просветом"
-end
-end
-end
-if bW and Plan().Clear(bH.Position,bW)and legOut(bH.Position,bW)
-and ad.BoxSafe(bW)then
-bp,bD,bA=bW,bJ,bK
-bF,bG,bV=bW,bJ,true
-elseif bW and aj.enabled and(bJ-a8)>1 then
-a8=bJ
-aj.Log"ПОБЕГ ОТКЛОНЁН: дорога к выходу идёт сквозь другую атаку"
 end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local bW=false
-if bp and not bV then
-local bX=(Vector3.new(bp.X,0,bp.Z)
--Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a2
-
-
-
-
-
-
-
-local bY=false
-for bZ,b_ in ipairs(P)do
-if(Vector3.new(bp.X,0,bp.Z)-b_).Magnitude<aC then
-bY=true break
-end
+local b_
+for b0,b1 in ipairs{aD,2,0}do
+if ad.IsSafe(bX,b1)then b_=b1 break end
 end
 
 
@@ -24623,21 +23533,72 @@ end
 
 
 
-local bZ=(bJ-H)<a3
-bW=not bX
-and not bY
-and Plan().Clear(bH.Position,bp)
-and(bJ-H)<aG
-and legClear(bH.Position,bp)
-and(bZ or ad.IsSafe(bp,aA))
+
+if not bY and(not b_ or b_<aD)
+and(bK-k)>0.3 then
+k=bK
 
 
-and not bN
+
+
+local b0,b1,b2=math.huge
+for b3,b4 in ipairs{aD,2}do
+for b5=6,aO,2 do
+for b6=1,16 do
+local b7=(b6/16)*math.pi*2
+local b8=bH.Position.X+math.cos(b7)*b5
+local b9=bH.Position.Z+math.sin(b7)*b5
+local ca=floorAt(b8,b9,bH.Position.Y)
+if ca then
+local cb=Vector3.new(b8,ca+ay,b9)
+if b5<b0 and ad.IsSafe(cb,b4)
+and not ag.InNoGo(cb)
+and Plan().Clear(bH.Position,cb)then
+b1,b0,b2=cb,b5,b4
+end
+end
+end
+if b1 then break end
+end
+if b1 then break end
+end
+if b1 then
+bX,b_=b1,b2
+if ai.enabled and(bK-j)>1 then
+j=bK
+
+end
+end
+end
+
+if not b_ then bX=nil end
+if bX and ai.enabled and b_<aD and(bK-j)>1 then
+j=bK
+
+end
 end
 
 
 
-if y then
+
+
+
+
+if not bX then
+local bZ=ad.ZoneAt(bH.Position,0)
+
+
+
+
+local b_=(typeof(bZ)=="Instance"and bZ:IsA"BasePart")and bZ or nil
+local b0
+if b_ then b0=b_.Position
+elseif typeof(bZ)=="table"and bZ.cf then b0=bZ.cf.Position
+elseif typeof(bZ)=="Instance"and bZ:IsA"Model"then
+local b1,b2=pcall(function()return bZ:GetPivot().Position end)
+b0=b1 and b2 or nil
+end
+if b0 then
 
 
 
@@ -24647,38 +23608,47 @@ if y then
 
 
 
-local bX
-if typeof(z)=="Instance"then
-bX=not z.Parent or not ad.IsZone(z)
+
+
+
+local b1=b_ and b_.Size or(typeof(bZ)=="table"and bZ.size or nil)
+local b2=b_ and b_.CFrame or(typeof(bZ)=="table"and bZ.cf or nil)
+local b3,b4
+local b5=Vector3.new(bH.Position.X-b0.X,0,bH.Position.Z-b0.Z)
+local b6=b1 and math.abs(b1.Z-b1.Y)<1 and b1.X<=8
+if b1 and b2 and not b6 then
+local b7=b2:PointToObjectSpace(bH.Position)
+local b8,b9=b1.X*0.5,b1.Z*0.5
+
+if(b8-math.abs(b7.X))<=(b9-math.abs(b7.Z))then
+b3=b2.RightVector*(b7.X>=0 and 1 or-1)
+b4=b8
 else
-bX=not bN
+b3=b2.LookVector*(b7.Z>=0 and 1 or-1)
+b4=b9
 end
+b3=Vector3.new(b3.X,0,b3.Z)
+end
+if not b3 or b3.Magnitude<0.1 then
+b3=b5
+b4=b1 and math.max(b1.X,b1.Z)*0.5 or 17
+end
+if b3.Magnitude<0.5 then
+b3=Vector3.new(bH.CFrame.LookVector.X,0,bH.CFrame.LookVector.Z)
+end
+if b3.Magnitude>0.1 then
+local b7=Vector3.new(b0.X,0,b0.Z)+b3.Unit*((b4 or 17)+6)
+local b8=floorAt(b7.X,b7.Z,bH.Position.Y)
+if b8 then
+local b9=Vector3.new(b7.X,b8+ay,b7.Z)
+if not ag.InNoGo(b9)and Plan().Clear(bH.Position,b9)then
+bX=b9
+if ai.enabled and(bK-j)>1 then
+j=bK
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if bN or not ad.IsSafe(y,aA)or(bJ-x)>a_ then
-y,z=nil,nil
-elseif bX then
-y,z=nil,nil
-else
-bp,H,bV=y,x,true
-if bN then noteBranch"стойка"end
-if aj.enabled and(bJ-j)>2 then
-j=bJ
-aj.Log(("СТОЮ ПОСЛЕ ПРЫЖКА: вокруг чистого нет, держу точку %.0f,%.0f (%.1f с)")
-:format(y.X,y.Z,bJ-x))
+end
+end
+end
 end
 end
 end
@@ -24691,23 +23661,23 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-if not bV and not bW then
-bD,bA=bJ,bK
-
-
-local bX=pickSpot(bK,bN or not bO,bR,bN or bE or not bO)
-
-
+if bX then
+local bZ=Vector3.new(bX.X,0,bX.Z)
+local b_=Vector3.new(bL.X,0,bL.Z)
+if(bZ-b_).Magnitude<aB then
+local b0=bZ-b_
+if b0.Magnitude<0.1 then
+b0=Vector3.new(bH.Position.X-bL.X,0,bH.Position.Z-bL.Z)
+end
+if b0.Magnitude>0.1 then
+local b1=b_+b0.Unit*aB
+local b2=Vector3.new(b1.X,bX.Y,b1.Z)
+if ad.IsSafe(b2,az)and Plan().Clear(bH.Position,b2)then
+bX=b2
+end
+end
+end
+end
 
 
 
@@ -24727,24 +23697,211 @@ local bX=pickSpot(bK,bN or not bO,bR,bN or bE or not bO)
 
 
 if bX and ad.BoxSafe(bX)and not ad.RoomSafe(bX,2.5)then
-local bY=pickSpot(bK,true,bR,true)
-if bY and ad.RoomSafe(bY,2.5)then bX=bY end
+local bZ
+for b_,b0 in ipairs{3,2,1}do
+local b1=ad.EscapeStep(bH.Position,az,aA+b0)
+if b1 and ad.BoxSafe(b1)and ad.RoomSafe(b1,b0)then
+bZ=b1
+break
 end
-if bX and not ad.BoxSafe(bX)then
-if aj.enabled and(bJ-a6)>1 then
-a6=bJ
-aj.Log"ТОЧКА ОТВЕРГНУТА ОБЪЁМОМ: круг считал её чистой, тело задевает атаку"
 end
-bX=nil
+if bZ then
+bX=bZ
+if ai.enabled and(bK-a9)>2 then
+a9=bK
+
 end
-if bX then
-bp,H=bX,bJ
-if bN then noteBranch"кольцо"end
-elseif bN then
+end
+end
+if bX and Plan().Clear(bH.Position,bX)and legOut(bH.Position,bX)
+and ad.BoxSafe(bX)then
+bp,bF,bC=bX,bK,bL
+A,B,bW=bX,bK,true
+elseif bX and ai.enabled and(bK-a9)>1 then
+a9=bK
+
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bX=false
+if bp and not bW then
+local bY=(Vector3.new(bp.X,0,bp.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a3
+
+
+
+
+
+
+
+local bZ=false
+for b_,b0 in ipairs(Q)do
+if(Vector3.new(bp.X,0,bp.Z)-b0).Magnitude<aB then
+bZ=true break
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local b_=(bK-H)<a4
+bX=not bY
+and not bZ
+and Plan().Clear(bH.Position,bp)
+and(bK-H)<aF
+and legClear(bH.Position,bp)
+and(b_ or ad.IsSafe(bp,az))
+
+
+and not bO
+end
+
+
+
+if w then
+
+
+
+
+
+
+
+
+
+local bY
+if typeof(x)=="Instance"then
+bY=not x.Parent or not ad.IsZone(x)
+else
+bY=not bO
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bO or not ad.IsSafe(w,az)or(bK-v)>a0 then
+w,x=nil,nil
+elseif bY then
+w,x=nil,nil
+else
+bp,H,bW=w,v,true
+if bO then noteBranch"s69"end
+if ai.enabled and(bK-h)>2 then
+h=bK
+
+end
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if not bW and not bX then
+bF,bC=bK,bL
+
+
+local bY=pickSpot(bL,bO or not bP,bS,bO or bG or not bP)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bY and ad.BoxSafe(bY)and not ad.RoomSafe(bY,2.5)then
+local bZ=pickSpot(bL,true,bS,true)
+if bZ and ad.RoomSafe(bZ,2.5)then bY=bZ end
+end
+if bY and not ad.BoxSafe(bY)then
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
+end
+bY=nil
+end
+if bY then
+bp,H=bY,bK
+if bO then noteBranch"s70"end
+elseif bO then
 bp=nil
-if aj.enabled and(bJ-a6)>1 then
-a6=bJ
-aj.Log"КОЛЬЦО ПУСТО ПОД УДАРОМ: сбрасываю цель, пусть решает уход"
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
 end
 end
 end
@@ -24753,13 +23910,13 @@ end
 
 
 
-local bX=getgenv().ApelHub
-if bX then
-bX.TestBrain={
-hurt=bN,roomy=bO,backing=bE,
-mobDist=bP,mob=bz and bz.Name or nil,
-here=bH.Position,goal=bp,ring=bR,
-escaped=bV,fleeTo=bF,
+local bY=getgenv().ApelHub
+if bY then
+bY.TestBrain={
+hurt=bO,roomy=bP,backing=bG,
+mobDist=P,mob=bB and bB.Name or nil,
+here=bH.Position,goal=bp,ring=bS,
+escaped=bW,fleeTo=A,
 pick={
 total=bt.total,unsafe=bt.unsafe,
 blocked=bt.blocked,tight=bt.tight,
@@ -24822,35 +23979,33 @@ end
 
 
 
-if math.abs(bK.Y-bH.Position.Y)>20 then bp=bK end
+if math.abs(bL.Y-bH.Position.Y)>20 then bp=bL end
 
-if not bp and bN then
-local bY
-for bZ,b_ in ipairs{true,false}do
-for b0,b1 in ipairs{6,10,14}do
-for b2=0,15 do
-local b3=b2*math.pi/8
-local b4=Vector3.new(
-bH.Position.X+math.cos(b3)*b1,
+if not bp and bO then
+local bZ
+for b_,b0 in ipairs{true,false}do
+for b1,b2 in ipairs{6,10,14}do
+for b3=0,15 do
+local b4=b3*math.pi/8
+local b5=Vector3.new(
+bH.Position.X+math.cos(b4)*b2,
 bH.Position.Y,
-bH.Position.Z+math.sin(b3)*b1)
-if ad.BoxSafe(b4)and ad.IsSafe(b4,0)
-and(not b_ or Plan().Clear(bH.Position,b4))then
-bY=b4
+bH.Position.Z+math.sin(b4)*b2)
+if ad.BoxSafe(b5)and ad.IsSafe(b5,0)
+and(not b0 or Plan().Clear(bH.Position,b5))then
+bZ=b5
 break
 end
 end
-if bY then break end
+if bZ then break end
 end
-if bY then break end
+if bZ then break end
 end
-if bY then
-bp=bY
-if aj.enabled and(bJ-a6)>1 then
-a6=bJ
-aj.Log(("ПОСЛЕДНИЙ РУБЕЖ: цели не было, ухожу в %.0f студах")
-:format((Vector3.new(bY.X,0,bY.Z)
--Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude))
+if bZ then
+bp=bZ
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
 end
 end
 end
@@ -24862,17 +24017,17 @@ if not bp then
 
 
 
-bI:MoveTo(bH.Position)
+bJ:MoveTo(bH.Position)
 clearRoute()
-if aj.enabled and(bJ-a6)>1 then
-a6=bJ
-aj.Log(("ЦЕЛИ НЕТ ВОВСЕ: накрыт=%s, встал на месте"):format(tostring(bN)))
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
 end
-if bv then bv:Set"Nowhere clean to stand"end
+if bx then bx:Set"Nowhere clean to stand"end
 return
 end
 
-local bY=(Vector3.new(bp.X,0,bp.Z)
+local bZ=(Vector3.new(bp.X,0,bp.Z)
 -Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
 
 
@@ -24887,29 +24042,28 @@ local bY=(Vector3.new(bp.X,0,bp.Z)
 
 
 
-local bZ,b_=bz,bP
+local b_,b0=bB,P
 if E then
-local b0=Vector3.new(bH.Position.X,0,bH.Position.Z)
-for b1,b2 in ipairs(bn)do
-local b3=aa.PivotOf(b2)
-if b3 then
-local b4=(Vector3.new(b3.X,0,b3.Z)-b0).Magnitude
-if b4<b_ then bZ,b_=b2,b4 end
+local b1=Vector3.new(bH.Position.X,0,bH.Position.Z)
+for b2,b3 in ipairs(bn)do
+local b4=aa.PivotOf(b3)
+if b4 then
+local b5=(Vector3.new(b4.X,0,b4.Z)-b1).Magnitude
+if b5<b0 then b_,b0=b3,b5 end
 end
 end
-if bZ~=bz then
-local b1=aa.PivotOf(bZ)
-local b2=b1 and Vector3.new(b1.X,bH.Position.Y,b1.Z)
-if b2 and(b2-bH.Position).Magnitude>0.1 then
-bH.CFrame=CFrame.new(bH.Position,b2)
+if b_~=bB then
+local b2=aa.PivotOf(b_)
+local b3=b2 and Vector3.new(b2.X,bH.Position.Y,b2.Z)
+if b3 and(b3-bH.Position).Magnitude>0.1 then
+bH.CFrame=CFrame.new(bH.Position,b3)
 end
-if aj.enabled and(bJ-h)>1 then
-h=bJ
-aj.Log(("В УКРЫТИИ БЬЮ %s в %.0f студах вместо %s в %.0f")
-:format(bZ.Name,b_,bz.Name,bP))
-end
+if ai.enabled and(bK-f)>1 then
+f=bK
+
 end
 end
+end
 
 
 
@@ -24919,25 +24073,25 @@ end
 
 
 
-local b0=ad.HazardRadius and ad.HazardRadius(bZ)or nil
+local b1=ad.HazardRadius and ad.HazardRadius(b_)or nil
 
 
 
 
-local b1=math.max(an+ao,(b0 or 0)+6,
-(as[bZ.Name]or 0)+4)
-
-
-
-
-
+local b2=math.max(am+an,(b1 or 0)+6,
+(ar[b_.Name]or 0)+4)
 
 
 
 
 
 
-if b_<=b1 or(bL and bY<=a2)then
+
+
+
+
+
+if b0<=b2 or(bM and bZ<=a3)then
 ac.Swing()
 end
 
@@ -24948,7 +24102,7 @@ end
 
 
 if ad.IsSafe(bH.Position,0)then
-ac.CastReady(bZ,tonumber(S.castReach)or 0,{})
+ac.CastReady(b_,tonumber(S.castReach)or 0,{})
 end
 
 
@@ -24970,40 +24124,40 @@ end
 
 
 
-local b2=not ad.RoomSafe(bH.Position,2.5)
-if b2 and aj.enabled and(bJ-a7)>2 then
-a7=bJ
-aj.Log"КРАЙ: стоять здесь нельзя, рядом атака — переставляюсь"
+local b3=not ad.RoomSafe(bH.Position,2.5)
+if b3 and ai.enabled and(bK-a8)>2 then
+a8=bK
+
 end
-if bY<=a2 and math.abs(bK.Y-bH.Position.Y)<=20
-and(bL or E or y
-or(not bN and bO and not bE and not b2))then
-bI:MoveTo(bH.Position)
+if bZ<=a3 and math.abs(bL.Y-bH.Position.Y)<=20
+and(bM or E or w
+or(not bO and bP and not bG and not b3))then
+bJ:MoveTo(bH.Position)
 clearRoute()
-if bv then
-bv:Set(("Fighting %s — %.0f studs"):format(bz.Name,bP))
+if bx then
+bx:Set(("Fighting %s — %.0f studs"):format(bB.Name,P))
 end
 return
 end
 
-ad.Note("доЦели",("%.0f"):format(bY))
-ad.Note("накрыт",tostring(bN))
 
 
-local b3,b4=Plan().Step(bH.Position,bp)
-if b3 then
-bI:MoveTo(b3)
-if bv then
-bv:Set(("Running to %s — %.0f studs (%s)"):format(bz.Name,bY,b4))
+
+
+local b4,b5=Plan().Step(bH.Position,bp)
+if b4 then
+bJ:MoveTo(b4)
+if bx then
+bx:Set(("Running to %s — %.0f studs (%s)"):format(bB.Name,bZ,b5))
 end
 elseif S.testArena then
 
 
 
-bI:MoveTo(bp)
-if bv then
-bv:Set(("Running to %s — %.0f studs (%s)")
-:format(bz.Name,bY,b4 or"direct"))
+bJ:MoveTo(bp)
+if bx then
+bx:Set(("Running to %s — %.0f studs (%s)")
+:format(bB.Name,bZ,b5 or"direct"))
 end
 else
 
@@ -25014,29 +24168,29 @@ else
 
 
 
-if bN then
-local b5
-for b6,b7 in ipairs{6,10,14}do
-for b8=0,15 do
-local b9=b8*math.pi/8
-local ca=Vector3.new(
-bH.Position.X+math.cos(b9)*b7,
+if bO then
+local b6
+for b7,b8 in ipairs{6,10,14}do
+for b9=0,15 do
+local ca=b9*math.pi/8
+local cb=Vector3.new(
+bH.Position.X+math.cos(ca)*b8,
 bH.Position.Y,
-bH.Position.Z+math.sin(b9)*b7)
-if ad.BoxSafe(ca)and ad.IsSafe(ca,0)then
-b5=ca
+bH.Position.Z+math.sin(ca)*b8)
+if ad.BoxSafe(cb)and ad.IsSafe(cb,0)then
+b6=cb
 break
 end
 end
-if b5 then break end
+if b6 then break end
 end
-if b5 then
-bI:MoveTo(b5)
-if aj.enabled and(bJ-a6)>1 then
-a6=bJ
-aj.Log"МАРШРУТА НЕТ ПОД УДАРОМ: ухожу перебором направлений"
+if b6 then
+bJ:MoveTo(b6)
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
 end
-if bv then bv:Set"Dodging without route"end
+if bx then bx:Set"Dodging without route"end
 return
 end
 end
@@ -25049,11 +24203,11 @@ end
 
 
 
-bI:MoveTo(bH.Position)
+bJ:MoveTo(bH.Position)
 clearRoute()
-if bv then
-bv:Set(("No route to %s — %.0f studs (%s)")
-:format(bz.Name,bY,b4 or"no path"))
+if bx then
+bx:Set(("No route to %s — %.0f studs (%s)")
+:format(bB.Name,bZ,b5 or"no path"))
 end
 end
 end))
@@ -25210,7 +24364,7 @@ local ak=pcall(function()
 if af:IsA"ScreenGui"then af.Enabled=true end
 aj.Visible=true
 end)
-return ak,ak and"opened (вручную)"or"could not open"
+return ak,ak and"s138"or"could not open"
 end
 
 
@@ -26593,8 +25747,8 @@ end end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={
 local aa=game:GetService"Players"
 local ab=game:GetService"ReplicatedStorage"
 game:GetService"RunService"
-local ac=aa.LocalPlayer
-local ad=a.l()
+local ac=aa.LocalPlayer a.l()
+
 
 
 
@@ -26612,31 +25766,31 @@ elevate()
 
 
 
-local ae=false
+local ad=false
 
 
 
 
-local af=(getgenv and getgenv())or _G
-af._CosmeticGetter=af._CosmeticGetter or{armed=false,picks={},hooked=false,selfCall=false}
-local ag=af._CosmeticGetter
+local ae=(getgenv and getgenv())or _G
+ae._CosmeticGetter=ae._CosmeticGetter or{armed=false,picks={},hooked=false,selfCall=false}
+local af=ae._CosmeticGetter
 
 
-ag.selfCall=false
-ag.picks=ag.picks or{}
+af.selfCall=false
+af.picks=af.picks or{}
 
-local ah={}
-local ai=false
+local ag={}
+local ah=false
 
 
 
 local function stop()
-ai=true
-ag.armed=false
-for aj,ak in ipairs(ah)do pcall(function()ak:Disconnect()end)end
-ah={}
+ah=true
+af.armed=false
+for ai,aj in ipairs(ag)do pcall(function()aj:Disconnect()end)end
+ag={}
 end
-af._CosmeticGetterStop=stop
+ae._CosmeticGetterStop=stop
 
 
 
@@ -26645,40 +25799,40 @@ af._CosmeticGetterStop=stop
 
 
 
-local aj=ab:WaitForChild("remotes",5)
+local ai=ab:WaitForChild("remotes",5)
 
-local function want(ak)
-return aj and aj:WaitForChild(ak,5)or nil
+local function want(aj)
+return ai and ai:WaitForChild(aj,5)or nil
 end
 
-local ak=want"awardCaseCosmetic"
-local al=want"purchaseCase"
-local am=want"casePurchaseResult"
-local an=want"getPlayerCosmetics"
-local ao=want"getCaseConfig"
-local ap=want"getCaseCosmetics"
+local aj=want"awardCaseCosmetic"
+local ak=want"purchaseCase"
+local al=want"casePurchaseResult"
+local am=want"getPlayerCosmetics"
+local an=want"getCaseConfig"
+local ao=want"getCaseCosmetics"
 
 
 
-local aq=aj and aj:FindFirstChild"addCosmeticLocal"
+local ap=ai and ai:FindFirstChild"addCosmeticLocal"
 
 
-local as=aj and aj:FindFirstChild"alertPlayer"
-local av=ab:WaitForChild("Utility",5)
+local aq=ai and ai:FindFirstChild"alertPlayer"
+local as=ab:WaitForChild("Utility",5)
 
-local aw,ax=pcall(function()
-return require(av:WaitForChild("AssetRequester",5))
+local av,aw=pcall(function()
+return require(as:WaitForChild("AssetRequester",5))
 end)
-if not aw then ax=nil end
+if not av then aw=nil end
 
 
 
 
-if not ag.hooked and hookmetamethod and getnamecallmethod then
-ag.hooked=true
-local ay=newcclosure or function(ay)return ay end
-local az
-az=hookmetamethod(game,"__namecall",ay(function(aA,...)
+if not af.hooked and hookmetamethod and getnamecallmethod then
+af.hooked=true
+local ax=newcclosure or function(ax)return ax end
+local ay
+ay=hookmetamethod(game,"__namecall",ax(function(az,...)
 
 
 
@@ -26686,65 +25840,65 @@ az=hookmetamethod(game,"__namecall",ay(function(aA,...)
 
 
 
-if ag.selfCall and aA==ak and getnamecallmethod()=="FireServer"then
-return az(aA,...)
+if af.selfCall and az==aj and getnamecallmethod()=="FireServer"then
+return ay(az,...)
 end
-if ag.armed and aA==ak and getnamecallmethod()=="FireServer"then local
-aB, aC, aD=...
-local aE=ag.picks
+if af.armed and az==aj and getnamecallmethod()=="FireServer"then local
+aA, aB, aC=...
+local aD=af.picks
 
 
 
 
-if aE and aE[aB]then
-return az(aA,...)
+if aD and aD[aA]then
+return ay(az,...)
 end
-local aF
-for aG,aH in pairs(aE or{})do
-if aG~=aB then aF=aH break end
+local aE
+for aF,aG in pairs(aD or{})do
+if aF~=aA then aE=aG break end
 end
-if aF then
-return az(aA,aF.name,aF.type,aD)
+if aE then
+return ay(az,aE.name,aE.type,aC)
 end
 end
-return az(aA,...)
+return ay(az,...)
 end))
 end
 
 
-local ay={
+local ax={
 common=Color3.fromRGB(152,152,152),
 uncommon=Color3.fromRGB(91,194,80),
 rare=Color3.fromRGB(75,77,195),
 epic=Color3.fromRGB(146,70,159),
 legendary=Color3.fromRGB(244,154,9),
 }
-local az={common=1,uncommon=2,rare=3,epic=4,legendary=5}
-local aA={"rare","epic","legendary"}
-local aB={"common","uncommon","rare","epic","legendary"}
+local ay={common=1,uncommon=2,rare=3,epic=4,legendary=5}
+local az={"rare","epic","legendary"}
+local aA={"common","uncommon","rare","epic","legendary"}
 
-local aC={
+local aB={
 {key="armors",title="Armors"},
 {key="weapons",title="Weapons"},
 {key="enchants",title="Enchants"},
 {key="titles",title="Titles"},
 }
 
-local aD={}
+local aC={}
 do
-local aE,aF=pcall(function()return require(av:WaitForChild("DataRequester",5))end)
-local aG,aH=false
-if aE and type(aF)=="table"and aF.GetCosmetics then aG,aH=pcall(aF.GetCosmetics)end
-if aG and type(aH)=="table"then
-for aI,aJ in pairs(aH)do
-if type(aJ)=="table"then
-for aK,aL in pairs(aJ)do
-if type(aL)=="table"then
-aD[#aD+1]={
-name=tostring(aL.name or aK),
-type=tostring(aL.cosmeticType or aI),
-rarity=string.lower(tostring(aL.rarity or"common")),
-imageId=tostring(aL.imageId or""),
+local aD,aE=pcall(function()return require(as:WaitForChild("DataRequester",5))end)
+local aF,aG=false
+if aD and type(aE)=="table"and aE.GetCosmetics then aF,aG=pcall(aE.GetCosmetics)end
+if aF and type(aG)=="table"then
+for aH,aI in pairs(aG)do
+if type(aI)=="table"then
+for aJ,aM in pairs(aI)do
+if type(aM)=="table"then
+aC[#aC+1]={
+name=tostring(aM.name or aJ),
+type=tostring(aM.cosmeticType or aH),
+rarity=string.lower(tostring(aM.rarity or"common")),
+imageId=tostring(aM.imageId or""),
 }
 end
 end
@@ -26753,26 +25907,26 @@ end
 end
 end
 
-table.sort(aD,function(aE,aF)
-if aE.type~=aF.type then return aE.type<aF.type end
-local aG,aH=az[aE.rarity]or 0,az[aF.rarity]or 0
-if aG~=aH then return aG>aH end
-return aE.name<aF.name
+table.sort(aC,function(aD,aE)
+if aD.type~=aE.type then return aD.type<aE.type end
+local aF,aG=ay[aD.rarity]or 0,ay[aE.rarity]or 0
+if aF~=aG then return aF>aG end
+return aD.name<aE.name
 end)
 
 
 
 
-local aE=Color3.fromRGB(26,26,26)
-local aF=Color3.fromRGB(44,43,43)
-local aG=Color3.fromRGB(62,62,62)
-local aH=Color3.fromRGB(42,40,40)
-local aI=Color3.fromRGB(226,132,19)
-local aJ=Color3.fromRGB(255,255,255)
-local aK=Color3.fromRGB(168,168,168)
-local aL=Color3.fromRGB(128,128,128)
-local aM=Color3.fromRGB(120,220,150)
-local aN=Color3.fromRGB(237,66,69)
+local aD=Color3.fromRGB(26,26,26)
+local aE=Color3.fromRGB(44,43,43)
+local aF=Color3.fromRGB(62,62,62)
+local aG=Color3.fromRGB(42,40,40)
+local aH=Color3.fromRGB(226,132,19)
+local aI=Color3.fromRGB(255,255,255)
+local aJ=Color3.fromRGB(168,168,168)
+local aM=Color3.fromRGB(128,128,128)
+local aN=Color3.fromRGB(120,220,150)
+local aO=Color3.fromRGB(237,66,69)
 Color3.fromRGB(62,62,62)
 
 
@@ -26780,28 +25934,28 @@ Color3.fromRGB(62,62,62)
 
 
 
-local aO=0.20
-local aP=0.40
-local aQ=0.50
-local aR=0.30
+local aP=0.20
+local aQ=0.40
+local aR=0.50
+local aS=0.30
 
-local function new(aS,aT,aU)
-local aV=Instance.new(aS)
-for aW,aX in pairs(aT or{})do
-if aW~="Parent"then aV[aW]=aX end
+local function new(aT,aU,aV)
+local aW=Instance.new(aT)
+for aX,aY in pairs(aU or{})do
+if aX~="Parent"then aW[aX]=aY end
 end
-for aW,aX in ipairs(aU or{})do aX.Parent=aV end
-if aT and aT.Parent then aV.Parent=aT.Parent end
-return aV
+for aX,aY in ipairs(aV or{})do aY.Parent=aW end
+if aU and aU.Parent then aW.Parent=aU.Parent end
+return aW
 end
 
-local function corner(aS)return new("UICorner",{CornerRadius=UDim.new(0,aS or 6)})end
+local function corner(aT)return new("UICorner",{CornerRadius=UDim.new(0,aT or 6)})end
 
-local function stroke(aS,aT,aU)
+local function stroke(aT,aU,aV)
 return new("UIStroke",{
-Color=aS or Color3.fromRGB(70,70,82),
-Thickness=aT or 1,
-Transparency=aU or 0,
+Color=aT or Color3.fromRGB(70,70,82),
+Thickness=aU or 1,
+Transparency=aV or 0,
 ApplyStrokeMode=Enum.ApplyStrokeMode.Border,
 })
 end
@@ -26816,19 +25970,19 @@ end
 
 
 
-local aS={}
+local aT={}
 
 
 local function loadOwned()
-local aT,aU=pcall(function()return an:InvokeServer()end)
-if not aT or type(aU)~="table"then return false end
-local aV={}
-for aW,aX in pairs(aU)do
-if type(aX)=="table"then
-for aY,aZ in pairs(aX)do aV[tostring(aZ)]=true end
+local aU,aV=pcall(function()return am:InvokeServer()end)
+if not aU or type(aV)~="table"then return false end
+local aW={}
+for aX,aY in pairs(aV)do
+if type(aY)=="table"then
+for aZ,a_ in pairs(aY)do aW[tostring(a_)]=true end
 end
 end
-aS=aV
+aT=aW
 return true
 end
 
@@ -26845,75 +25999,75 @@ end
 
 
 
-local aT,aU={},{}
+local aU,aV={},{}
 
 
-local function loadCase(aV)
-if aT[aV]==nil then
-local aW,aX=pcall(function()return ao:InvokeServer(aV)end)
-aT[aV]=(aW and type(aX)=="table")and aX or false
+local function loadCase(aW)
+if aU[aW]==nil then
+local aX,aY=pcall(function()return an:InvokeServer(aW)end)
+aU[aW]=(aX and type(aY)=="table")and aY or false
 end
-if aU[aV]==nil then
-local aW,aX=pcall(function()return ap:InvokeServer(aV)end)
-aU[aV]=(aW and type(aX)=="table")and aX or false
+if aV[aW]==nil then
+local aX,aY=pcall(function()return ao:InvokeServer(aW)end)
+aV[aW]=(aX and type(aY)=="table")and aY or false
 end
-return aT[aV],aU[aV]
-end
-
-
-
-
-
-local function bestCaseFor(aV)
-local aW,aX,aY=0,0
-for aZ,a_ in ipairs(aA)do
-local a0,a1=loadCase(a_)
-if a0 and a1 and type(a0.weights)=="table"then
-local a2,a3={},{}
-for a4,a5 in ipairs(a1)do
-if type(a5)=="table"then
-a2[a5.rarity]=(a2[a5.rarity]or 0)+1
-a3[a5.name]=true
-end
-end
-local a4,a5=0,0
-for a6,a7 in pairs(aV)do
-local a8=a0.weights[a7.rarity]
-local a9=a2[a7.rarity]
-if a8 and a9 and a9>0 and a3[a6]then
-a4=a4+a8/a9
-a5=a5+1
-end
-end
-if a5>0 and a4>aW then
-aY,aW,aX=a_,a4,a5
-end
-end
-end
-return aY,aW,aX
+return aU[aW],aV[aW]
 end
 
 
 
 
 
+local function bestCaseFor(aW)
+local aX,aY,aZ=0,0
+for a_,a0 in ipairs(az)do
+local a1,a2=loadCase(a0)
+if a1 and a2 and type(a1.weights)=="table"then
+local a3,a4={},{}
+for a5,a6 in ipairs(a2)do
+if type(a6)=="table"then
+a3[a6.rarity]=(a3[a6.rarity]or 0)+1
+a4[a6.name]=true
+end
+end
+local a5,a6=0,0
+for a7,a8 in pairs(aW)do
+local a9=a1.weights[a8.rarity]
+local b=a3[a8.rarity]
+if a9 and b and b>0 and a4[a7]then
+a5=a5+a9/b
+a6=a6+1
+end
+end
+if a6>0 and a5>aX then
+aZ,aX,aY=a0,a5,a6
+end
+end
+end
+return aZ,aX,aY
+end
 
 
-local aV=ac.Name.."/Assets"
 
 
 
-local function fetchAsset(aW)
-local aX=ab:FindFirstChild(aV)
-local aY=aX and aX:FindFirstChild(aW.name)
-if aY then return aY end
-if ax and ax.RequestAsset then
+
+
+local aW=ac.Name.."/Assets"
+
+
+
+local function fetchAsset(aX)
+local aY=ab:FindFirstChild(aW)
+local aZ=aY and aY:FindFirstChild(aX.name)
+if aZ then return aZ end
+if aw and aw.RequestAsset then
 pcall(function()
-ax.RequestAsset("cosmetics",aW.type,aW.name):await()
+aw.RequestAsset("cosmetics",aX.type,aX.name):await()
 end)
 end
-aX=ab:FindFirstChild(aV)
-return aX and aX:FindFirstChild(aW.name)or nil
+aY=ab:FindFirstChild(aW)
+return aY and aY:FindFirstChild(aX.name)or nil
 end
 
 
@@ -26924,27 +26078,27 @@ end
 
 
 
-local aW
-if ae then
-local aX=ac:WaitForChild"PlayerGui":FindFirstChild"mainInterface"
-local aY=aX and aX:FindFirstChild"shop"
-aY=aY and aY:FindFirstChild"cosmetics"
-aY=aY and aY:FindFirstChild"featuredArmorCosmeticShop1"
-local aZ=aY and aY:FindFirstChild"ViewportFrame"
-local a_=aZ and aZ:FindFirstChild"Dummy"
-if a_ then
-aW=a_:Clone()
-local a0={}
-for a1,a2 in ipairs(aW:GetDescendants())do
-if a2:IsA"Motor6D"then
-if a2.Part0 then a0[a2.Part0]=true end
-if a2.Part1 then a0[a2.Part1]=true end
+local aX
+if ad then
+local aY=ac:WaitForChild"PlayerGui":FindFirstChild"mainInterface"
+local aZ=aY and aY:FindFirstChild"shop"
+aZ=aZ and aZ:FindFirstChild"cosmetics"
+aZ=aZ and aZ:FindFirstChild"featuredArmorCosmeticShop1"
+local a_=aZ and aZ:FindFirstChild"ViewportFrame"
+local a0=a_ and a_:FindFirstChild"Dummy"
+if a0 then
+aX=a0:Clone()
+local a1={}
+for a2,a3 in ipairs(aX:GetDescendants())do
+if a3:IsA"Motor6D"then
+if a3.Part0 then a1[a3.Part0]=true end
+if a3.Part1 then a1[a3.Part1]=true end
 end
 end
-for a1,a2 in ipairs(aW:GetChildren())do
-local a3=a2:IsA"BasePart"and not a0[a2]
-if a3 or a2:IsA"Model"or a2:IsA"Accessory"then
-pcall(function()a2:Destroy()end)
+for a2,a3 in ipairs(aX:GetChildren())do
+local a4=a3:IsA"BasePart"and not a1[a3]
+if a4 or a3:IsA"Model"or a3:IsA"Accessory"then
+pcall(function()a3:Destroy()end)
 end
 end
 end
@@ -26962,61 +26116,61 @@ end
 
 
 
-local function rigAttachments(aX)
-local aY={}
-for aZ,a_ in ipairs(aX:GetDescendants())do
-if a_:IsA"Attachment"and aY[a_.Name]==nil then aY[a_.Name]=a_ end
+local function rigAttachments(aY)
+local aZ={}
+for a_,a0 in ipairs(aY:GetDescendants())do
+if a0:IsA"Attachment"and aZ[a0.Name]==nil then aZ[a0.Name]=a0 end
 end
-return aY
+return aZ
 end
 
 
-local function wearOnRig(aX)
-if not aW then return nil,0 end
-local aY=aW:Clone()
-local aZ=rigAttachments(aY)
+local function wearOnRig(aY)
+if not aX then return nil,0 end
+local aZ=aX:Clone()
+local a_=rigAttachments(aZ)
+local a0=0
+
+for a1,a2 in ipairs(aY:GetChildren())do
+if a2:IsA"Model"or a2:IsA"Accessory"then
+local a3=a2:Clone()
+local a4=a3:FindFirstChild"Handle"
+local a5=a4 and a4:FindFirstChildOfClass"Attachment"
+local a6=a5 and a_[a5.Name]
+if a4 and a5 and a6 then
+
+
+local a7=a6.WorldCFrame*a5.CFrame:Inverse()
+local a8=a7*a4.CFrame:Inverse()
+for a9,b in ipairs(a3:GetDescendants())do
+if b:IsA"BasePart"then b.CFrame=a8*b.CFrame end
+end
+a0=a0+1
+end
+a3.Parent=aZ
+end
+end
+
+for a1,a2 in ipairs(aZ:GetDescendants())do
+if a2:IsA"BasePart"then a2.Anchored=true;a2.CanCollide=false end
+end
+return aZ,a0
+end
+
+local function loneModel(aY)
+local aZ=Instance.new"Model"
+aZ.Name=aY.Name
+for a_,a0 in ipairs(aY:GetChildren())do a0:Clone().Parent=aZ end
 local a_=0
-
-for a0,a1 in ipairs(aX:GetChildren())do
-if a1:IsA"Model"or a1:IsA"Accessory"then
-local a2=a1:Clone()
-local a3=a2:FindFirstChild"Handle"
-local a4=a3 and a3:FindFirstChildOfClass"Attachment"
-local a5=a4 and aZ[a4.Name]
-if a3 and a4 and a5 then
-
-
-local a6=a5.WorldCFrame*a4.CFrame:Inverse()
-local a7=a6*a3.CFrame:Inverse()
-for a8,a9 in ipairs(a2:GetDescendants())do
-if a9:IsA"BasePart"then a9.CFrame=a7*a9.CFrame end
-end
+for a0,a1 in ipairs(aZ:GetDescendants())do
+if a1:IsA"BasePart"then
+a1.Anchored=true
+a1.CanCollide=false
 a_=a_+1
 end
-a2.Parent=aY
 end
-end
-
-for a0,a1 in ipairs(aY:GetDescendants())do
-if a1:IsA"BasePart"then a1.Anchored=true;a1.CanCollide=false end
-end
-return aY,a_
-end
-
-local function loneModel(aX)
-local aY=Instance.new"Model"
-aY.Name=aX.Name
-for aZ,a_ in ipairs(aX:GetChildren())do a_:Clone().Parent=aY end
-local aZ=0
-for a_,a0 in ipairs(aY:GetDescendants())do
-if a0:IsA"BasePart"then
-a0.Anchored=true
-a0.CanCollide=false
-aZ=aZ+1
-end
-end
-if aZ==0 then aY:Destroy();return nil end
-return aY
+if a_==0 then aZ:Destroy();return nil end
+return aZ
 end
 
 
@@ -27031,71 +26185,71 @@ end
 
 
 
-local function aimRig(aX,aY)
-aY:PivotTo(CFrame.new(0,0,0))
-local aZ=Instance.new"Camera"
-aZ.Parent=aX
-aX.CurrentCamera=aZ
-aZ.CFrame=CFrame.new(Vector3.new(0,1,-5),Vector3.new(0,0,0))
+local function aimRig(aY,aZ)
+aZ:PivotTo(CFrame.new(0,0,0))
+local a_=Instance.new"Camera"
+a_.Parent=aY
+aY.CurrentCamera=a_
+a_.CFrame=CFrame.new(Vector3.new(0,1,-5),Vector3.new(0,0,0))
 return true
 end
 
-local function aimLone(aX,aY)
-local aZ,a_,a0=pcall(function()return aY:GetBoundingBox()end)
-if not aZ or typeof(a_)~="CFrame"or typeof(a0)~="Vector3"then return false end
-local a1=math.max(a0.X,a0.Y,a0.Z)
-if a1<=0 or a1>200 then return false end
-aY:PivotTo(CFrame.new(0,0,0))
-local a2=Instance.new"Camera"
-a2.Parent=aX
-aX.CurrentCamera=a2
+local function aimLone(aY,aZ)
+local a_,a0,a1=pcall(function()return aZ:GetBoundingBox()end)
+if not a_ or typeof(a0)~="CFrame"or typeof(a1)~="Vector3"then return false end
+local a2=math.max(a1.X,a1.Y,a1.Z)
+if a2<=0 or a2>200 then return false end
+aZ:PivotTo(CFrame.new(0,0,0))
+local a3=Instance.new"Camera"
+a3.Parent=aY
+aY.CurrentCamera=a3
 
 
-local a3=a1*0.85+1
-a2.CFrame=CFrame.new(Vector3.new(0,a1*0.05,-a3),Vector3.new(0,0,0))
+local a4=a2*0.85+1
+a3.CFrame=CFrame.new(Vector3.new(0,a2*0.05,-a4),Vector3.new(0,0,0))
 return true
 end
 
-local aX={}
+local aY={}
 
 
 
-function aX.Open()
+function aY.Open()
 
-if not(ak and al and am)then
+if not(aj and ak and al)then
 Notify"Cosmetic Getter works in the lobby only"
 return
 end
-if af._CosmeticGetterStop then pcall(af._CosmeticGetterStop)end
-ai=false
-ah={}
-af._CosmeticGetterStop=stop
+if ae._CosmeticGetterStop then pcall(ae._CosmeticGetterStop)end
+ah=false
+ag={}
+ae._CosmeticGetterStop=stop
 
-local aY=ac:WaitForChild"PlayerGui"
-
-
+local aZ=ac:WaitForChild"PlayerGui"
 
 
 
-for aZ,a_ in ipairs{aY,game:GetService"CoreGui",gethui and gethui()or nil}do
-for a0,a1 in ipairs{"ApelCosmeticGetter","ApelCratePreview"}do
-local a2=a_ and a_:FindFirstChild(a1)
-while a2 do
-pcall(function()a2:Destroy()end)
-pcall(function()a2.Parent=nil end)
-a2=a_:FindFirstChild(a1)
-if a2 and a2.Parent==a_ then break end
+
+
+for a_,a0 in ipairs{aZ,game:GetService"CoreGui",gethui and gethui()or nil}do
+for a1,a2 in ipairs{"ApelCosmeticGetter","ApelCratePreview"}do
+local a3=a0 and a0:FindFirstChild(a2)
+while a3 do
+pcall(function()a3:Destroy()end)
+pcall(function()a3.Parent=nil end)
+a3=a0:FindFirstChild(a2)
+if a3 and a3.Parent==a0 then break end
 end
 end
 end
 
-local aZ=new("ScreenGui",{
+local a_=new("ScreenGui",{
 Name="ApelCosmeticGetter",
 ResetOnSpawn=false,
 IgnoreGuiInset=true,
 ZIndexBehavior=Enum.ZIndexBehavior.Sibling,
 DisplayOrder=1200,
-Parent=aY,
+Parent=aZ,
 })
 
 
@@ -27106,42 +26260,42 @@ Parent=aY,
 
 
 
-local a_=new("Frame",{
+local a0=new("Frame",{
 Name="root",
 Size=UDim2.fromOffset(760,470),
 Position=UDim2.new(0.5,-380,0.5,-235),
-BackgroundColor3=aE,
-BackgroundTransparency=aO,
+BackgroundColor3=aD,
+BackgroundTransparency=aP,
 BorderSizePixel=0,
 Active=true,
 Draggable=true,
-Parent=aZ,
+Parent=a_,
 },{corner(6)})
 
 
-local a0=new("Frame",{
+local a1=new("Frame",{
 Name="header",
 Size=UDim2.new(1,0,0,30),
-BackgroundColor3=aF,
-BackgroundTransparency=aP,
+BackgroundColor3=aE,
+BackgroundTransparency=aQ,
 BorderSizePixel=0,
-Parent=a_,
+Parent=a0,
 },{corner(6)})
 
 new("Frame",{
 Size=UDim2.new(1,0,0,1),
 Position=UDim2.new(0,0,1,-1),
-BackgroundColor3=aG,
+BackgroundColor3=aF,
 BorderSizePixel=0,
-Parent=a0,
+Parent=a1,
 })
 
 new("Frame",{
 Size=UDim2.fromOffset(14,14),
 Position=UDim2.fromOffset(9,8),
-BackgroundColor3=aI,
+BackgroundColor3=aH,
 BorderSizePixel=0,
-Parent=a0,
+Parent=a1,
 },{corner(7)})
 
 new("TextLabel",{
@@ -27151,48 +26305,48 @@ BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=13,
 RichText=true,
-TextColor3=aJ,
+TextColor3=aI,
 TextXAlignment=Enum.TextXAlignment.Left,
 Text='Cosmetic <font color="#E28413">Getter</font>',
-Parent=a0,
+Parent=a1,
 })
 
-local a1=new("TextLabel",{
+local a2=new("TextLabel",{
 Name="count",
 Size=UDim2.fromOffset(240,30),
 Position=UDim2.new(1,-274,0,0),
 BackgroundTransparency=1,
 Font=Enum.Font.Gotham,
 TextSize=11,
-TextColor3=aK,
+TextColor3=aJ,
 TextXAlignment=Enum.TextXAlignment.Right,
 Text="",
-Parent=a0,
+Parent=a1,
 })
 
-local a2=new("TextButton",{
+local a3=new("TextButton",{
 Size=UDim2.fromOffset(22,18),
 Position=UDim2.new(1,-28,0,6),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=12,
-TextColor3=aK,
+TextColor3=aJ,
 Text="X",
-Parent=a0,
+Parent=a1,
 })
 
-a2.Activated:Connect(function()
+a3.Activated:Connect(function()
 stop()
-pcall(function()aZ:Destroy()end)
+pcall(function()a_:Destroy()end)
 end)
 
 
-local a3=new("Frame",{
+local a4=new("Frame",{
 Name="rail",
 Size=UDim2.new(0,134,1,-30),
 Position=UDim2.fromOffset(0,30),
 BackgroundTransparency=1,
-Parent=a_,
+Parent=a0,
 })
 
 new("TextLabel",{
@@ -27201,158 +26355,158 @@ Position=UDim2.fromOffset(12,10),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=11,
-TextColor3=aJ,
+TextColor3=aI,
 TextXAlignment=Enum.TextXAlignment.Left,
 Text="COSMETIC TYPE",
-Parent=a3,
+Parent=a4,
 })
 
 
 
-local a4={type="armors",rarity={},search="",picks={},nPicks=0,case=nil}
+local a5={type="armors",rarity={},search="",picks={},nPicks=0,case=nil}
 
-local a5,a6={},{}
-local a7,a8,a9
+local a6,a7={},{}
+local a8,a9,b
 
-for b,ba in ipairs(aC)do
-local bb=new("TextButton",{
+for ba,bb in ipairs(aB)do
+local bc=new("TextButton",{
 Size=UDim2.new(1,-20,0,22),
-Position=UDim2.fromOffset(10,34+(b-1)*25),
-BackgroundColor3=aI,
+Position=UDim2.fromOffset(10,34+(ba-1)*25),
+BackgroundColor3=aH,
 BackgroundTransparency=1,
 BorderSizePixel=0,
 Font=Enum.Font.Gotham,
 TextSize=12,
-TextColor3=aK,
+TextColor3=aJ,
 TextXAlignment=Enum.TextXAlignment.Left,
-Text="  "..ba.title,
-Parent=a3,
+Text="  "..bb.title,
+Parent=a4,
 },{corner(4)})
-a5[ba.key]=bb
-bb.Activated:Connect(function()
-a4.type=ba.key
-a7()
+a6[bb.key]=bc
+bc.Activated:Connect(function()
+a5.type=bb.key
+a8()
 end)
 end
 
 
-local b=new("Frame",{
+local ba=new("Frame",{
 Name="body",
 Size=UDim2.new(1,-134,1,-30),
 Position=UDim2.fromOffset(134,30),
 BackgroundTransparency=1,
-Parent=a_,
+Parent=a0,
 })
 
-local ba=new("TextLabel",{
+local bb=new("TextLabel",{
 Name="pageTitle",
 Size=UDim2.new(1,-24,0,20),
 Position=UDim2.fromOffset(0,8),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=14,
-TextColor3=aJ,
+TextColor3=aI,
 TextXAlignment=Enum.TextXAlignment.Left,
 Text="Armors",
-Parent=b,
+Parent=ba,
 })
 
 
 
-local function sectionHead(bb,bc,bd)
+local function sectionHead(bc,bd,be)
 new("TextLabel",{
 Size=UDim2.fromOffset(12,14),
-Position=UDim2.fromOffset(0,bc),
+Position=UDim2.fromOffset(0,bd),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=11,
-TextColor3=aK,
+TextColor3=aJ,
 Text="-",
-Parent=b,
+Parent=ba,
 })
-local be=new("TextLabel",{
+local bf=new("TextLabel",{
 Size=UDim2.fromOffset(200,14),
-Position=UDim2.fromOffset(14,bc),
+Position=UDim2.fromOffset(14,bd),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=12,
-TextColor3=aJ,
+TextColor3=aI,
 TextXAlignment=Enum.TextXAlignment.Left,
-Text=bb,
-Parent=b,
+Text=bc,
+Parent=ba,
 })
-be.Size=UDim2.fromOffset(be.TextBounds.X+8,14)
+bf.Size=UDim2.fromOffset(bf.TextBounds.X+8,14)
 new("Frame",{
-Size=UDim2.new(1,-(be.Position.X.Offset+be.Size.X.Offset+24),0,1),
-Position=UDim2.fromOffset(be.Position.X.Offset+be.Size.X.Offset,bc+7),
-BackgroundColor3=aG,
+Size=UDim2.new(1,-(bf.Position.X.Offset+bf.Size.X.Offset+24),0,1),
+Position=UDim2.fromOffset(bf.Position.X.Offset+bf.Size.X.Offset,bd+7),
+BackgroundColor3=aF,
 BorderSizePixel=0,
-Parent=b,
+Parent=ba,
 })
 end
 
 sectionHead("Filter",36)
 
-local bb=new("TextBox",{
+local bc=new("TextBox",{
 Name="search",
 Size=UDim2.fromOffset(200,24),
 Position=UDim2.fromOffset(0,56),
-BackgroundColor3=aH,
-BackgroundTransparency=aR,
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
 BorderSizePixel=0,
 Font=Enum.Font.Gotham,
 TextSize=12,
-TextColor3=aJ,
+TextColor3=aI,
 PlaceholderText="Search",
-PlaceholderColor3=aL,
+PlaceholderColor3=aM,
 ClearTextOnFocus=false,
 Text="",
-Parent=b,
+Parent=ba,
 },{corner(4),new("UIPadding",{PaddingLeft=UDim.new(0,9)})})
 
-for bc,bd in ipairs(aB)do
-local be=new("TextButton",{
+for bd,be in ipairs(aA)do
+local bf=new("TextButton",{
 Size=UDim2.fromOffset(74,24),
-Position=UDim2.fromOffset(208+(bc-1)*78,56),
-BackgroundColor3=aH,
-BackgroundTransparency=aR,
+Position=UDim2.fromOffset(208+(bd-1)*78,56),
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
 BorderSizePixel=0,
 Font=Enum.Font.GothamBold,
 TextSize=10,
-TextColor3=ay[bd],
-Text=bd:upper(),
-Parent=b,
+TextColor3=ax[be],
+Text=be:upper(),
+Parent=ba,
 },{corner(4)})
-a6[bd]=be
-be.Activated:Connect(function()
-a4.rarity[bd]=(not a4.rarity[bd])or nil
-a7()
+a7[be]=bf
+bf.Activated:Connect(function()
+a5.rarity[be]=(not a5.rarity[be])or nil
+a8()
 end)
 end
 
 sectionHead("Items",92)
 
 
-local bc=136
-local bd=ae and 150 or 40
+local bd=136
+local be=ad and 150 or 40
 
-local be=new("ScrollingFrame",{
+local bf=new("ScrollingFrame",{
 Name="grid",
 Size=UDim2.new(1,-24,1,-226),
 Position=UDim2.fromOffset(0,110),
-BackgroundColor3=aG,
-BackgroundTransparency=aQ,
+BackgroundColor3=aF,
+BackgroundTransparency=aR,
 BorderSizePixel=0,
 CanvasSize=UDim2.new(),
 AutomaticCanvasSize=Enum.AutomaticSize.Y,
 ScrollBarThickness=4,
-ScrollBarImageColor3=aL,
+ScrollBarImageColor3=aM,
 ScrollingDirection=Enum.ScrollingDirection.Y,
-Parent=b,
+Parent=ba,
 },{
 corner(5),
 new("UIGridLayout",{
-CellSize=UDim2.fromOffset(bc,bd),
+CellSize=UDim2.fromOffset(bd,be),
 CellPadding=UDim2.fromOffset(6,6),
 SortOrder=Enum.SortOrder.LayoutOrder,
 }),
@@ -27363,165 +26517,165 @@ PaddingTop=UDim.new(0,8),PaddingBottom=UDim.new(0,8),
 })
 
 sectionHead("Auto roll",0)
-for bf,bg in ipairs(b:GetChildren())do
-if(bg:IsA"TextLabel"and bg.Text=="Auto roll")
-or(bg:IsA"TextLabel"and bg.Text=="-"and bg.Position==UDim2.fromOffset(0,0))
-or(bg:IsA"Frame"and bg.Position.Y.Offset==7 and bg.Position.Y.Scale==0 and bg.Size.Y.Offset==1)then
-bg.Position=UDim2.new(0,bg.Position.X.Offset,1,-104+bg.Position.Y.Offset)
+for bg,bh in ipairs(ba:GetChildren())do
+if(bh:IsA"TextLabel"and bh.Text=="Auto roll")
+or(bh:IsA"TextLabel"and bh.Text=="-"and bh.Position==UDim2.fromOffset(0,0))
+or(bh:IsA"Frame"and bh.Position.Y.Offset==7 and bh.Position.Y.Scale==0 and bh.Size.Y.Offset==1)then
+bh.Position=UDim2.new(0,bh.Position.X.Offset,1,-104+bh.Position.Y.Offset)
 end
 end
 
-local bf=new("Frame",{
+local bg=new("Frame",{
 Name="rollCard",
 Size=UDim2.new(1,-24,0,66),
 Position=UDim2.new(0,0,1,-80),
-BackgroundColor3=aG,
-BackgroundTransparency=aQ,
+BackgroundColor3=aF,
+BackgroundTransparency=aR,
 BorderSizePixel=0,
-Parent=b,
+Parent=ba,
 },{corner(5)})
 
-local bg=new("TextLabel",{
+local bh=new("TextLabel",{
 Name="picked",
 Size=UDim2.new(1,-220,0,18),
 Position=UDim2.fromOffset(12,10),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=13,
-TextColor3=aK,
+TextColor3=aJ,
 TextXAlignment=Enum.TextXAlignment.Left,
 TextTruncate=Enum.TextTruncate.AtEnd,
 Text="Nothing selected",
-Parent=bf,
+Parent=bg,
 })
 
-local bh=new("TextLabel",{
+local bi=new("TextLabel",{
 Name="status",
 Size=UDim2.new(1,-220,0,30),
 Position=UDim2.fromOffset(12,30),
 BackgroundTransparency=1,
 Font=Enum.Font.Gotham,
 TextSize=11,
-TextColor3=aK,
+TextColor3=aJ,
 TextXAlignment=Enum.TextXAlignment.Left,
 TextYAlignment=Enum.TextYAlignment.Top,
 TextWrapped=true,
 Text="Pick a cosmetic, then press Start.",
-Parent=bf,
+Parent=bg,
 })
 
-local function status(bi,bj)
-bh.Text=bi
-bh.TextColor3=bj or aK
+local function status(bj,bk)
+bi.Text=bj
+bi.TextColor3=bk or aJ
 end
 
-local bi=new("TextButton",{
+local bj=new("TextButton",{
 Name="roll",
 Size=UDim2.fromOffset(184,42),
 Position=UDim2.new(1,-196,0,12),
-BackgroundColor3=aI,
+BackgroundColor3=aH,
 BorderSizePixel=0,
 Font=Enum.Font.GothamBold,
 TextSize=13,
 TextColor3=Color3.fromRGB(26,26,26),
 Text="Start Auto Roll",
-Parent=bf,
+Parent=bg,
 },{corner(5)})
 
 
 
-local bj={}
-local bk=0
+local bk={}
+local bl=0
 
 
-function a9(bl)
-if not bl.box then return end
-local bm=bl.item
-local bn=bl.frame:FindFirstChildOfClass"UIStroke"
-if aS[bm.name]then
-bl.tick.Text="✓"
-bl.tick.TextColor3=aM
-bl.box.BackgroundTransparency=1
-bl.title.TextColor3=aM
-if bn then bn.Color=aM;bn.Transparency=0.35;bn.Thickness=1 end
-elseif a4.picks[bm.name]then
-bl.tick.Text="✓"
-bl.tick.TextColor3=Color3.fromRGB(26,26,26)
-bl.box.BackgroundColor3=aI
-bl.box.BackgroundTransparency=0
-bl.title.TextColor3=aJ
-if bn then bn.Color=aI;bn.Transparency=0;bn.Thickness=1 end
+function b(bm)
+if not bm.box then return end
+local bn=bm.item
+local bo=bm.frame:FindFirstChildOfClass"UIStroke"
+if aT[bn.name]then
+bm.tick.Text="✓"
+bm.tick.TextColor3=aN
+bm.box.BackgroundTransparency=1
+bm.title.TextColor3=aN
+if bo then bo.Color=aN;bo.Transparency=0.35;bo.Thickness=1 end
+elseif a5.picks[bn.name]then
+bm.tick.Text="✓"
+bm.tick.TextColor3=Color3.fromRGB(26,26,26)
+bm.box.BackgroundColor3=aH
+bm.box.BackgroundTransparency=0
+bm.title.TextColor3=aI
+if bo then bo.Color=aH;bo.Transparency=0;bo.Thickness=1 end
 else
-bl.tick.Text=""
-bl.box.BackgroundColor3=aH
-bl.box.BackgroundTransparency=0.15
-bl.title.TextColor3=aJ
-if bn then bn.Color=ay[bm.rarity]or aK;bn.Transparency=0.4;bn.Thickness=1 end
+bm.tick.Text=""
+bm.box.BackgroundColor3=aG
+bm.box.BackgroundTransparency=0.15
+bm.title.TextColor3=aI
+if bo then bo.Color=ax[bn.rarity]or aJ;bo.Transparency=0.4;bo.Thickness=1 end
 end
 end
 
 local function refreshPicked()
-local bl={}
-for bm in pairs(a4.picks)do bl[#bl+1]=bm end
-table.sort(bl)
-a4.nPicks=#bl
-if#bl==0 then
-bg.Text="Nothing selected"
-bg.TextColor3=aK
-elseif#bl==1 then
-local bm=a4.picks[bl[1] ]
-bg.Text=("%s  ·  %s  ·  %s"):format(bm.name,bm.type,bm.rarity)
-bg.TextColor3=ay[bm.rarity]or aJ
+local bm={}
+for bn in pairs(a5.picks)do bm[#bm+1]=bn end
+table.sort(bm)
+a5.nPicks=#bm
+if#bm==0 then
+bh.Text="Nothing selected"
+bh.TextColor3=aJ
+elseif#bm==1 then
+local bn=a5.picks[bm[1] ]
+bh.Text=("%s  ·  %s  ·  %s"):format(bn.name,bn.type,bn.rarity)
+bh.TextColor3=ax[bn.rarity]or aI
 else
-bg.Text=("%d selected  ·  %s"):format(#bl,table.concat(bl,", "))
-bg.TextColor3=aJ
+bh.Text=("%d selected  ·  %s"):format(#bm,table.concat(bm,", "))
+bh.TextColor3=aI
 end
 end
 
-local function selectItem(bl,bm)
+local function selectItem(bm,bn)
 
-if aS[bl.name]then
-status(("You already own %s."):format(bl.name),aM)
+if aT[bm.name]then
+status(("You already own %s."):format(bm.name),aN)
 return
 end
-if a4.picks[bl.name]then
-a4.picks[bl.name]=nil
+if a5.picks[bm.name]then
+a5.picks[bm.name]=nil
 else
-a4.picks[bl.name]=bl
+a5.picks[bm.name]=bm
 end
-a9(bm)
+b(bn)
 refreshPicked()
-a8()
+a9()
 end
 
-local function makeCard(bl,bm)
-local bn=ay[bl.rarity]or aJ
-local bo=new("TextButton",{
-Name="card-"..bl.name,
-LayoutOrder=bm,
-BackgroundColor3=aH,
-BackgroundTransparency=aR,
+local function makeCard(bm,bn)
+local bo=ax[bm.rarity]or aI
+local bp=new("TextButton",{
+Name="card-"..bm.name,
+LayoutOrder=bn,
+BackgroundColor3=aG,
+BackgroundTransparency=aS,
 BorderSizePixel=0,
 AutoButtonColor=false,
 Text="",
 ClipsDescendants=true,
-Parent=be,
-},{corner(6),stroke(bn,1)})
+Parent=bf,
+},{corner(6),stroke(bo,1)})
 
-if not ae then
+if not ad then
 
 
-local bp=new("Frame",{
+local bq=new("Frame",{
 Name="box",
 Size=UDim2.fromOffset(13,13),
 Position=UDim2.fromOffset(8,13),
-BackgroundColor3=aH,
+BackgroundColor3=aG,
 BackgroundTransparency=0.15,
 BorderSizePixel=0,
-Parent=bo,
-},{corner(3),stroke(aK,1,0.5)})
+Parent=bp,
+},{corner(3),stroke(aJ,1,0.5)})
 
-local bq=new("TextLabel",{
+local br=new("TextLabel",{
 Name="tick",
 Size=UDim2.fromScale(1,1),
 BackgroundTransparency=1,
@@ -27529,44 +26683,44 @@ Font=Enum.Font.GothamBold,
 TextSize=11,
 TextColor3=Color3.fromRGB(26,26,26),
 Text="",
-Parent=bp,
+Parent=bq,
 })
 
-local br=new("TextLabel",{
+local bs=new("TextLabel",{
 Name="title",
 Size=UDim2.new(1,-34,1,0),
 Position=UDim2.fromOffset(28,0),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=11,
-TextColor3=aJ,
+TextColor3=aI,
 TextWrapped=true,
-Text=bl.name,
-Parent=bo,
+Text=bm.name,
+Parent=bp,
 })
 
-local bs={
-item=bl,frame=bo,box=bp,tick=bq,title=br,
+local bt={
+item=bm,frame=bp,box=bq,tick=br,title=bs,
 built=true,queued=false,
 }
 
-bo.Activated:Connect(function()selectItem(bl,bs)end)
-bj[#bj+1]=bs
-a9(bs)
-return bs
+bp.Activated:Connect(function()selectItem(bm,bt)end)
+bk[#bk+1]=bt
+b(bt)
+return bt
 end
 
-local bp=new("Frame",{
+local bq=new("Frame",{
 Name="well",
-Size=UDim2.fromOffset(bc-12,96),
+Size=UDim2.fromOffset(bd-12,96),
 Position=UDim2.fromOffset(6,6),
 BackgroundColor3=Color3.fromRGB(28,28,33),
 BorderSizePixel=0,
 ClipsDescendants=true,
-Parent=bo,
+Parent=bp,
 },{corner(4)})
 
-local bq=new("ViewportFrame",{
+local br=new("ViewportFrame",{
 Name="vp",
 Size=UDim2.fromScale(1,1),
 BackgroundTransparency=1,
@@ -27574,10 +26728,10 @@ Ambient=Color3.fromRGB(190,190,190),
 LightColor=Color3.fromRGB(255,255,255),
 LightDirection=Vector3.new(-0.4,-1,-0.6),
 Visible=false,
-Parent=bp,
+Parent=bq,
 })
 
-local br=new("ImageLabel",{
+local bs=new("ImageLabel",{
 Name="img",
 Size=UDim2.fromScale(0.94,0.94),
 Position=UDim2.fromScale(0.03,0.03),
@@ -27585,18 +26739,18 @@ BackgroundTransparency=1,
 ScaleType=Enum.ScaleType.Fit,
 Image="",
 Visible=false,
-Parent=bp,
+Parent=bq,
 })
 
-local bs=new("TextLabel",{
+local bt=new("TextLabel",{
 Name="spin",
 Size=UDim2.fromScale(1,1),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=11,
-TextColor3=aK,
+TextColor3=aJ,
 Text="…",
-Parent=bp,
+Parent=bq,
 })
 
 new("TextLabel",{
@@ -27606,17 +26760,17 @@ Position=UDim2.fromOffset(4,106),
 BackgroundTransparency=1,
 Font=Enum.Font.GothamBold,
 TextSize=11,
-TextColor3=aJ,
+TextColor3=aI,
 TextWrapped=true,
 TextYAlignment=Enum.TextYAlignment.Top,
-Text=bl.name,
-Parent=bo,
+Text=bm.name,
+Parent=bp,
 })
 
-local bt={item=bl,frame=bo,vp=bq,img=br,spin=bs,built=false,queued=false}
-bo.Activated:Connect(function()selectItem(bl,bt)end)
-bj[#bj+1]=bt
-return bt
+local bu={item=bm,frame=bp,vp=br,img=bs,spin=bt,built=false,queued=false}
+bp.Activated:Connect(function()selectItem(bm,bu)end)
+bk[#bk+1]=bu
+return bu
 end
 
 
@@ -27624,29 +26778,29 @@ end
 
 
 
-local function fillFlat(bl)
-local bm=bl.item
-if bm.type=="titles"then
-bl.spin.Text=bm.name
-bl.spin.TextSize=13
-bl.spin.TextWrapped=true
-bl.spin.TextColor3=ay[bm.rarity]or aJ
-bl.built=true
+local function fillFlat(bm)
+local bn=bm.item
+if bn.type=="titles"then
+bm.spin.Text=bn.name
+bm.spin.TextSize=13
+bm.spin.TextWrapped=true
+bm.spin.TextColor3=ax[bn.rarity]or aI
+bm.built=true
 return true
 end
-if bm.imageId~=""then
-bl.img.Image=bm.imageId
-bl.img.Visible=true
-bl.spin.Visible=false
-bl.built=true
+if bn.imageId~=""then
+bm.img.Image=bn.imageId
+bm.img.Visible=true
+bm.spin.Visible=false
+bm.built=true
 return true
 end
 return false
 end
 
-local function fillModel(bl)
-local bm=bl.item
-local bn=fetchAsset(bm)
+local function fillModel(bm)
+local bn=bm.item
+local bo=fetchAsset(bn)
 
 
 
@@ -27655,45 +26809,45 @@ local bn=fetchAsset(bm)
 
 
 elevate()
-if ai or not bl.frame.Parent then return end
-if not bn then
-bl.spin.Text="no model"
-bl.spin.TextColor3=aN
+if ah or not bm.frame.Parent then return end
+if not bo then
+bm.spin.Text="no model"
+bm.spin.TextColor3=aO
 return
 end
 
 
 
-local bo,bp=false
-if bm.type=="armors"then
-local bq,br=wearOnRig(bn)
-if bq and br>0 then
-bp,bo=bq,true
-elseif bq then
-bq:Destroy()
+local bp,bq=false
+if bn.type=="armors"then
+local br,bs=wearOnRig(bo)
+if br and bs>0 then
+bq,bp=br,true
+elseif br then
+br:Destroy()
 end
 end
-if not bp then bp=loneModel(bn)end
-if not bp then
-bl.spin.Text="empty"
-bl.spin.TextColor3=aN
+if not bq then bq=loneModel(bo)end
+if not bq then
+bm.spin.Text="empty"
+bm.spin.TextColor3=aO
 return
 end
 
-bp.Parent=bl.vp
-if(bo and aimRig(bl.vp,bp))or((not bo)and aimLone(bl.vp,bp))then
-bl.spin.Visible=false
-bl.vp.Visible=true
+bq.Parent=bm.vp
+if(bp and aimRig(bm.vp,bq))or((not bp)and aimLone(bm.vp,bq))then
+bm.spin.Visible=false
+bm.vp.Visible=true
 else
-bp:Destroy()
-bl.spin.Text="cannot render"
-bl.spin.TextColor3=aN
+bq:Destroy()
+bm.spin.Text="cannot render"
+bm.spin.TextColor3=aO
 end
 end
 
-local bl=false
-local bm={}
-local bn=false
+local bm=false
+local bn={}
+local bo=false
 
 
 
@@ -27701,159 +26855,159 @@ local bn=false
 
 
 
-local function inView(bo)
-local bp=bo.frame.AbsolutePosition.Y-be.AbsolutePosition.Y
-return bp>-(bd+8)and bp<be.AbsoluteSize.Y+bd
+local function inView(bp)
+local bq=bp.frame.AbsolutePosition.Y-bf.AbsolutePosition.Y
+return bq>-(be+8)and bq<bf.AbsoluteSize.Y+be
 end
 
-local function unload(bo)
-if not bo.built or not bo.vp then return end
-bo.built=false
-bo.vp.Visible=false
-pcall(function()bo.vp:ClearAllChildren()end)
-if bo.item.imageId==""and bo.item.type~="titles"then
-bo.spin.Visible=true
-bo.spin.Text="…"
-bo.spin.TextColor3=aK
+local function unload(bp)
+if not bp.built or not bp.vp then return end
+bp.built=false
+bp.vp.Visible=false
+pcall(function()bp.vp:ClearAllChildren()end)
+if bp.item.imageId==""and bp.item.type~="titles"then
+bp.spin.Visible=true
+bp.spin.Text="…"
+bp.spin.TextColor3=aJ
 end
 end
 
-local function pump(bo)
-if bn then return end
-bn=true
+local function pump(bp)
+if bo then return end
+bo=true
 task.spawn(function()
 elevate()
-while not ai and bo==bk do
-local bp=table.remove(bm,1)
-if not bp then break end
-if bp.frame.Parent and inView(bp)and not bp.built then
-local bq,br=pcall(fillModel,bp)
+while not ah and bp==bl do
+local bq=table.remove(bn,1)
+if not bq then break end
+if bq.frame.Parent and inView(bq)and not bq.built then local
+br=pcall(fillModel,bq)
 elevate()
-if not bq then
-bp.spin.Text="failed"
-bp.spin.TextColor3=aN
-if not bl then
-bl=true
-ad.Log("cosmetic: модель не собралась —",bp.item.name,tostring(br))
+if not br then
+bq.spin.Text="failed"
+bq.spin.TextColor3=aO
+if not bm then
+bm=true
+
 end
 end
-bp.built=true
+bq.built=true
 task.wait()
 elevate()
 end
 end
-bn=false
+bo=false
 end)
 end
 
 local function refreshVisible()
-if ai or not ae then return end
-local bo=bk
-for bp,bq in ipairs(bj)do
-if not bq.frame.Parent then
+if ah or not ad then return end
+local bp=bl
+for bq,br in ipairs(bk)do
+if not br.frame.Parent then
 
-elseif inView(bq)then
-if not bq.built and not bq.queued then
-bq.queued=true
-bm[#bm+1]=bq
+elseif inView(br)then
+if not br.built and not br.queued then
+br.queued=true
+bn[#bn+1]=br
 end
-elseif bq.built then
-unload(bq)
-bq.queued=false
+elseif br.built then
+unload(br)
+br.queued=false
 end
 end
-pump(bo)
+pump(bp)
 end
 
 
 
-local function startLoader(bo)
-if not ae then return end
-for bp,bq in ipairs(bj)do fillFlat(bq)end
+local function startLoader(bp)
+if not ad then return end
+for bq,br in ipairs(bk)do fillFlat(br)end
 task.defer(function()
 elevate()
-if bo==bk then refreshVisible()end
+if bp==bl then refreshVisible()end
 end)
 end
 
-ah[#ah+1]=be:GetPropertyChangedSignal"CanvasPosition":Connect(refreshVisible)
+ag[#ag+1]=bf:GetPropertyChangedSignal"CanvasPosition":Connect(refreshVisible)
 
-function a7()
-bk=bk+1
-for bo,bp in ipairs(bj)do pcall(function()bp.frame:Destroy()end)end
-bj={}
-bm={}
+function a8()
+bl=bl+1
+for bp,bq in ipairs(bk)do pcall(function()bq.frame:Destroy()end)end
+bk={}
+bn={}
 
 
 
-for bo,bp in pairs(a5)do
-local bq=(bo==a4.type)
-bp.BackgroundTransparency=bq and 0 or 1
-bp.TextColor3=bq and Color3.fromRGB(26,26,26)or aK
-bp.Font=bq and Enum.Font.GothamBold or Enum.Font.Gotham
-if bq then ba.Text=bp.Text:gsub("^%s+","")end
-end
-local bo=next(a4.rarity)~=nil
 for bp,bq in pairs(a6)do
-local br=(not bo)or a4.rarity[bp]
-bq.BackgroundTransparency=br and 0 or 0.55
-bq.TextTransparency=br and 0 or 0.5
+local br=(bp==a5.type)
+bq.BackgroundTransparency=br and 0 or 1
+bq.TextColor3=br and Color3.fromRGB(26,26,26)or aJ
+bq.Font=br and Enum.Font.GothamBold or Enum.Font.Gotham
+if br then bb.Text=bq.Text:gsub("^%s+","")end
+end
+local bp=next(a5.rarity)~=nil
+for bq,br in pairs(a7)do
+local bs=(not bp)or a5.rarity[bq]
+br.BackgroundTransparency=bs and 0 or 0.55
+br.TextTransparency=bs and 0 or 0.5
 end
 
-local bp=a4.search:lower()
-local bq=0
-for br,bs in ipairs(aD)do
-local bt=bs.type==a4.type
-local bu=(not bo)or a4.rarity[bs.rarity]
-local bv=bp==""or bs.name:lower():find(bp,1,true)~=nil
-if bt and bu and bv then
-bq=bq+1
-makeCard(bs,bq)
-end
-end
-
+local bq=a5.search:lower()
 local br=0
-for bs,bt in ipairs(bj)do
-a9(bt)
-if aS[bt.item.name]then br=br+1 end
+for bs,bt in ipairs(aC)do
+local bu=bt.type==a5.type
+local bv=(not bp)or a5.rarity[bt.rarity]
+local bw=bq==""or bt.name:lower():find(bq,1,true)~=nil
+if bu and bv and bw then
+br=br+1
+makeCard(bt,br)
 end
-a1.Text=("%d shown of %d  ·  %d owned"):format(bq,#aD,br)
-startLoader(bk)
 end
 
-bb:GetPropertyChangedSignal"Text":Connect(function()
-a4.search=bb.Text
-a7()
+local bs=0
+for bt,bu in ipairs(bk)do
+b(bu)
+if aT[bu.item.name]then bs=bs+1 end
+end
+a2.Text=("%d shown of %d  ·  %d owned"):format(br,#aC,bs)
+startLoader(bl)
+end
+
+bc:GetPropertyChangedSignal"Text":Connect(function()
+a5.search=bc.Text
+a8()
 end)
-
-
-local bo=0
-
 
 
 local bp=0
 
-function a8()
-bp=bp+1
-local bq=bp
-a4.case=nil
-if a4.nPicks==0 then
-status("Pick one or more cosmetics, then press Start.",aK)
+
+
+local bq=0
+
+function a9()
+bq=bq+1
+local br=bq
+a5.case=nil
+if a5.nPicks==0 then
+status("Pick one or more cosmetics, then press Start.",aJ)
 return
 end
-status("Working out the best crate...",aK)
+status("Working out the best crate...",aJ)
 task.spawn(function()
 elevate()
-local br,bs,bt=bestCaseFor(a4.picks)
-if ai or bq~=bp then return end
-a4.case=br
-if not br then
-status("None of the picks are in a crate pool right now.",aN)
-elseif bt<a4.nPicks then
+local bs,bt,bu=bestCaseFor(a5.picks)
+if ah or br~=bq then return end
+a5.case=bs
+if not bs then
+status("None of the picks are in a crate pool right now.",aO)
+elseif bu<a5.nPicks then
 status(("%s crate - %.3f%% per roll, covers %d of %d picks. Press Start."):format(
-br:upper(),bs,bt,a4.nPicks),aJ)
+bs:upper(),bt,bu,a5.nPicks),aI)
 else
-status(("%s crate - %.3f%% per roll. Press Start."):format(br:upper(),bs),aJ)
+status(("%s crate - %.3f%% per roll. Press Start."):format(bs:upper(),bt),aI)
 end
 end)
 end
@@ -27873,8 +27027,8 @@ end
 
 
 
-local bq=false
-local br
+local br=false
+local bs
 
 
 
@@ -27885,26 +27039,26 @@ local br
 
 
 local function setRollButton()
-if bq then
-bi.Text="Stop"
-bi.BackgroundColor3=aN
-bi.TextColor3=Color3.fromRGB(255,255,255)
+if br then
+bj.Text="Stop"
+bj.BackgroundColor3=aO
+bj.TextColor3=Color3.fromRGB(255,255,255)
 else
-bi.Text="Start Auto Roll"
-bi.BackgroundColor3=aI
-bi.TextColor3=Color3.fromRGB(22,22,22)
+bj.Text="Start Auto Roll"
+bj.BackgroundColor3=aH
+bj.TextColor3=Color3.fromRGB(22,22,22)
 end
 end
 
 
 
 
-local bs=0.35
+local bt=0.35
 
 local function rollLoop()
 task.spawn(function()
 elevate()
-local bt=0
+local bu=0
 
 
 
@@ -27912,152 +27066,152 @@ local bt=0
 
 
 
-local bu=bs
-local bv=0
-while bq and not ai and ag.armed and next(ag.picks or{})do
-bt=bt+1
+local bv=bt
+local bw=0
+while br and not ah and af.armed and next(af.picks or{})do
+bu=bu+1
 
 
-local bw,bx
-bx=am.OnClientEvent:Connect(function(by)
-if type(by)=="table"and bw==nil then bw=by end
+local bx,by
+by=al.OnClientEvent:Connect(function(bz)
+if type(bz)=="table"and bx==nil then bx=bz end
 end)
-al:FireServer(a4.case)
+ak:FireServer(a5.case)
 
 
 
 
-local by=0
-while bw==nil and by<6 and bq and not ai do
-by=by+task.wait()
+local bz=0
+while bx==nil and bz<6 and br and not ah do
+bz=bz+task.wait()
 end
-pcall(function()bx:Disconnect()end)
+pcall(function()by:Disconnect()end)
 elevate()
 
 
 
-if bw==nil then
-bv=bv+1
-if bv>=3 then
-br="Server stopped answering purchases."
+if bx==nil then
+bw=bw+1
+if bw>=3 then
+bs="Server stopped answering purchases."
 break
 end
-bu=math.min(bu*2,5)
-bt=bt-1
-status(("No answer from the server, waiting %.1fs..."):format(bu),aI)
-task.wait(bu)
+bv=math.min(bv*2,5)
+bu=bu-1
+status(("No answer from the server, waiting %.1fs..."):format(bv),aH)
+task.wait(bv)
 elevate()
 continue
 end
-bv=0
+bw=0
 
-if not bw.success then
-local bz=tostring(bw.message or"")
-local bA=bz:lower()
+if not bx.success then
+local bA=tostring(bx.message or"")
+local bB=bA:lower()
 
 
 
-if bA:find"slow"or bA:find"wait"or bA:find"cooldown"
-or bA:find"too fast"or bA:find"try again"then
-bu=math.min(bu*2,5)
-bt=bt-1
-status(("Server asked to slow down, waiting %.1fs (roll %d)"):format(bu,bt),aI)
-task.wait(bu)
+if bB:find"slow"or bB:find"wait"or bB:find"cooldown"
+or bB:find"too fast"or bB:find"try again"then
+bv=math.min(bv*2,5)
+bu=bu-1
+status(("Server asked to slow down, waiting %.1fs (roll %d)"):format(bv,bu),aH)
+task.wait(bv)
 elevate()
 continue
 end
-br="Server refused: "..bz
+bs="Server refused: "..bA
 break
 end
 
 
-if bu>bs then bu=math.max(bs,bu*0.7)end
+if bv>bt then bv=math.max(bt,bv*0.7)end
 
 
 
 
 
 
-local bz=ag.picks[bw.cosmetic]~=nil
-local bA,bB=bw.cosmetic,bw.cosmeticType
-if not bz then
-for bC,bD in pairs(ag.picks)do
-if bC~=bw.cosmetic then bA,bB=bD.name,bD.type break end
+local bA=af.picks[bx.cosmetic]~=nil
+local bB,bC=bx.cosmetic,bx.cosmeticType
+if not bA then
+for bD,bE in pairs(af.picks)do
+if bD~=bx.cosmetic then bB,bC=bE.name,bE.type break end
 end
 end
-ag.selfCall=true
-ak:FireServer(bA,bB,bw.transactionId)
-ag.selfCall=false
+af.selfCall=true
+aj:FireServer(bB,bC,bx.transactionId)
+af.selfCall=false
 
-bo=bt
+bp=bu
 status(("Roll %d - rolled %s%s"):format(
-bt,tostring(bw.cosmetic),bz and"   <<< MATCH, waiting for the award"or""),
-bz and aM or aI)
+bu,tostring(bx.cosmetic),bA and"   <<< MATCH, waiting for the award"or""),
+bA and aN or aH)
 
-if bz then
+if bA then
 
 
-ag.picks[bw.cosmetic]=nil
-a4.picks[bw.cosmetic]=nil
-aS[bw.cosmetic]=true
+af.picks[bx.cosmetic]=nil
+a5.picks[bx.cosmetic]=nil
+aT[bx.cosmetic]=true
 task.defer(function()
 elevate()
-if ai then return end
-for bC,bD in ipairs(bj)do
-if bD.item.name==bw.cosmetic then a9(bD)end
+if ah then return end
+for bD,bE in ipairs(bk)do
+if bE.item.name==bx.cosmetic then b(bE)end
 end
 refreshPicked()
 end)
-if not next(ag.picks)then
-br=("Got %s on roll %d - all picks done."):format(tostring(bw.cosmetic),bt)
+if not next(af.picks)then
+bs=("Got %s on roll %d - all picks done."):format(tostring(bx.cosmetic),bu)
 break
 end
 end
-task.wait(bu)
+task.wait(bv)
 elevate()
 end
 
-bq=false
+br=false
 task.defer(function()
 elevate()
-if ai or not aZ.Parent then return end
+if ah or not a_.Parent then return end
 setRollButton()
-if br then status(br,br:find"Hit "and aM or aI)end
-br=nil
+if bs then status(bs,bs:find"Hit "and aN or aH)end
+bs=nil
 end)
 end)
 end
 
-bi.Activated:Connect(function()
-if bq then
-bq=false
-br="Stopped."
+bj.Activated:Connect(function()
+if br then
+br=false
+bs="Stopped."
 return
 end
-if not ag.hooked then
-status("No hookmetamethod in this executor - auto roll would burn gems, refusing.",aN)
+if not af.hooked then
+status("No hookmetamethod in this executor - auto roll would burn gems, refusing.",aO)
 return
 end
-if a4.nPicks==0 then
-status("Pick at least one cosmetic first.",aI)
+if a5.nPicks==0 then
+status("Pick at least one cosmetic first.",aH)
 return
 end
-if not a4.case then
-status("Still working out which crate to spin - one moment.",aI)
+if not a5.case then
+status("Still working out which crate to spin - one moment.",aH)
 return
 end
 
 
 
-local bt={}
-for bu,bv in pairs(a4.picks)do bt[bu]=bv end
-ag.picks=bt
-ag.armed=true
-bo=0
-bq=true
+local bu={}
+for bv,bw in pairs(a5.picks)do bu[bv]=bw end
+af.picks=bu
+af.armed=true
+bp=0
+br=true
 setRollButton()
 status(("Rolling %s crate for %d pick%s..."):format(
-a4.case:upper(),a4.nPicks,a4.nPicks==1 and""or"s"),aI)
+a5.case:upper(),a5.nPicks,a5.nPicks==1 and""or"s"),aH)
 rollLoop()
 end)
 
@@ -28068,54 +27222,54 @@ end)
 
 
 
-if as then
-ah[#ah+1]=as.OnClientEvent:Connect(function(bt)
-if ai or type(bt)~="string"then return end
-if not bt:lower():find"previous crate awarded"then return end
-task.defer(function()
-elevate()
-if ai or not aZ.Parent then return end
-bq=false
-setRollButton()
-status("STOPPED: the server closed the previous deal itself ("..bt..") - that one cost gems.",aN)
-end)
-end)
-end
-
-
 if aq then
-ah[#ah+1]=aq.OnClientEvent:Connect(function(...)
-if ai or not ag.armed then return end
-local bt=ag.picks or{}
-local bu
-for bv,bw in ipairs{...}do
-if type(bw)=="string"and bt[bw]then bu=bw break end
-if type(bw)=="table"then
-for bx,by in pairs(bw)do
-if type(by)=="string"and bt[by]then bu=by break end
-end
-if bu then break end
-end
-end
-if not bu then return end
-bt[bu]=nil
-a4.picks[bu]=nil
-aS[bu]=true
-if not next(bt)then ag.armed=false end
+ag[#ag+1]=aq.OnClientEvent:Connect(function(bu)
+if ah or type(bu)~="string"then return end
+if not bu:lower():find"previous crate awarded"then return end
 task.defer(function()
 elevate()
-if ai or not aZ.Parent then return end
-for bv,bw in ipairs(bj)do
-if bw.item.name==bu then a9(bw)end
+if ah or not a_.Parent then return end
+br=false
+setRollButton()
+status("STOPPED: the server closed the previous deal itself ("..bu..") - that one cost gems.",aO)
+end)
+end)
+end
+
+
+if ap then
+ag[#ag+1]=ap.OnClientEvent:Connect(function(...)
+if ah or not af.armed then return end
+local bu=af.picks or{}
+local bv
+for bw,bx in ipairs{...}do
+if type(bx)=="string"and bu[bx]then bv=bx break end
+if type(bx)=="table"then
+for by,bz in pairs(bx)do
+if type(bz)=="string"and bu[bz]then bv=bz break end
+end
+if bv then break end
+end
+end
+if not bv then return end
+bu[bv]=nil
+a5.picks[bv]=nil
+aT[bv]=true
+if not next(bu)then af.armed=false end
+task.defer(function()
+elevate()
+if ah or not a_.Parent then return end
+for bw,bx in ipairs(bk)do
+if bx.item.name==bv then b(bx)end
 end
 refreshPicked()
-if not next(bt)then
-bq=false
+if not next(bu)then
+br=false
 setRollButton()
-status(("Obtained %s after %d rolls. All picks done."):format(bu,bo),aM)
+status(("Obtained %s after %d rolls. All picks done."):format(bv,bp),aN)
 else
 status(("Obtained %s after %d rolls. Still hunting %d more."):format(
-bu,bo,a4.nPicks),aM)
+bv,bp,a5.nPicks),aN)
 end
 end)
 end)
@@ -28123,122 +27277,122 @@ end
 
 
 setRollButton()
-a7()
+a8()
 
 
 
 task.spawn(function()
 elevate()
-if loadOwned()and not ai then
+if loadOwned()and not ah then
 
 
 
-a7()
+a8()
 end
 end)
 
-if#aD==0 then
-status("Cosmetic catalog is empty - are you in the lobby?",aN)
-elseif not ag.hooked then
-status("No hookmetamethod in this executor - auto roll would burn gems, it is disabled.",aN)
-else
-ad.Log("cosmetic: каталог прочитан, позиций —",#aD)
-end
+if#aC==0 then
+status("Cosmetic catalog is empty - are you in the lobby?",aO)
+elseif not af.hooked then
+status("No hookmetamethod in this executor - auto roll would burn gems, it is disabled.",aO)
+
 
 end
 
-return aX end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
+end
+
+return aY end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.n()
 local ab=a.b()
 local ac=a.R()
 local ad=a.r()
-local ae=a.s()
-local af=a.l()
+local ae=a.s()a.l()
 
 
 
 
 
 
-local ag={}
+
+local af={}
 
 local function restoreNames()
-for ah,ai in pairs(ag)do
+for ag,ah in pairs(af)do
 pcall(function()
-if not ah.Parent then return end
-if type(ai)=="boolean"then ah.Enabled=ai else ah.Text=ai end
+if not ag.Parent then return end
+if type(ah)=="boolean"then ag.Enabled=ah else ag.Text=ah end
 end)
 end
-table.clear(ag)
+table.clear(af)
 end
 
 local function hideNames()
-local ah,ai=LocalPlayer.Name,LocalPlayer.DisplayName
+local ag,ah=LocalPlayer.Name,LocalPlayer.DisplayName
 
-local aj=LocalPlayer.Character
+local ai=LocalPlayer.Character
+if ai then
+for aj,ak in ipairs(ai:GetDescendants())do
+if ak:IsA"BillboardGui"and ak.Enabled then
+if af[ak]==nil then af[ak]=ak.Enabled end
+ak.Enabled=false
+end
+end
+end
+
+local aj=LocalPlayer:FindFirstChild"PlayerGui"
 if aj then
 for ak,al in ipairs(aj:GetDescendants())do
-if al:IsA"BillboardGui"and al.Enabled then
-if ag[al]==nil then ag[al]=al.Enabled end
-al.Enabled=false
-end
-end
-end
-
-local ak=LocalPlayer:FindFirstChild"PlayerGui"
-if ak then
-for al,am in ipairs(ak:GetDescendants())do
-if am:IsA"TextLabel"or am:IsA"TextButton"then
-local an=am.Text
-if an==ah or an==ai then
-if ag[am]==nil then ag[am]=an end
-am.Text="Hidden"
+if al:IsA"TextLabel"or al:IsA"TextButton"then
+local am=al.Text
+if am==ag or am==ah then
+if af[al]==nil then af[al]=am end
+al.Text="Hidden"
 end
 end
 end
 end
 end
 
-return function(ah)
-local ai=ah.Stats
-local aj=ah.Hook
+return function(ag)
+local ah=ag.Stats
+local ai=ag.Hook
 
 
-local ak=ah.Util
+local aj=ag.Util
 
-ak:Toggle{
+aj:Toggle{
 Name="Noclip",
 Desc="walk through walls; collisions come back when you turn it off",
 Default=false,Flag="NoclipOn",
-Callback=function(al)
-S.noclip=al
-if not al then ae.RestoreNoclip()end
+Callback=function(ak)
+S.noclip=ak
+if not ak then ae.RestoreNoclip()end
 end,
 }
 
 
-local al=ah.Perf
+local ak=ag.Perf
 
-al:Toggle{
+ak:Toggle{
 Name="Performance Mode",
 Desc="strips materials, textures and particles — rejoin to restore",
 Default=false,Flag="PerformanceMode",
-Callback=function(am)
-S.perfMode=am
+Callback=function(al)
+S.perfMode=al
 
 
-if am then task.spawn(ab.Boost)end
+if al then task.spawn(ab.Boost)end
 end,
 }
 
-al:Toggle{
+ak:Toggle{
 Name="Ultra Performance Mode",
 Desc="everything above plus 3D rendering off and a black screen",
 Default=false,Flag="UltraPerformanceMode",
-Callback=function(am)
-S.ultraPerf=am
-if am then
+Callback=function(al)
+S.ultraPerf=al
+if al then
 task.spawn(function()
 ab.Set3D(false)
 ab.BuildScreen()
@@ -28255,15 +27409,15 @@ ab.Watch()
 
 
 
-local am=ai:Label"Loading..."
+local al=ah:Label"Loading..."
 
-ai:Toggle{
+ah:Toggle{
 Name="Hide Name",
 Desc="blanks your own nameplate and every label in the interface that shows your nick",
 Default=false,Flag="HideName",
-Callback=function(an)
-S.hideName=an
-if an then hideNames()else restoreNames()end
+Callback=function(am)
+S.hideName=am
+if am then hideNames()else restoreNames()end
 end,
 }
 
@@ -28275,9 +27429,9 @@ task.wait(2)
 if S.hideName then pcall(hideNames)end
 
 pcall(function()
-local an=ac.EquippedWeapon()
-local ao=aa.Items()
-am:Set(table.concat({
+local am=ac.EquippedWeapon()
+local an=aa.Items()
+al:Set(table.concat({
 ("Level <b>%d</b>   ·   XP %s/%s"):format(aa.Level(),
 tostring(aa.Val("XP",0)),tostring(aa.Val("XPNeeded",0))),
 ("Gold %s   ·   Gems %s   ·   Points %d"):format(
@@ -28286,7 +27440,7 @@ tostring(aa.Gold()),tostring(aa.Gems()),aa.SkillPoints()),
 tostring(aa.Val("physicalPower",0)),tostring(aa.Val("spellPower",0)),
 tostring(aa.Val("stamina",0))),
 ("Weapon %s   ·   %d item%s in the bag"):format(
-an and an.name or"—",#ao,#ao==1 and""or"s"),
+am and am.name or"—",#an,#an==1 and""or"s"),
 },"\n"))
 end)
 end
@@ -28294,60 +27448,60 @@ end)
 
 
 
-aj:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
+ai:Toggle{Name="Enable Webhook",Default=false,Flag="WebhookOn",
 Desc="nothing is posted while this is off",
-Callback=function(an)S.webhookOn=an end}
+Callback=function(am)S.webhookOn=am end}
 
-aj:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
-Flag="WebhookURL",Callback=function(an)S.webhookUrl=tostring(an or"")end}
+ai:Input{Name="Webhook URL",Default="",Placeholder="https://discord.com/api/webhooks/...",
+Flag="WebhookURL",Callback=function(am)S.webhookUrl=tostring(am or"")end}
 
-aj:Dropdown{
+ai:Dropdown{
 Name="Ping On Rarity",
 Desc="ping only when the run dropped one of these; leave empty to ping every report",
 Options=(function()
-local an={}
-for ao,ap in ipairs(aa.RARITIES)do
-an[#an+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[ap]or"#FFFFFF",ap)
+local am={}
+for an,ao in ipairs(aa.RARITIES)do
+am[#am+1]=('<font color="%s">%s</font>'):format(aa.RARITY_COLOR[ao]or"#FFFFFF",ao)
 end
-return an
+return am
 end)(),
 Multi=true,
 Flag="WebhookPingRarities",
-Callback=function(an)
-local ao={}
-for ap,aq in pairs(an or{})do
-if aq then
-local as=tostring(ap):gsub("<[^>]->","")
-ao[(as:gsub("^%s+",""):gsub("%s+$",""))]=true
+Callback=function(am)
+local an={}
+for ao,ap in pairs(am or{})do
+if ap then
+local aq=tostring(ao):gsub("<[^>]->","")
+an[(aq:gsub("^%s+",""):gsub("%s+$",""))]=true
 end
 end
-S.pingRarities=ao
+S.pingRarities=an
 end,
 }
 
-aj:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
+ai:Input{Name="Discord User ID",Default="",Placeholder="ping you on every post",
 Numeric=true,Flag="WebhookUserId",
-Callback=function(an)S.webhookUserId=tostring(an or"")end}
+Callback=function(am)S.webhookUserId=tostring(am or"")end}
 
-aj:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
-Callback=function(an)S.webhookEveryone=an end}
+ai:Toggle{Name="Mention @everyone",Default=false,Flag="WebhookEveryone",
+Callback=function(am)S.webhookEveryone=am end}
 
 
 
-aj:Button{Name="Send Test Post",Text="Send",Callback=function()
+ai:Button{Name="Send Test Post",Text="Send",Callback=function()
 task.spawn(function()
 if tostring(S.webhookUrl or"")==""then return Notify"Paste a webhook URL first"end
-local an,ao=ad.Test()
-if ao then
-Notify("Webhook failed: "..tostring(ao))
+local am,an=ad.Test()
+if an then
+Notify("Webhook failed: "..tostring(an))
 else
-Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(an)..")")
-or("Webhook OK (HTTP "..tostring(an)..") — posting is still off"))
+Notify(S.webhookOn and("Webhook OK (HTTP "..tostring(am)..")")
+or("Webhook OK (HTTP "..tostring(am)..") — posting is still off"))
 end
 end)
 end}
 
-aj:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
+ai:SubLabel"Send Test Post works even while Enable Webhook is off, so you can check the URL first."
 
 
 
@@ -28366,20 +27520,20 @@ aj:SubLabel"Send Test Post works even while Enable Webhook is off, so you can ch
 
 
 if IN_LOBBY then
-local an=ah.Cosmetic
+local am=ag.Cosmetic
 
-an:SubLabel"Opens a separate window: pick any number of cosmetics, the hub spins the crate that covers them best. A wrong roll is refused, so it costs no gems."
+am:SubLabel"Opens a separate window: pick any number of cosmetics, the hub spins the crate that covers them best. A wrong roll is refused, so it costs no gems."
 
-an:Button{
+am:Button{
 Name="Cosmetic Getter",
 Text="Open",
-Callback=function()
-local ao,ap=pcall(function()a.U()
+Callback=function()local
+an=pcall(function()a.U()
 .Open()
 end)
-if not ao then
+if not an then
 Notify"Cosmetic Getter failed to open"
-af.Log("cosmetic: окно не открылось —",tostring(ap))
+
 end
 end,
 }
@@ -29088,15 +28242,15 @@ if aJ and aJ.Parent then return end
 
 
 
-local aK=select(1,openMenu())
-local aL=aK and(aK:FindFirstChild"mainBackground"
-or aK:FindFirstChild"Frame")
-if not aL then return end
+local aM=select(1,openMenu())
+local aN=aM and(aM:FindFirstChild"mainBackground"
+or aM:FindFirstChild"Frame")
+if not aN then return end
 
 
 
-local aM=aL:FindFirstChild"ApelPredictorSettings"
-if aM then aM:Destroy()end
+local aO=aN:FindFirstChild"ApelPredictorSettings"
+if aO then aO:Destroy()end
 
 aJ=Instance.new"Frame"
 aJ.Name="ApelPredictorSettings"
@@ -29106,133 +28260,133 @@ aJ.BorderSizePixel=0
 aJ.AnchorPoint=Vector2.new(0.5,1)
 aJ.Position=UDim2.new(0.5,0,0,-6)
 aJ.Size=UDim2.new(0.62,0,0,30)
-aJ.Parent=aL
+aJ.Parent=aN
 
-local aN=Instance.new"UICorner"
-aN.CornerRadius=UDim.new(0,6)
-aN.Parent=aJ
-local aO=Instance.new"UIStroke"
-aO.Color=af
-aO.Parent=aJ
-
-local aP=Instance.new"TextLabel"
-aP.BackgroundTransparency=1
-aP.FontFace=ai
-aP.TextSize=14
-aP.TextColor3=ag
-aP.TextXAlignment=Enum.TextXAlignment.Left
-aP.Position=UDim2.fromOffset(10,0)
-aP.Size=UDim2.new(0.4,0,1,0)
-aP.Text="Potential Predictor"
+local aP=Instance.new"UICorner"
+aP.CornerRadius=UDim.new(0,6)
 aP.Parent=aJ
-
-local aQ=Instance.new"TextButton"
-aQ.BackgroundColor3=af
-aQ.BorderSizePixel=0
-aQ.FontFace=ai
-aQ.TextSize=13
-aQ.TextColor3=Color3.new(1,1,1)
-aQ.AnchorPoint=Vector2.new(1,0.5)
-aQ.Position=UDim2.new(1,-10,0.5,0)
-aQ.Size=UDim2.fromOffset(46,20)
-aQ.Text="ON"
+local aQ=Instance.new"UIStroke"
+aQ.Color=af
 aQ.Parent=aJ
-local aR=Instance.new"UICorner"
-aR.CornerRadius=UDim.new(0,4)
-aR.Parent=aQ
 
-local aS=Instance.new"TextBox"
+local aR=Instance.new"TextLabel"
+aR.BackgroundTransparency=1
+aR.FontFace=ai
+aR.TextSize=14
+aR.TextColor3=ag
+aR.TextXAlignment=Enum.TextXAlignment.Left
+aR.Position=UDim2.fromOffset(10,0)
+aR.Size=UDim2.new(0.4,0,1,0)
+aR.Text="Potential Predictor"
+aR.Parent=aJ
+
+local aS=Instance.new"TextButton"
 aS.BackgroundColor3=af
 aS.BorderSizePixel=0
 aS.FontFace=ai
 aS.TextSize=13
 aS.TextColor3=Color3.new(1,1,1)
-aS.PlaceholderText="max"
-aS.Text=""
-aS.ClearTextOnFocus=false
 aS.AnchorPoint=Vector2.new(1,0.5)
-aS.Position=UDim2.new(1,-62,0.5,0)
-aS.Size=UDim2.fromOffset(64,20)
+aS.Position=UDim2.new(1,-10,0.5,0)
+aS.Size=UDim2.fromOffset(46,20)
+aS.Text="ON"
 aS.Parent=aJ
 local aT=Instance.new"UICorner"
 aT.CornerRadius=UDim.new(0,4)
 aT.Parent=aS
 
-local aU=Instance.new"TextLabel"
-aU.BackgroundTransparency=1
+local aU=Instance.new"TextBox"
+aU.BackgroundColor3=af
+aU.BorderSizePixel=0
 aU.FontFace=ai
-aU.TextSize=12
-aU.TextColor3=ah
-aU.TextXAlignment=Enum.TextXAlignment.Right
+aU.TextSize=13
+aU.TextColor3=Color3.new(1,1,1)
+aU.PlaceholderText="max"
+aU.Text=""
+aU.ClearTextOnFocus=false
 aU.AnchorPoint=Vector2.new(1,0.5)
-aU.Position=UDim2.new(1,-130,0.5,0)
-aU.Size=UDim2.fromOffset(120,20)
-aU.Text="upgrade to:"
+aU.Position=UDim2.new(1,-62,0.5,0)
+aU.Size=UDim2.fromOffset(64,20)
 aU.Parent=aJ
+local aV=Instance.new"UICorner"
+aV.CornerRadius=UDim.new(0,4)
+aV.Parent=aU
 
-regConn(aQ.MouseButton1Click:Connect(function()
+local aW=Instance.new"TextLabel"
+aW.BackgroundTransparency=1
+aW.FontFace=ai
+aW.TextSize=12
+aW.TextColor3=ah
+aW.TextXAlignment=Enum.TextXAlignment.Right
+aW.AnchorPoint=Vector2.new(1,0.5)
+aW.Position=UDim2.new(1,-130,0.5,0)
+aW.Size=UDim2.fromOffset(120,20)
+aW.Text="upgrade to:"
+aW.Parent=aJ
+
+regConn(aS.MouseButton1Click:Connect(function()
 aH=not aH
-aQ.Text=aH and"ON"or"OFF"
-aQ.TextColor3=aH and Color3.new(1,1,1)or ah
+aS.Text=aH and"ON"or"OFF"
+aS.TextColor3=aH and Color3.new(1,1,1)or ah
 if not aH then ao.Visible=false end
 end))
 
-regConn(aS.FocusLost:Connect(function()
-aI=tostring(aS.Text):gsub("[^%d]","")
-aS.Text=aI
+regConn(aU.FocusLost:Connect(function()
+aI=tostring(aU.Text):gsub("[^%d]","")
+aU.Text=aI
 end))
 end
 
 
 
-local aK
+local aM
 
 local function refresh()
 buildSettings()
 if not aH then ao.Visible=false return end
 
-local aL=readTooltip()
-if not aL then ao.Visible=false aK=nil return end
+local aN=readTooltip()
+if not aN then ao.Visible=false aM=nil return end
 
 
-local aM=tonumber(aI)
-if not aM or aM>aL.max then aM=aL.max end
-if aM<aL.done then aM=aL.done end
+local aO=tonumber(aI)
+if not aO or aO>aN.max then aO=aN.max end
+if aO<aN.done then aO=aN.done end
 
-local aN=("%s|%d|%d|%s|%s|%s"):format(aL.name,aL.done,aM,
-tostring(aL.phys),tostring(aL.spell),tostring(aL.health))
-if aN~=aK then
-aK=aN
+local aP=("%s|%d|%d|%s|%s|%s"):format(aN.name,aN.done,aO,
+tostring(aN.phys),tostring(aN.spell),tostring(aN.health))
+if aP~=aM then
+aM=aP
 
 aA.left.Text="Upgrades"
-aA.right.Text=("%d  →  %d"):format(aL.done,aM)
+aA.right.Text=("%d  →  %d"):format(aN.done,aO)
 
-local function fill(aO,aP,aQ)
-if not aQ then aO.holder.Visible=false return end
-aO.holder.Visible=true
-local aR=aa.At(aQ,aL.done,aM)
-aO.left.Text=aP
-aO.right.Text=("%s  →  %s"):format(commas(aQ),commas(aR))
+local function fill(aQ,aR,aS)
+if not aS then aQ.holder.Visible=false return end
+aQ.holder.Visible=true
+local aT=aa.At(aS,aN.done,aO)
+aQ.left.Text=aR
+aQ.right.Text=("%s  →  %s"):format(commas(aS),commas(aT))
 end
 
-fill(aB,"Physical",aL.phys)
-fill(aC,"Spell",aL.spell)
-fill(aD,"Health",aL.health)
+fill(aB,"Physical",aN.phys)
+fill(aC,"Spell",aN.spell)
+fill(aD,"Health",aN.health)
 
-aG.Text=commas(upgradeCost(aL.done,aM))
+aG.Text=commas(upgradeCost(aN.done,aO))
 
 
-local aO=2
-if aL.phys then aO=aO+1 end
-if aL.spell then aO=aO+1 end
-if aL.health then aO=aO+1 end
-ao.Size=UDim2.fromOffset(250,42+aO*22)
+local aQ=2
+if aN.phys then aQ=aQ+1 end
+if aN.spell then aQ=aQ+1 end
+if aN.health then aQ=aQ+1 end
+ao.Size=UDim2.fromOffset(250,42+aQ*22)
 end
 
 
-local aO=aL.card.AbsolutePosition
-local aP=aL.card.AbsoluteSize
-ao.Position=UDim2.fromOffset(aO.X+aP.X+8,aO.Y)
+local aQ=aN.card.AbsolutePosition
+local aR=aN.card.AbsoluteSize
+ao.Position=UDim2.fromOffset(aQ.X+aR.X+8,aQ.Y)
 ao.Visible=true
 end
 
@@ -29607,23 +28761,23 @@ aG.Parent=aF
 
 local aH={}
 for aI,aJ in ipairs(aj)do
-local aK=Instance.new"TextButton"
-aK.BackgroundColor3=ad
-aK.BorderSizePixel=0
-aK.AutoButtonColor=false
-aK.FontFace=ah
-aK.TextSize=13
-aK.TextColor3=ag
-aK.Text=aJ
-aK.LayoutOrder=aI
-aK.Size=UDim2.fromOffset(58,20)
-aK.Parent=aF
-local aL=Instance.new"UICorner"
-aL.CornerRadius=UDim.new(0,4)
-aL.Parent=aK
-aH[aJ]=aK
+local aM=Instance.new"TextButton"
+aM.BackgroundColor3=ad
+aM.BorderSizePixel=0
+aM.AutoButtonColor=false
+aM.FontFace=ah
+aM.TextSize=13
+aM.TextColor3=ag
+aM.Text=aJ
+aM.LayoutOrder=aI
+aM.Size=UDim2.fromOffset(58,20)
+aM.Parent=aF
+local aN=Instance.new"UICorner"
+aN.CornerRadius=UDim.new(0,4)
+aN.Parent=aM
+aH[aJ]=aM
 
-regConn(aK.MouseButton1Click:Connect(function()
+regConn(aM.MouseButton1Click:Connect(function()
 an=aJ
 saveChoice(an,ao)
 paint()
@@ -29704,18 +28858,18 @@ end end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa
 
 
 
-local aa=a.m()
-local ab=a.l()
-
-local ac=game:GetService"TeleportService"
-
-local ad={}
+local aa=a.m()a.l()
 
 
+local ab=game:GetService"TeleportService"
 
-ad.KEYS={"rare","epic","legendary"}
+local ac={}
 
-ad.CASE_LABEL={
+
+
+ac.KEYS={"rare","epic","legendary"}
+
+ac.CASE_LABEL={
 rare="Rare Case",
 epic="Epic Case",
 legendary="Legendary Case",
@@ -29723,71 +28877,45 @@ legendary="Legendary Case",
 
 
 
-local ae={
+local ad={
 armors="armor",
 weapons="weapon",
 enchants="enchant",
 titles="title",
 }
 
-local af
-local ag={}
+local ae
+local af={}
 
 
 
-function ad.Configs(ah)
-if af and not ah then return af end
+function ac.Configs(ag)
+if ae and not ag then return ae end
 
-local ai,aj={},{}
-for ak,al in ipairs(ad.KEYS)do
-local am,an=aa.Invoke("getCaseConfig",al)
-if am and type(an)=="table"and type(an.items)=="table"then
-ai[al]=an
+local ah,ai={},{}
+for aj,ak in ipairs(ac.KEYS)do
+local al,am=aa.Invoke("getCaseConfig",ak)
+if al and type(am)=="table"and type(am.items)=="table"then
+ah[ak]=am
 else
-aj[#aj+1]=al
+ai[#ai+1]=ak
 end
 end
 
-if#aj>0 then
-ab.Log("cases: конфиг не пришёл по кейсам",table.concat(aj,", "))
-end
+if#ai>0 then
 
-
-
-if not next(ai)then return nil end
-
-af=ai
-return af
-end
-
-function ad.Invalidate()
-af=nil
 end
 
 
 
+if not next(ah)then return nil end
 
-
-
-
-function ad.Key(ah,ai)
-return tostring(ah).."/"..tostring(ai)
+ae=ah
+return ae
 end
 
-
-function ad.Owned()
-local ah={}
-local ai,aj=aa.Invoke"getPlayerCosmetics"
-if not ai or type(aj)~="table"then
-ab.Log"cases: getPlayerCosmetics не ответил"
-return ah,false
-end
-for ak,al in pairs(aj)do
-if type(al)=="table"then
-for am,an in ipairs(al)do ah[ad.Key(ak,an)]=true end
-end
-end
-return ah,true
+function ac.Invalidate()
+ae=nil
 end
 
 
@@ -29796,81 +28924,107 @@ end
 
 
 
+function ac.Key(ag,ah)
+return tostring(ag).."/"..tostring(ah)
+end
 
 
+function ac.Owned()
+local ag={}
+local ah,ai=aa.Invoke"getPlayerCosmetics"
+if not ah or type(ai)~="table"then
 
-function ad.BestFor(ah)
-local ai=ad.Configs()
-if not ai then return nil end
-
-local aj={}
-for ak,al in ipairs(ah)do aj[ad.Key(al.type,al.name)]=true end
-
-local ak
-for al,am in ipairs(ad.KEYS)do
-local an=ai[am]
-local ao,ap=0,0
-for aq,as in ipairs((an and an.items)or{})do
-if aj[ad.Key(as.type,as.name)]then
-ao=ao+(tonumber(as.percent)or 0)
-ap=ap+1
+return ag,false
+end
+for aj,ak in pairs(ai)do
+if type(ak)=="table"then
+for al,am in ipairs(ak)do ag[ac.Key(aj,am)]=true end
 end
 end
-if ap>0 then
-local aq=tonumber(an.price)or 0
-if not ak or ao>ak.percent
-or(ao==ak.percent and aq<ak.price)then
-ak={key=am,percent=ao,price=aq,hits=ap}
-end
-end
-end
-return ak
+return ag,true
 end
 
 
 
-function ad.Pool()
-local ah=ad.Configs()
-ag={}
-if not ah then return{}end
+
+
+
+
+
+
+
+function ac.BestFor(ag)
+local ah=ac.Configs()
+if not ah then return nil end
 
 local ai={}
-for aj,ak in ipairs(ad.KEYS)do
-for al,am in ipairs((ah[ak]and ah[ak].items)or{})do
-local an=ad.Key(am.type,am.name)
-if not ai[an]then
-ai[an]=true
-local ao=("%s · %s %s"):format(am.name,tostring(am.rarity),
-ae[am.type]or tostring(am.type))
-ag[ao]={name=am.name,type=am.type,rarity=am.rarity}
-end
-end
-end
+for aj,ak in ipairs(ag)do ai[ac.Key(ak.type,ak.name)]=true end
 
-local aj={}
-for ak in pairs(ag)do aj[#aj+1]=ak end
-table.sort(aj)
+local aj
+for ak,al in ipairs(ac.KEYS)do
+local am=ah[al]
+local an,ao=0,0
+for ap,aq in ipairs((am and am.items)or{})do
+if ai[ac.Key(aq.type,aq.name)]then
+an=an+(tonumber(aq.percent)or 0)
+ao=ao+1
+end
+end
+if ao>0 then
+local ap=tonumber(am.price)or 0
+if not aj or an>aj.percent
+or(an==aj.percent and ap<aj.price)then
+aj={key=al,percent=an,price=ap,hits=ao}
+end
+end
+end
 return aj
 end
 
 
 
-function ad.Item(ah)
-if not ah or ah==""then return nil end
-local ai=ag[ah]
-if ai then return ai end
+function ac.Pool()
+local ag=ac.Configs()
+af={}
+if not ag then return{}end
 
+local ah={}
+for ai,aj in ipairs(ac.KEYS)do
+for ak,al in ipairs((ag[aj]and ag[aj].items)or{})do
+local am=ac.Key(al.type,al.name)
+if not ah[am]then
+ah[am]=true
+local an=("%s · %s %s"):format(al.name,tostring(al.rarity),
+ad[al.type]or tostring(al.type))
+af[an]={name=al.name,type=al.type,rarity=al.rarity}
+end
+end
+end
 
-
-ad.Pool()
-return ag[ah]
+local ai={}
+for aj in pairs(af)do ai[#ai+1]=aj end
+table.sort(ai)
+return ai
 end
 
 
 
-function ad.Ready()
-local ah=LocalPlayer:FindFirstChild"leaderstats"
-if not ah or not ah:FindFirstChild"Gems"then return false end
+function ac.Item(ag)
+if not ag or ag==""then return nil end
+local ah=af[ag]
+if ah then return ah end
+
+
+
+ac.Pool()
+return af[ag]
+end
+
+
+
+function ac.Ready()
+local ag=LocalPlayer:FindFirstChild"leaderstats"
+if not ag or not ag:FindFirstChild"Gems"then return false end
 return aa.Get"purchaseCase"~=nil and aa.Get"casePurchaseResult"~=nil
 end
 
@@ -29879,48 +29033,48 @@ end
 
 
 
-function ad.Buy(ah,ai)
-local aj=aa.Get"purchaseCase"
-local ak=aa.Get"casePurchaseResult"
-if not aj or not ak then return nil,"нет ремоутов покупки"end
+function ac.Buy(ag,ah)
+local ai=aa.Get"purchaseCase"
+local aj=aa.Get"casePurchaseResult"
+if not ai or not aj then return nil,"s77"end
 
-local al
-local am=ak.OnClientEvent:Connect(function(am)
-if al==nil then al=am or false end
+local ak
+local al=aj.OnClientEvent:Connect(function(al)
+if ak==nil then ak=al or false end
 end)
 
-local an=pcall(function()aj:FireServer(ah)end)
-if not an then
-am:Disconnect()
-return nil,"purchaseCase не выстрелил"
+local am=pcall(function()ai:FireServer(ag)end)
+if not am then
+al:Disconnect()
+return nil,"s78"
 end
 
-local ao=os.clock()+(ai or 15)
-while al==nil and os.clock()<ao and not _apelStopped do
+local an=os.clock()+(ah or 15)
+while ak==nil and os.clock()<an and not _apelStopped do
 task.wait(0.05)
 end
-am:Disconnect()
+al:Disconnect()
 
-if al==nil then return nil,"сервер не ответил"end
-if type(al)~="table"then return nil,"ответ не таблица"end
-return al
+if ak==nil then return nil,"s79"end
+if type(ak)~="table"then return nil,"s80"end
+return ak
 end
 
 
 
-function ad.Award(ah)
-return aa.Fire("awardCaseCosmetic",ah.cosmetic,ah.cosmeticType,ah.transactionId)
+function ac.Award(ag)
+return aa.Fire("awardCaseCosmetic",ag.cosmetic,ag.cosmeticType,ag.transactionId)
 end
 
 
 
-function ad.Rejoin()
+function ac.Rejoin()
 return(pcall(function()
-ac:Teleport(game.PlaceId,LocalPlayer)
+ab:Teleport(game.PlaceId,LocalPlayer)
 end))
 end
 
-return ad end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end end
+return ac end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end end
 
 
 
@@ -30001,7 +29155,7 @@ af()
 
 
 
-local aK=aq(aJ)
+local aM=aq(aJ)
 as(aJ)
 av(aJ)
 aw(aJ)
@@ -30045,26 +29199,26 @@ ao.Start()
 ap.Start()
 
 ak.Watch(
-function(aL)
-if S.webhookOn then pcall(am.Run,aL)end
+function(aN)
+if S.webhookOn then pcall(am.Run,aN)end
 end,
 function()
-if aK then pcall(aK)end
+if aM then pcall(aM)end
 end
 )
 end
 
-local aL=Window:CreateMinimizer{
+local aN=Window:CreateMinimizer{
 Size=UDim2.fromOffset(50,50),
 Position=UDim2.new(1,-10,0.5,0),
 Icon="rbxassetid://138310609771261",
 }
 
-local aM=ah(Window,aJ,aL)
-aA(Window,aJ,aM)
+local aO=ah(Window,aJ,aN)
+aA(Window,aJ,aO)
 aB(Window,aJ)
 aC(Window,aJ,aa)
-aD(Window,aJ,aM,aa)
+aD(Window,aJ,aO,aa)
 
 
 ai(Window)
@@ -30073,7 +29227,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="11.09 20:08:59",
+Build="11.09 20:08:58",
 S=S,
 Window=Window,
 Priority=a.j(),
