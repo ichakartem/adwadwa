@@ -3129,30 +3129,87 @@ local d={pirate=
 }
 
 
-local e={}
 
-local function pathTo(f)
-local g=workspace:FindFirstChild"dungeon"
-for h,i in ipairs(f)do
-if not g then return nil end
-g=g:FindFirstChild(i)
+
+
+
+
+
+
+
+
+
+
+
+
+local e={ghastly=
+{"Anchor2_Circle"},
+}
+
+
+local f={}
+
+local function pathTo(g)
+local h=workspace:FindFirstChild"dungeon"
+for i,j in ipairs(g)do
+if not h then return nil end
+h=h:FindFirstChild(j)
 end
-return g
+return h
+end
+
+
+
+
+local g
+
+local function openDecor(h)
+local i
+for j,k in pairs(e)do
+if h:find(j,1,true)then i=k break end
+end
+if not i then return end
+
+
+for j in pairs(f)do
+if j.Parent and j.CanCollide then j.CanCollide=false end
+end
+if g==h then return end
+g=h
+
+local j=0
+for k,l in ipairs(workspace:GetDescendants())do
+if l:IsA"BasePart"and l.CanCollide then
+for m,n in ipairs(i)do
+if l.Name:find(n,1,true)then
+f[l]=true
+l.CanCollide=false
+j=j+1
+break
+end
+end
+end
+end
+if j>0 then
+
+end
 end
 
 local function openOnce()
-local f=tostring(b.Name()or""):lower()
-local g
-for h,i in pairs(d)do
-if f:find(h,1,true)then g=i break end
-end
-if not g then return end
+local h=tostring(b.Name()or""):lower()
+openDecor(h)
 
-for h,i in ipairs(g)do
-local j=pathTo(i)
-if j and j:IsA"BasePart"and j.CanCollide then
-e[j]=true
-j.CanCollide=false
+local i
+for j,k in pairs(d)do
+if h:find(j,1,true)then i=k break end
+end
+if not i then return end
+
+for j,k in ipairs(i)do
+local l=pathTo(k)
+if l and l:IsA"BasePart"and l.CanCollide then
+f[l]=true
+l.CanCollide=false
 
 end
 end
@@ -3174,10 +3231,11 @@ end)
 end
 
 function c.Restore()
-for f in pairs(e)do
-pcall(function()if f.Parent then f.CanCollide=true end end)
+for h in pairs(f)do
+pcall(function()if h.Parent then h.CanCollide=true end end)
 end
-table.clear(e)
+table.clear(f)
+g=nil
 end
 
 return c end function a.u():typeof(__modImpl())local b=a.cache.u if not b then b={c=__modImpl()}a.cache.u=b end return b.c end end do local function __modImpl()
@@ -10099,7 +10157,7 @@ if typeof(aj)=="CFrame"then
 
 
 
-mark(aj,Vector3.new(15,15,15),1.1,"s172")
+mark(aj,Vector3.new(15,15,15),1.1,"s175")
 end
 
 elseif ah=="Second Boss Rock Fall"then
@@ -10111,7 +10169,7 @@ end
 elseif ah=="First Boss Sky Shot"then
 
 if typeof(ai)=="Vector3"then
-mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"s173")
+mark(CFrame.new(ai),Vector3.new(25,60,25),3.0,"s176")
 end
 end
 end))
@@ -10153,13 +10211,13 @@ if ag=="CFrame"or ag=="Vector3"then
 local ah=(ag=="CFrame")and ad.Position or ad
 local ai=af and(ah-af).Magnitude or nil
 return("%s %.0f,%.0f,%.0f%s"):format(ag,ah.X,ah.Y,ah.Z,
-ai and("s157"):format(ai)or"")
+ai and("s160"):format(ai)or"")
 end
 
 if ag=="Instance"then
 local ah=""
 if ad:IsA"BasePart"then
-ah=("s158"):format(
+ah=("s161"):format(
 ad.Position.X,ad.Position.Y,ad.Position.Z,tostring(ad.Size))
 elseif ad:IsA"Model"then
 local ai,aj=pcall(function()return ad:GetPivot().Position end)
@@ -10228,7 +10286,7 @@ local function foresee(ae,af)
 if typeof(af)~="CFrame"then return end
 local ag=ad[tostring(ae):lower()]
 if not ag then return end
-ab.Foresee(af,ag.size,ag.life,"s159"..tostring(ae),0,0,false)
+ab.Foresee(af,ag.size,ag.life,"s162"..tostring(ae),0,0,false)
 
 end
 
@@ -10287,7 +10345,7 @@ as=as.Unit
 local av=math.min(af.Z,au+20)
 local aw=Vector3.new(af.X,af.Y,av)
 local ax=CFrame.new(ar+as*(av*0.5),ar+as*100)
-ab.Foresee(ax,aw,ag,"s160",0,0,false)
+ab.Foresee(ax,aw,ag,"s163",0,0,false)
 end))
 end
 
@@ -10852,7 +10910,7 @@ end
 
 
 function ad.SendRequest(af)
-if type(af)~="string"or af==""then return false,nil,"s161"end
+if type(af)~="string"or af==""then return false,nil,"s164"end
 return aa.InvokeMulti("sendJoinRequest",(af:gsub("^%s+",""):gsub("%s+$","")))
 end
 
@@ -17020,7 +17078,7 @@ function aa.Ready()return an end
 function aa.Building()return ao end
 
 function aa.Stats()
-return("s170"):format(#ag,#ah,al)
+return("s173"):format(#ag,#ah,al)
 end
 
 
@@ -17177,7 +17235,7 @@ end)
 ao=false
 if not aD then
 an=false
-if type(dbg)=="function"then dbg("s171"..tostring(aE))end
+if type(dbg)=="function"then dbg("s174"..tostring(aE))end
 end
 end)
 end
@@ -17378,12 +17436,46 @@ return aa end function a.L():typeof(__modImpl())local aa=a.cache.L if not aa the
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local aa=a.l()
 
 local ab={}
 
 local ac=4
-local ad=3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local ad=5
 
 
 
@@ -17440,59 +17532,6 @@ local ai=20
 
 
 local aj=12
-local ak=3
-
-
-
-
-
-
-local al=90
-
-
-
-
-
-
-
-
-
-
-local am=8000
-
-
-
-
-
-
-local an=700
-local ao=0.002
-
-
-
-
-
-
-local ap=40
-
-local aq=120
-local ar=3
-
-
-
-
-
-
-
-local as=0.5
-
-
-
-
-local au=5
-local av=6
-
-local aw={}
 
 
 
@@ -17504,58 +17543,253 @@ local aw={}
 
 
 
-local ax,ay={},{}
-local az=0
-local aA,aB=false,false
-local aC,aD=0,0
-local aE=0
-local aF=0
-local aG,aH,aI=1
-local aJ=0
-local aM
-local aN,aO=0
-
-local aP
 
 
 
 
 
-function ab.SetFloorFilter(aQ)
-LPH_ATTRIBUTES(VM(NONE))aP=aQ end
 
-local aQ={
+local ak=40
+local al=3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local am=20
+
+local an=90
+
+
+
+
+
+
+
+
+
+
+local ao=8000
+
+
+
+
+
+
+local ap=700
+local aq=0.002
+
+
+
+
+
+
+local ar=40
+
+local as=120
+local au=3
+
+
+
+
+
+
+
+local av=0.5
+
+
+
+
+local aw=5
+
+
+
+
+
+
+local ax=2.5
+local ay=0.3
+local az=5
+local aA=2
+local aB=40
+local aC=1.2
+
+
+
+
+
+
+
+
+
+
+
+local aD=4
+local aE=6
+
+local aF={}
+
+
+
+
+
+
+
+
+
+
+
+local aG,aH={},{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local aI,aJ={},{}
+local aM=0
+
+local aN=0
+
+
+
+local aO=0
+local aP,aQ=false,false
+local aR,aS=0,0
+local aT=0
+local aU=0
+local aV,aW,aX=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local aY,aZ=0
+local a_,a0=0.5,2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local a1=0.3
+local a2=12
+local a3=0
+local a4=0
+local a5
+local a6,a7=0
+
+local a8
+
+
+
+
+
+function ab.SetFloorFilter(a9)
+LPH_ATTRIBUTES(VM(NONE))a8=a9 end
+
+local a9={
 "ApelArenaFloor","ApelArenaWalls","ApelCastRing",
-"ApelEditFloor","ApelEditWalls","ApelNavDots","ApelStepProbe",
+"ApelEditFloor","ApelEditWalls","ApelNavDots","ApelStepProbe","ApelNavProbe",
 }
 
 
-local aR={}
-local aS={}
+local b={}
+local ba={}
 
-local aT=RaycastParams.new()
-aT.FilterType=Enum.RaycastFilterType.Exclude
-aT.IgnoreWater=true
+local bb=RaycastParams.new()
+bb.FilterType=Enum.RaycastFilterType.Exclude
+bb.IgnoreWater=true
+
+
+
+
+local bc=OverlapParams.new()
+bc.FilterType=Enum.RaycastFilterType.Exclude
+pcall(function()bc.RespectCanCollide=true end)
 
 local function refreshFilter()
 LPH_ATTRIBUTES(VM(NONE))
-local aU={}
-local aV=LocalPlayer and LocalPlayer.Character
-if aV then aU[#aU+1]=aV end
-for aW,aX in ipairs(aQ)do
-local aY=workspace:FindFirstChild(aX)
-if aY then aU[#aU+1]=aY end
+local bd={}
+local be=LocalPlayer and LocalPlayer.Character
+if be then bd[#bd+1]=be end
+for bf,bg in ipairs(a9)do
+local bh=workspace:FindFirstChild(bg)
+if bh then bd[#bd+1]=bh end
 end
-if aP then
-local aW,aX=pcall(aP)
-if aW and type(aX)=="table"then
-for aY,aZ in ipairs(aX)do aU[#aU+1]=aZ end
+if a8 then
+local bf,bg=pcall(a8)
+if bf and type(bg)=="table"then
+for bh,bi in ipairs(bg)do bd[#bd+1]=bi end
 end
 end
-aS=aU
-aT.FilterDescendantsInstances=aU
+ba=bd
+bb.FilterDescendantsInstances=bd
+bc.FilterDescendantsInstances=bd
 
-aR={}
+b={}
 end
 
 
@@ -17563,11 +17797,12 @@ end
 
 
 
-local function addSkip(aU)
+local function addSkip(bd)
 LPH_ATTRIBUTES(VM(NONE))
-aS[#aS+1]=aU
-local aV=pcall(function()aT:AddToFilter(aU)end)
-if not aV then aT.FilterDescendantsInstances=aS end
+ba[#ba+1]=bd
+local be=pcall(function()bb:AddToFilter(bd)end)
+if not be then bb.FilterDescendantsInstances=ba end
+bc.FilterDescendantsInstances=ba
 end
 
 
@@ -17583,46 +17818,46 @@ end
 
 
 
-local aU
-local aV,aW={},-99
-local aX=0.1
-local aY=90
+local bd
+local be,bf={},-99
+local bg=0.1
+local bh=90
 
-function ab.SetDanger(aZ)
-LPH_ATTRIBUTES(VM(NONE))aU=aZ end
-
-
+function ab.SetDanger(bi)
+LPH_ATTRIBUTES(VM(NONE))bd=bi end
 
 
 
 
 
-local aZ
 
-function ab.SetNoGo(a_)
-LPH_ATTRIBUTES(VM(NONE))aZ=(a_ and#a_>0)and a_ or nil end
 
-local function inNoGo(a_,a0)
+local bi
+
+function ab.SetNoGo(bj)
+LPH_ATTRIBUTES(VM(NONE))bi=(bj and#bj>0)and bj or nil end
+
+local function inNoGo(bj,bk)
 LPH_ATTRIBUTES(VM(NONE))
-if not aZ then return false end
-for a1,a2 in ipairs(aZ)do
-if a_>=a2[1]and a_<=a2[2]and a0>=a2[3]and a0<=a2[4]then return true end
+if not bi then return false end
+for bl,bm in ipairs(bi)do
+if bj>=bm[1]and bj<=bm[2]and bk>=bm[3]and bk<=bm[4]then return true end
 end
 return false
 end
 
-function ab.InNoGo(a_)
-LPH_ATTRIBUTES(VM(NONE))return inNoGo(a_.X,a_.Z)end
+function ab.InNoGo(bj)
+LPH_ATTRIBUTES(VM(NONE))return inNoGo(bj.X,bj.Z)end
 
-local function cellOf(a_)
-LPH_ATTRIBUTES(VM(NONE))return math.floor(a_/ac+0.5)end
-local function worldOf(a_)
-LPH_ATTRIBUTES(VM(NONE))return a_*ac end
+local function cellOf(bj)
+LPH_ATTRIBUTES(VM(NONE))return math.floor(bj/ac+0.5)end
+local function worldOf(bj)
+LPH_ATTRIBUTES(VM(NONE))return bj*ac end
 
-local function at(a_,a0)
+local function at(bj,bk)
 LPH_ATTRIBUTES(VM(NONE))
-local a1=aw[a_]
-return a1 and a1[a0]or nil
+local bl=aF[bj]
+return bl and bl[bk]or nil
 end
 
 
@@ -17658,173 +17893,225 @@ end
 
 
 
-local function passThrough(a_)
+local function passThrough(bj)
 LPH_ATTRIBUTES(VM(NONE))
-return a_:IsA"BasePart"and not a_.CanCollide and a_~=workspace.Terrain
+return bj:IsA"BasePart"and not bj.CanCollide and bj~=workspace.Terrain
 end
 
-local function liveRoot(a_)
+local function liveRoot(bj)
 LPH_ATTRIBUTES(VM(NONE))
-local a0=aR[a_]
-if a0~=nil then return a0 or nil end
-local a1=false
-local a2=a_
-while a2 and a2~=workspace do
-if a2:IsA"Model"and a2:FindFirstChildOfClass"Humanoid"then
-a1=a2
+local bk=b[bj]
+if bk~=nil then return bk or nil end
+local bl=false
+local bm=bj
+while bm and bm~=workspace do
+if bm:IsA"Model"and bm:FindFirstChildOfClass"Humanoid"then
+bl=bm
 break
 end
-a2=a2.Parent
+bm=bm.Parent
 end
-aR[a_]=a1
-return a1 or nil
+b[bj]=bl
+return bl or nil
 end
 
 
-local a_=4
+local bj=4
 
-local function castFloor(a0,a1)
+local function castFloor(bk,bl)
 LPH_ATTRIBUTES(VM(NONE))
-for a2=1,a_ do
-local a3=workspace:Raycast(a0,Vector3.new(0,-a1,0),aT)
-if not a3 then return nil end
-local a4=liveRoot(a3.Instance)
-if not a4 and not passThrough(a3.Instance)then return a3.Position.Y end
-addSkip(a4 or a3.Instance)
+for bm=1,bj do
+local bn=workspace:Raycast(bk,Vector3.new(0,-bl,0),bb)
+if not bn then return nil end
+local bo=liveRoot(bn.Instance)
+if not bo and not passThrough(bn.Instance)then return bn.Position.Y end
+addSkip(bo or bn.Instance)
 end
 return nil
 end
 
 
-local function probe(a0,a1,a2)
+
+
+
+
+
+
+
+
+
+local bk=4.93
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bl=2.22
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bm=2.68
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bn=2.0
+
+
+
+
+
+
+
+
+
+
+
+
+local bo
+local bp=false
+
+
+
+local bq=0.25
+local br=false
+
+local function fitBox()
 LPH_ATTRIBUTES(VM(NONE))
-return castFloor(Vector3.new(worldOf(a0),a2+ad,worldOf(a1)),
-ad+ae)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local a0=2.22
-
-
-
-
-
-
-local a1=3.8
-
-
-
-
-
-
-
-
-
-
-
-
-
-local a2=2.0
-
-local a3=true
-
-
-
-
-
-
-
-
-local a4=false
-
-
-
-
-
-
-
-
-local function blocked(a5,a6,a7,a8,a9,b)
-LPH_ATTRIBUTES(VM(NONE))
-local ba=math.max(a7,b or a7)+a2
-local bb=Vector3.new(worldOf(a5),ba+a1/2,worldOf(a6))
-local bc=Vector3.new(a8*ac,0,a9*ac)
-
-for bd=1,a_ do
-local be
-if a4 or not a3 then
-be=workspace:Raycast(bb,bc,aT)
-else
-local bf,bg=pcall(function()
-return workspace:Blockcast(CFrame.new(bb),
-Vector3.new(a0,a1,a0),bc,aT)
+if bo and bo.Parent then return bo end
+local bs,bt=pcall(function()
+local bs=Instance.new"Part"
+bs.Name="ApelNavProbe"
+bs.Anchored=true
+bs.CanCollide=false
+bs.CanQuery=false
+bs.CanTouch=false
+bs.Transparency=1
+bs.Size=Vector3.new(bl,bk-bn,bl)
+bs.Parent=workspace
+return bs
 end)
-if bf then
-be=bg
-else
-a3=false
+bo=bs and bt or nil
+return bo
+end
 
-be=workspace:Raycast(bb,bc,aT)
+
+
+local function fitsAt(bs,bt,bu)
+LPH_ATTRIBUTES(VM(NONE))
+local bv=bk-bn
+local bw=CFrame.new(bs,bt+bn+bv*0.5,bu)
+local c=fitBox()
+if c then
+c.CFrame=bw
+local d,e=pcall(function()return workspace:GetPartsInPart(c,bc)end)
+if d and type(e)=="table"then
+for f,g in ipairs(e)do
+if g~=c and g.CanCollide and g~=workspace.Terrain and not liveRoot(g)then
+return false
 end
 end
-if not be then return false end
-local bf=liveRoot(be.Instance)
-if not bf and not passThrough(be.Instance)then return true end
-addSkip(bf or be.Instance)
+return true
+end
+end
+
+
+
+
+
+
+if not bp then
+bp=true
+
 end
 return true
 end
 
 
-local function probeDeep(a5,a6,a7)
-LPH_ATTRIBUTES(VM(NONE))
-return castFloor(Vector3.new(worldOf(a5),a7+ad,worldOf(a6)),
-ad+ai)
-end
 
 
-local function probeMid(a5,a6,a7,a8,a9)
-LPH_ATTRIBUTES(VM(NONE))
-return castFloor(Vector3.new((worldOf(a5)+worldOf(a7))*0.5,a9+ad,
-(worldOf(a6)+worldOf(a8))*0.5),ad+ai)
-end
-
-local a5={{1,0},{-1,0},{0,1},{0,-1}}
 
 
-local a6=ac*1.4142135623731
-local a7={
-{1,0,ac},{-1,0,ac},{0,1,ac},{0,-1,ac},
-{1,1,a6},{1,-1,a6},{-1,1,a6},{-1,-1,a6},
+local bs=1.4
+local bt={
+{0,0},
+{bs,0},{-bs,0},{0,bs},{0,-bs},
+{bs,bs},{bs,-bs},{-bs,bs},{-bs,-bs},
 }
 
-local function edgeGet(a8,a9,b)
+
+local function setLane(bu,bv,bw,c)
 LPH_ATTRIBUTES(VM(NONE))
-local ba=a8[a9]
-return ba and ba[b]
+local d=aI[bu]
+if not d then d={}aI[bu]=d end
+local e=aJ[bu]
+if not e then e={}aJ[bu]=e end
+if d[bv]==nil and(bw~=0 or c~=0)then aM=aM+1 end
+d[bv],e[bv]=bw,c
 end
 
-
-
-
-local function linked(a8,a9,b,ba)
+local function laneOf(bu,bv,bw)
 LPH_ATTRIBUTES(VM(NONE))
-if b==1 then return edgeGet(ax,a8,a9)==true end
-if b==-1 then return edgeGet(ax,a8-1,a9)==true end
-if ba==1 then return edgeGet(ay,a8,a9)==true end
-return edgeGet(ay,a8,a9-1)==true
+local c=aI[bu]
+if c and c[bv]~=nil then return c[bv],aJ[bu][bv]end
+local d,e=bu*ac,bv*ac
+local f,g=0,0
+if not br then
+for h=1,#bt do
+local i=bt[h]
+if fitsAt(d+i[1],bw,e+i[2])then
+f,g=i[1],i[2]
+if h>1 then aM=aM+1 end
+break
+end
+end
+if aM>ao*bq then
+br=true
+
+end
+end
+if not c then c={}aI[bu]=c end
+c[bv]=f
+local h=aJ[bu]
+if not h then h={}aJ[bu]=h end
+h[bv]=g
+return f,g
 end
 
 
@@ -17841,70 +18128,32 @@ end
 
 
 
-local function flood(a8,a9)
+
+
+local bu={{0,0},{1,0},{-1,0},{0,1},{0,-1}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function probe(bv,bw,c)
 LPH_ATTRIBUTES(VM(NONE))
-local b,ba,bb={},{},{}
-local bc=0
-
-local function gAt(bd,be)
-local bf=b[bd]
-return bf and bf[be]or nil
+local d,e=worldOf(bv),worldOf(bw)
+local f
+for g,h in ipairs(bu)do
+f=castFloor(Vector3.new(d+h[1],c+ad,e+h[2]),
+ad+ae)
+if f then break end
 end
-local function gPut(bd,be,bf)
-local bg=b[bd]
-if not bg then bg={}b[bd]=bg end
-if bg[be]==nil then bc=bc+1 end
-bg[be]=bf
-end
-local function gEdge(bd,be,bf,bg,bh,bi)
-local bj,bk,bl
-if bf==1 then bj,bk,bl=ba,bd,be
-elseif bf==-1 then bj,bk,bl=ba,bd-1,be
-elseif bg==1 then bj,bk,bl=bb,bd,be
-else bj,bk,bl=bb,bd,be-1 end
-local bm=bj[bk]
-if not bm then bm={}bj[bk]=bm end
-local bn=bm[bl]
-if bn~=nil then return bn end
-bn=not blocked(bd,be,bh,bf,bg,bi)
-bm[bl]=bn
-return bn
-end
-
-local bd,be=cellOf(a8.X),cellOf(a8.Z)
-local bf=probe(bd,be,a8.Y-ak)
-if not bf then
-
-
-for bg,bh in ipairs(a5)do
-bf=probe(bd+bh[1],be+bh[2],a8.Y-ak)
-if bf then bd,be=bd+bh[1],be+bh[2]break end
-end
-end
-if not bf then return false,"s144"end
-
-local bg,bh=bd,be
-gPut(bd,be,bf)
-
-local bi,bj={bd},{be}
-local bk=1
-local bl={[bd]={[be]=true}}
-local bm=os.clock()
-
-
-
-
-
-
-
-local bn,bo
-if a9 then bn,bo=cellOf(a9.X),cellOf(a9.Z)end
-local bp
-
-while bk<=#bi do
-local bq,br=bi[bk],bj[bk]
-bk=bk+1
-local bs=gAt(bq,br)
+if not f then return nil end
 
 
 
@@ -17917,53 +18166,666 @@ local bs=gAt(bq,br)
 
 
 
-for bt,bu in ipairs(a5)do
-local bv,bw=bq+bu[1],br+bu[2]
 
 
-if math.abs(bv-bg)<=al and math.abs(bw-bh)<=al
-and not inNoGo(worldOf(bv),worldOf(bw))then
-local c=bl[bv]
-if not c then c={}bl[bv]=c end
-
-local d=gAt(bv,bw)
-local e=d or probe(bv,bw,bs)
-
-if not e then e=probeDeep(bv,bw,bs)end
-if e then
-local f=e-bs
-local g=f<=ad and f>=-ae
-if not g and f<=ad and f>=-ai then
 
 
-local h=probeMid(bq,br,bv,bw,bs)
-g=h~=nil and math.abs(h-(bs+e)*0.5)<=ah
-end
-if g then
 
 
-local h=gEdge(bq,br,bu[1],bu[2],bs,e)
-if h and not c[bw]then
-c[bw]=true
-gPut(bv,bw,e)
-bi[#bi+1],bj[#bj+1]=bv,bw
-end
-end
-end
+
+
+
+
+
+
+if math.abs(f-c)>0.3 then
+for g=2,#bu do
+local h=bu[g]
+local i=castFloor(Vector3.new(d+h[1],f+bn,e+h[2]),bn+0.7)
+if i and i>f and(i-f)<=bn then f=i end
 end
 end
 
-if bc>=am then break end
 
 
-if bn and not bp and gAt(bn,bo)then
-bp=#bi+an
+
+
+
+
+
+if br or(f-c)<=bn then return f,0,0 end
+if fitsAt(d,f,e)then return f,0,0 end
+for g=2,#bt do
+local h=bt[g]
+local i=castFloor(Vector3.new(d+h[1],c+ad,e+h[2]),
+ad+ae)
+if i and fitsAt(d+h[1],i,e+h[2])then return i,h[1],h[2]end
 end
-if bp and bk>bp then break end
+return f,0,0
+end
 
-if os.clock()-bm>ao then
+local bv=true
+
+
+
+
+
+
+
+
+local bw=false
+
+
+
+
+
+
+
+
+local function blocked(c,d,e,f,g,h)
+LPH_ATTRIBUTES(VM(NONE))
+local i=math.max(e,h or e)+bn
+
+
+
+
+
+local j,k=laneOf(c,d,e)
+local l,m=0,0
+if h then l,m=laneOf(c+f,d+g,h)end
+local n=Vector3.new(worldOf(c)+j,i+bm/2,worldOf(d)+k)
+local o=Vector3.new(worldOf(c+f)+l-(worldOf(c)+j),0,
+worldOf(d+g)+m-(worldOf(d)+k))
+
+for p=1,bj do
+local q
+if bw or not bv then
+q=workspace:Raycast(n,o,bb)
+else
+local r,s=pcall(function()
+return workspace:Blockcast(CFrame.new(n),
+Vector3.new(bl,bm,bl),o,bb)
+end)
+if r then
+q=s
+else
+bv=false
+
+q=workspace:Raycast(n,o,bb)
+end
+end
+if not q then return false end
+local r=liveRoot(q.Instance)
+if not r and not passThrough(q.Instance)then return true end
+addSkip(r or q.Instance)
+end
+return true
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local c=7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local d=4
+
+
+
+
+
+
+
+
+
+
+
+
+local e=2.2
+
+
+
+local f=4.9
+
+local function sheerEdge(g,h,i,j,k,l)
+LPH_ATTRIBUTES(VM(NONE))
+local m,n=worldOf(g),worldOf(h)
+local o,p=worldOf(g+i),worldOf(h+j)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local q=math.min(math.max(k,l)+bn,math.min(k,l)+f)
+local r=q-(math.min(k,l)-ae)
+local s=k
+for u=1,d do
+local v=u/d
+local w=(u==d)and l
+or castFloor(Vector3.new(m+(o-m)*v,q,n+(p-n)*v),r)
+
+
+
+
+
+
+
+
+
+
+
+if not w then
+w=castFloor(Vector3.new(m+(o-m)*v,q,n+(p-n)*v),r)
+end
+if not w then return true end
+if math.abs(w-s)>e then return true end
+s=w
+end
+return false
+end
+
+
+
+local function walkable(g,h)
+LPH_ATTRIBUTES(VM(NONE))
+local i,j=h.X-g.X,h.Z-g.Z
+local k=math.sqrt(i*i+j*j)
+if k<0.5 then return true end
+local l,m=i/k,j/k
+local n=math.ceil(math.min(c,k))
+
+
+
+
+
+
+
+
+
+
+
+
+
+local o=g.Y-al
+local p,q=g.X,g.Z
+for r=1,n do
+local s,u=g.X+l*r,g.Z+m*r
+local v=Vector3.new(p,o+e+0.3,q)
+local w=Vector3.new(s-p,0,u-q)
+for x=1,bj do
+local y=workspace:Raycast(v,w,bb)
+if not y then break end
+local z=liveRoot(y.Instance)
+if not z and not passThrough(y.Instance)then return false end
+addSkip(z or y.Instance)
+end
+local x=castFloor(Vector3.new(s,o+e,u),e+ae)
+if x then o=x end
+p,q=s,u
+end
+return true
+end
+
+
+local function probeDeep(g,h,i)
+LPH_ATTRIBUTES(VM(NONE))
+local j,k=worldOf(g),worldOf(h)
+for l,m in ipairs(bu)do
+local n=castFloor(Vector3.new(j+m[1],i+ad,k+m[2]),
+ad+ai)
+if n then return n end
+end
+return nil
+end
+
+
+local function probeMid(g,h,i,j,k)
+LPH_ATTRIBUTES(VM(NONE))
+return castFloor(Vector3.new((worldOf(g)+worldOf(i))*0.5,k+ad,
+(worldOf(h)+worldOf(j))*0.5),ad+ai)
+end
+
+
+local function pointOf(g,h)
+LPH_ATTRIBUTES(VM(NONE))
+local i=at(g,h)
+if not i then return nil end
+local j=aI[g]and aI[g][h]or 0
+local k=aJ[g]and aJ[g][h]or 0
+return Vector3.new(worldOf(g)+j,i+al,worldOf(h)+k)
+end
+
+local g={{1,0},{-1,0},{0,1},{0,-1}}
+
+
+local h=ac*1.4142135623731
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local i=0.75
+local function standCell(j,k,l)
+LPH_ATTRIBUTES(VM(NONE))
+local m=at(j,k)
+if not l then return j,k,m end
+if m and math.abs(m-l)<=i then return j,k,m end
+local n,o,p
+for q,r in ipairs(g)do
+local s=at(j+r[1],k+r[2])
+if s then
+local u=math.abs(s-l)
+if u<=e and(not p or u<p)then
+p,n,o=u,j+r[1],k+r[2]
+end
+end
+end
+if n and(not m or p<math.abs(m-l))then return n,o,at(n,o)end
+return j,k,m
+end
+
+local j={
+{1,0,ac},{-1,0,ac},{0,1,ac},{0,-1,ac},
+{1,1,h},{1,-1,h},{-1,1,h},{-1,-1,h},
+}
+
+local function edgeGet(k,l,m)
+LPH_ATTRIBUTES(VM(NONE))
+local n=k[l]
+return n and n[m]
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function linked(k,l,m,n)
+LPH_ATTRIBUTES(VM(NONE))
+local o
+if m==1 then o=edgeGet(aG,k,l)
+elseif m==-1 then o=edgeGet(aG,k-1,l)
+elseif n==1 then o=edgeGet(aH,k,l)
+else o=edgeGet(aH,k,l-1)end
+return type(o)=="number"and o or nil
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function ridgeAt(k,l)
+LPH_ATTRIBUTES(VM(NONE))
+local m=at(k,l)
+if not m then return false end
+
+local n=bn*0.5
+local o,p=at(k-1,l),at(k+1,l)
+if o and p and(m-o)>n and(m-p)>n then return true end
+local q,r=at(k,l-1),at(k,l+1)
+if q and r and(m-q)>n and(m-r)>n then return true end
+return false
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function flood(k,l)
+LPH_ATTRIBUTES(VM(NONE))
+local m,n,o={},{},{}
+local p=0
+aO=0
+
+aI,aJ,aM,br={},{},0,false
+
+local function gAt(q,r)
+local s=m[q]
+return s and s[r]or nil
+end
+local function gPut(q,r,s)
+local u=m[q]
+if not u then u={}m[q]=u end
+if u[r]==nil then p=p+1 end
+u[r]=s
+end
+local function gEdge(q,r,s,u,v,w)
+local x,y,z
+if s==1 then x,y,z=n,q,r
+elseif s==-1 then x,y,z=n,q-1,r
+elseif u==1 then x,y,z=o,q,r
+else x,y,z=o,q,r-1 end
+local A=x[y]
+if not A then A={}x[y]=A end
+local B=A[z]
+if B~=nil then return B end
+if blocked(q,r,v,s,u,w)then
+B=false
+else
+
+
+
+
+
+
+local C=math.abs(w-v)
+
+
+
+
+
+
+
+if bw or C<=bn or C>ad then
+B=ad
+elseif sheerEdge(q,r,s,u,v,w)then
+B=bn
+aO=aO+1
+else
+B=ad
+end
+end
+A[z]=B
+return B
+end
+
+local q,r=cellOf(k.X),cellOf(k.Z)
+local s=k.Y-al
+local u,v,w=probe(q,r,s)
+if u then setLane(q,r,v or 0,w or 0)end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function seeCell(x,y)
+local z=Vector3.new(k.X,s+bn+bm/2,k.Z)
+local A=Vector3.new(worldOf(x),s+bn+bm/2,worldOf(y))-z
+if A.Magnitude<0.1 then return true end
+for B=1,bj do
+local C=workspace:Raycast(z,A,bb)
+if not C then return true end
+local D=liveRoot(C.Instance)
+if not D and not passThrough(C.Instance)then return false end
+addSkip(D or C.Instance)
+end
+return false
+end
+
+if u and(math.abs(u-s)>e or not seeCell(q,r))then
+for x,y in ipairs(g)do
+local z,A=q+y[1],r+y[2]
+local B,C,D=probe(z,A,s)
+if B and math.abs(B-s)<=e and seeCell(z,A)then
+q,r,u=z,A,B
+setLane(z,A,C or 0,D or 0)
+break
+end
+end
+end
+if not u then
+
+
+for x,y in ipairs(g)do
+local z,A
+u,z,A=probe(q+y[1],r+y[2],s)
+if u then
+q,r=q+y[1],r+y[2]
+setLane(q,r,z or 0,A or 0)
+break
+end
+end
+end
+if not u then return false,"s144"end
+
+local x,y=q,r
+gPut(q,r,u)
+
+local z,A={q},{r}
+local B=1
+local C={[q]={[r]=true}}
+local D=os.clock()
+
+
+
+
+
+
+
+local E,F
+if l then E,F=cellOf(l.X),cellOf(l.Z)end
+local G
+
+while B<=#z do
+local H,I=z[B],A[B]
+B=B+1
+local J=gAt(H,I)
+
+
+
+
+
+
+
+
+
+
+
+
+for K,L in ipairs(g)do
+local M,N=H+L[1],I+L[2]
+
+
+if math.abs(M-x)<=an and math.abs(N-y)<=an
+and not inNoGo(worldOf(M),worldOf(N))then
+local O=C[M]
+if not O then O={}C[M]=O end
+
+local P=gAt(M,N)
+local Q,R,T
+if P then
+Q=P
+else
+
+
+Q,R,T=probe(M,N,J)
+
+if not Q then Q,R,T=probeDeep(M,N,J),0,0 end
+if Q then setLane(M,N,R or 0,T or 0)end
+end
+if Q then
+
+
+
+
+
+
+
+
+
+
+
+
+
+local U=Q-J
+local V=false
+if U<=ad then
+if U>=-ae then
+V=true
+elseif U>=-ai then
+
+
+local W=probeMid(H,I,M,N,J)
+V=W~=nil and math.abs(W-(J+Q)*0.5)<=ah
+end
+end
+if V then
+
+
+local W=gEdge(H,I,L[1],L[2],J,Q)
+
+
+
+
+
+
+if W and U>W then W=false end
+if W and not O[N]then
+O[N]=true
+gPut(M,N,Q)
+z[#z+1],A[#A+1]=M,N
+end
+end
+end
+end
+end
+
+if p>=ao then break end
+
+
+
+
+
+if E and not G then
+local K=gAt(E,F)
+if K and math.abs(K-l.Y)<=am then
+G=#z+ap
+end
+end
+if G and B>G then break end
+
+if os.clock()-D>aq then
 task.wait()
-bm=os.clock()
+D=os.clock()
 if _apelStopped then return false,"s145"end
 end
 end
@@ -17982,9 +18844,9 @@ end
 
 
 
-local bq={}
-for br,bs in pairs(b)do
-for bt,bu in pairs(bs)do
+local H={}
+for I,J in pairs(m)do
+for K,L in pairs(J)do
 
 
 
@@ -17994,12 +18856,12 @@ for bt,bu in pairs(bs)do
 
 
 
-local bv=false
-for bw,c in ipairs(a5)do
-local d,e=br+c[1],bt+c[2]
-local f=b[d]and b[d][e]
-if f then
-if bu-f>af then bv=true break end
+local M=false
+for N,O in ipairs(g)do
+local P,Q=I+O[1],K+O[2]
+local R=m[P]and m[P][Q]
+if R then
+if L-R>af then M=true break end
 else
 
 
@@ -18015,11 +18877,11 @@ else
 
 
 
-local g=castFloor(
-Vector3.new(worldOf(d),bu+ad,worldOf(e)),
+local T=castFloor(
+Vector3.new(worldOf(P),L+ad,worldOf(Q)),
 ad+af+2)
-if not g and not blocked(br,bt,bu,c[1],c[2],nil)then
-bv=true
+if not T and not blocked(I,K,L,O[1],O[2],nil)then
+M=true
 break
 end
 end
@@ -18046,31 +18908,18 @@ end
 
 
 
-if bv and not(br==bd and bt==be)then
-local bw=0
-for c,d in ipairs(a5)do
-if b[br+d[1] ]and b[br+d[1] ][bt+d[2] ]then bw=bw+1 end
+if M and not(I==q and K==r)then
+local N=0
+for O,P in ipairs(g)do
+if m[I+P[1] ]and m[I+P[1] ][K+P[2] ]then N=N+1 end
 end
-if bw>=3 then bq[#bq+1]={br,bt}end
+if N>=3 then H[#H+1]={I,K}end
 end
 end
 end
-for br,bs in ipairs(bq)do
-local bt=b[bs[1] ]
-if bt and bt[bs[2] ]~=nil then bt[bs[2] ]=nil bc=bc-1 end
-end
-
-
-
-
-
-
-
-if bc<ap and not a4 then
-a4=true
-local br,bs=flood(a8,a9)
-a4=false
-return br,bs
+for I,J in ipairs(H)do
+local K=m[J[1] ]
+if K and K[J[2] ]~=nil then K[J[2] ]=nil p=p-1 end
 end
 
 
@@ -18079,37 +18928,59 @@ end
 
 
 
-
-
-
-
-if bc<ap and az>=ap and at(cellOf(a8.X),cellOf(a8.Z))then
-return false,("s146"):format(bc)
+if p<ar and not bw then
+bw=true
+local I,J=flood(k,l)
+bw=false
+return I,J
 end
 
-aw,az,ax,ay=b,bc,ba,bb
-aC,aD=bg,bh
+
+
+
+
+
+
+
+
+
+
+if p<ar and aN>=ar and at(cellOf(k.X),cellOf(k.Z))then
+return false,("s146"):format(p)
+end
+
+aF,aN,aG,aH=m,p,n,o
+aR,aS=x,y
 return true
 end
 
 
 
 function ab.Ready()
-LPH_ATTRIBUTES(VM(NONE))return aA end
+LPH_ATTRIBUTES(VM(NONE))return aP end
 function ab.Building()
-LPH_ATTRIBUTES(VM(NONE))return aB end
+LPH_ATTRIBUTES(VM(NONE))return aQ end
 
 function ab.Stats()
 LPH_ATTRIBUTES(VM(NONE))
+
+
+
+local k=0
+for l,m in pairs(aF)do
+for n in pairs(m)do
+if ridgeAt(l,n)then k=k+1 end
+end
+end
 return("s147"):format(
-az,aC,aD,al*ac)
+aN,aR,aS,an*ac,aO,aM,k)
 end
 
 
 
-function ab.HeightAt(a8)
+function ab.HeightAt(k)
 LPH_ATTRIBUTES(VM(NONE))
-return at(cellOf(a8.X),cellOf(a8.Z))
+return at(cellOf(k.X),cellOf(k.Z))
 end
 
 
@@ -18120,14 +18991,16 @@ end
 
 
 
-function ab.Reachable(a8,a9)
+function ab.Reachable(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aA then return false end
-local b,ba=cellOf(a8.X),cellOf(a8.Z)
-local bb=a9 or 3
-for bc=-bb,bb do
-for bd=-bb,bb do
-if at(b+bc,ba+bd)then return true end
+if not aP then return false end
+local m,n=cellOf(k.X),cellOf(k.Z)
+local o=l or 3
+for p=-o,o do
+for q=-o,o do
+
+local r=at(m+p,n+q)
+if r and math.abs(r-k.Y)<=am then return true end
 end
 end
 return false
@@ -18150,52 +19023,84 @@ end
 
 
 
-function ab.Clear(a8,a9)
+function ab.Clear(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aA then return false end
+if not aP then return false end
 
 
-local b,ba=a8.X/ac+0.5,a8.Z/ac+0.5
-local bb,bc=a9.X/ac+0.5,a9.Z/ac+0.5
+local m,n=k.X/ac+0.5,k.Z/ac+0.5
+local o,p=l.X/ac+0.5,l.Z/ac+0.5
 
-local bd,be=math.floor(b),math.floor(ba)
-local bf,bg=math.floor(bb),math.floor(bc)
+local q,r=math.floor(m),math.floor(n)
+local s,u=math.floor(o),math.floor(p)
 
-local bh=at(bd,be)
-if not bh then return false end
-if bd==bf and be==bg then return true end
 
-local bi,bj=bb-b,bc-ba
-local bk=bi>0 and 1 or-1
-local bl=bj>0 and 1 or-1
 
-local bm,bn=math.huge,math.huge
-if bi~=0 then
-local bo=bi>0 and(bd+1)or bd
-bm=(bo-b)/bi
-bn=1/math.abs(bi)
+
+
+
+
+
+
+local v=at(s,u)
+if v and math.abs(v-l.Y)>am then return false end
+
+
+
+
+
+
+
+
+
+local w=k.Y-al
+local x,y,z=standCell(q,r,w)
+if x~=q or y~=r then
+q,r=x,y
+m,n=q+0.5,r+0.5
 end
-local bo,bp=math.huge,math.huge
-if bj~=0 then
-local bq=bj>0 and(be+1)or be
-bo=(bq-ba)/bj
-bp=1/math.abs(bj)
+
+if not z then return false end
+if q==s and r==u then return true end
+
+local A,B=o-m,p-n
+local C=A>0 and 1 or-1
+local D=B>0 and 1 or-1
+
+
+
+
+local E,F=math.abs(A),math.abs(B)
+local G=(E>F)and(F/math.max(E,1e-6))or(E/math.max(F,1e-6))
+
+local H,I=math.huge,math.huge
+if A~=0 then
+local J=A>0 and(q+1)or q
+H=(J-m)/A
+I=1/math.abs(A)
+end
+local J,K=math.huge,math.huge
+if B~=0 then
+local L=B>0 and(r+1)or r
+J=(L-n)/B
+K=1/math.abs(B)
 end
 
-for bq=1,4096 do
-local br,bs=0,0
-if bm<bo then
-br=bk
-bm=bm+bn
+for L=1,4096 do
+local M,N=0,0
+if H<J then
+M=C
+H=H+I
 else
-bs=bl
-bo=bo+bp
+N=D
+J=J+K
 end
 
-if not linked(bd,be,br,bs)then return false end
-local bt,bu=bd+br,be+bs
-local bv=at(bt,bu)
-if not bv then return false end
+local O=linked(q,r,M,N)
+if not O then return false end
+local P,Q=q+M,r+N
+local R=at(P,Q)
+if not R then return false end
 
 
 
@@ -18209,10 +19114,41 @@ if not bv then return false end
 
 
 
-local bw=bv-bh
-if bw>ad or bw<-af then return false end
-bd,be,bh=bt,bu,bv
-if bd==bf and be==bg then return true end
+
+
+
+
+
+local T=R-z
+if T>O or T<-af then return false end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if G>0.15 and T>bn*0.5 then
+local U=(M~=0)and 0 or((A<0 and-1)or(A>0 and 1)or 0)
+local V=(N~=0)and 0 or((B<0 and-1)or(B>0 and 1)or 0)
+if U~=0 or V~=0 then
+local W=linked(q+U,r+V,M,N)
+local X=at(q+U,r+V)
+local Y=at(P+U,Q+V)
+if not W or not X or not Y or(Y-X)>W then return false end
+end
+end
+q,r,z=P,Q,R
+if q==s and r==u then return true end
 end
 return false
 end
@@ -18229,19 +19165,27 @@ end
 
 
 
-function ab.ClearSafe(a8,a9)
+function ab.ClearSafe(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not ab.Clear(a8,a9)then return false end
-local b,ba=cellOf(a8.X),cellOf(a8.Z)
-local bb,bc=cellOf(a9.X),cellOf(a9.Z)
-local bd=math.max(math.abs(bb-b),math.abs(bc-ba))
-for be=0,bd do
-local bf=b+math.floor((bb-b)*be/math.max(1,bd)+0.5)
-local bg=ba+math.floor((bc-ba)*be/math.max(1,bd)+0.5)
-if not at(bf+1,bg)or not at(bf-1,bg)
-or not at(bf,bg+1)or not at(bf,bg-1)then
+if not ab.Clear(k,l)then return false end
+local m,n=cellOf(k.X),cellOf(k.Z)
+local o,p=cellOf(l.X),cellOf(l.Z)
+local q=math.max(math.abs(o-m),math.abs(p-n))
+for r=0,q do
+local s=m+math.floor((o-m)*r/math.max(1,q)+0.5)
+local u=n+math.floor((p-n)*r/math.max(1,q)+0.5)
+if not at(s+1,u)or not at(s-1,u)
+or not at(s,u+1)or not at(s,u-1)then
 return false
 end
+
+
+
+
+
+
+
+if r>0 and r<q and ridgeAt(s,u)then return false end
 end
 return true
 end
@@ -18254,19 +19198,19 @@ end
 
 
 
-function ab.NearestWhere(a8,a9,b)
+function ab.NearestWhere(k,l,m)
 LPH_ATTRIBUTES(VM(NONE))
-if not aA then return nil end
-local ba,bb=cellOf(a8.X),cellOf(a8.Z)
-local bc=math.max(1,math.floor((a9 or 40)/ac+0.5))
-for bd=1,bc do
-for be=-bd,bd do
-for bf=-bd,bd do
-if math.abs(be)==bd or math.abs(bf)==bd then
-local bg=at(ba+be,bb+bf)
-if bg then
-local bh=Vector3.new(worldOf(ba+be),bg+ak,worldOf(bb+bf))
-if b(bh)then return bh end
+if not aP then return nil end
+local n,o=cellOf(k.X),cellOf(k.Z)
+local p=math.max(1,math.floor((l or 40)/ac+0.5))
+for q=1,p do
+for r=-q,q do
+for s=-q,q do
+if math.abs(r)==q or math.abs(s)==q then
+local u=at(n+r,o+s)
+if u then
+local v=Vector3.new(worldOf(n+r),u+al,worldOf(o+s))
+if m(v)then return v end
 end
 end
 end
@@ -18278,19 +19222,19 @@ end
 
 
 
-function ab.RoomAt(a8,a9)
+function ab.RoomAt(k,l)
 LPH_ATTRIBUTES(VM(NONE))
-if not aA then return false end
-local b,ba=cellOf(a8.X),cellOf(a8.Z)
-local bb=at(b,ba)
-if not bb then return false end
-local bc=math.max(1,math.floor(a9/ac+0.5))
-for bd=-bc,bc do
-for be=-bc,bc do
-if bd*bd+be*be<=bc*bc then
-local bf=at(b+bd,ba+be)
-if not bf then return false end
-if math.abs(bf-bb)>ad+ae then return false end
+if not aP then return false end
+local m,n=cellOf(k.X),cellOf(k.Z)
+local o=at(m,n)
+if not o then return false end
+local p=math.max(1,math.floor(l/ac+0.5))
+for q=-p,p do
+for r=-p,p do
+if q*q+r*r<=p*p then
+local s=at(m+q,n+r)
+if not s then return false end
+if math.abs(s-o)>ad+ae then return false end
 end
 end
 end
@@ -18299,15 +19243,30 @@ end
 
 
 
-local function nearestCell(a8,a9)
+
+
+
+
+
+
+local function nearestCell(k,l,m,n)
 LPH_ATTRIBUTES(VM(NONE))
-local b,ba=cellOf(a8.X),cellOf(a8.Z)
-if at(b,ba)then return b,ba end
-for bb=1,a9 do
-for bc=-bb,bb do
-for bd=-bb,bb do
-if math.abs(bc)==bb or math.abs(bd)==bb then
-if at(b+bc,ba+bd)then return b+bc,ba+bd end
+local function onLayer(o)return o~=nil and(not n or math.abs(o-k.Y)<=am)end
+local o,p=cellOf(k.X),cellOf(k.Z)
+local q=at(o,p)
+if n and q and not onLayer(q)then q=nil end
+
+
+if q and m then
+local r,s=standCell(o,p,m)
+if r~=o or s~=p then return r,s end
+end
+if q then return o,p end
+for r=1,l do
+for s=-r,r do
+for u=-r,r do
+if math.abs(s)==r or math.abs(u)==r then
+if onLayer(at(o+s,p+u))then return o+s,p+u end
 end
 end
 end
@@ -18322,62 +19281,62 @@ end
 
 local function hotCells()
 LPH_ATTRIBUTES(VM(NONE))
-if os.clock()-aW<aX then return aV end
-aW=os.clock()
-aV={}
-if not aU then return aV end
-local a8,a9=pcall(aU)
-if not a8 or type(a9)~="table"then return aV end
+if os.clock()-bf<bg then return be end
+bf=os.clock()
+be={}
+if not bd then return be end
+local k,l=pcall(bd)
+if not k or type(l)~="table"then return be end
 
-for b,ba in ipairs(a9)do
-local bb,bc=ba.cf,ba.size
-if bb and bc then
-local bd=bc.Y*0.5
+for m,n in ipairs(l)do
+local o,p=n.cf,n.size
+if o and p then
+local q=p.Y*0.5
 
-local be=math.abs(bb.RightVector.X)*bc.X*0.5
-+math.abs(bb.UpVector.X)*bc.Y*0.5
-+math.abs(bb.LookVector.X)*bc.Z*0.5
-local bf=math.abs(bb.RightVector.Z)*bc.X*0.5
-+math.abs(bb.UpVector.Z)*bc.Y*0.5
-+math.abs(bb.LookVector.Z)*bc.Z*0.5
-local bg,bh=cellOf(bb.Position.X-be),cellOf(bb.Position.X+be)
-local bi,bj=cellOf(bb.Position.Z-bf),cellOf(bb.Position.Z+bf)
+local r=math.abs(o.RightVector.X)*p.X*0.5
++math.abs(o.UpVector.X)*p.Y*0.5
++math.abs(o.LookVector.X)*p.Z*0.5
+local s=math.abs(o.RightVector.Z)*p.X*0.5
++math.abs(o.UpVector.Z)*p.Y*0.5
++math.abs(o.LookVector.Z)*p.Z*0.5
+local u,v=cellOf(o.Position.X-r),cellOf(o.Position.X+r)
+local w,x=cellOf(o.Position.Z-s),cellOf(o.Position.Z+s)
 
-if(bh-bg)*(bj-bi)<=4000 then
-local bk=ba.cylinder and(bc.Y*0.5)or nil
-for bl=bg,bh do
-local bm=aw[bl]
-if bm then
-for bn=bi,bj do
-local bo=bm[bn]
-if bo then
-local bp=Vector3.new(worldOf(bl),bo+ak,worldOf(bn))
-local bq
-if bk then
-local br=Vector3.new(bp.X-bb.Position.X,0,bp.Z-bb.Position.Z)
-bq=br.Magnitude<=bk
-and math.abs(bp.Y-bb.Position.Y)<=bc.X*0.5
+if(v-u)*(x-w)<=4000 then
+local y=n.cylinder and(p.Y*0.5)or nil
+for z=u,v do
+local A=aF[z]
+if A then
+for B=w,x do
+local C=A[B]
+if C then
+local D=Vector3.new(worldOf(z),C+al,worldOf(B))
+local E
+if y then
+local F=Vector3.new(D.X-o.Position.X,0,D.Z-o.Position.Z)
+E=F.Magnitude<=y
+and math.abs(D.Y-o.Position.Y)<=p.X*0.5
 else
-local br=bb:PointToObjectSpace(bp)
-bq=math.abs(br.X)<=bc.X*0.5
-and math.abs(br.Y)<=bd
-and math.abs(br.Z)<=bc.Z*0.5
+local F=o:PointToObjectSpace(D)
+E=math.abs(F.X)<=p.X*0.5
+and math.abs(F.Y)<=q
+and math.abs(F.Z)<=p.Z*0.5
 end
-if bq then aV[bl*1000000+bn]=true end
-end
-end
+if E then be[z*1000000+B]=true end
 end
 end
 end
 end
 end
-return aV
+end
+end
+return be
 end
 
-function ab.HotAt(a8)
+function ab.HotAt(k)
 LPH_ATTRIBUTES(VM(NONE))
-local a9=hotCells()
-return a9[cellOf(a8.X)*1000000+cellOf(a8.Z)]==true
+local l=hotCells()
+return l[cellOf(k.X)*1000000+cellOf(k.Z)]==true
 end
 
 
@@ -18406,20 +19365,20 @@ end
 
 
 
-local a8=12
+local k=12
 
-local function segHot(a9,b,ba)
+local function segHot(l,m,n)
 LPH_ATTRIBUTES(VM(NONE))
-if not aU then return false end
-local bb=hotCells()
-local bc,bd=b.X-a9.X,b.Z-a9.Z
-local be=math.sqrt(bc*bc+bd*bd)
-if be<=0.1 then return bb[cellOf(a9.X)*1000000+cellOf(a9.Z)]==true end
-if ba and be>ba then
-local bf=ba/be
-bc,bd,be=bc*bf,bd*bf,ba
+if not bd then return false end
+local o=hotCells()
+local p,q=m.X-l.X,m.Z-l.Z
+local r=math.sqrt(p*p+q*q)
+if r<=0.1 then return o[cellOf(l.X)*1000000+cellOf(l.Z)]==true end
+if n and r>n then
+local s=n/r
+p,q,r=p*s,q*s,n
 end
-local bf=math.min(64,math.ceil(be/ac))
+local s=math.min(64,math.ceil(r/ac))
 
 
 
@@ -18431,92 +19390,92 @@ local bf=math.min(64,math.ceil(be/ac))
 
 
 
-local bg=false
-for bh=1,bf do
-local bi=bh/bf
-local bj=bb[cellOf(a9.X+bc*bi)*1000000+cellOf(a9.Z+bd*bi)]
-if not bj then
-bg=true
-elseif bg then
+local u=false
+for v=1,s do
+local w=v/s
+local x=o[cellOf(l.X+p*w)*1000000+cellOf(l.Z+q*w)]
+if not x then
+u=true
+elseif u then
 return true
 end
 end
 return false
 end
 
-local function astar(a9,b,ba,bb)
+local function astar(l,m,n,o)
 LPH_ATTRIBUTES(VM(NONE))
-local bc=hotCells()
-local bd,be,bf={},{},{}
-local bg=0
-local bh,bi,bj={},{},{}
-local bk={}
+local p=hotCells()
+local q,r,s={},{},{}
+local u=0
+local v,w,x={},{},{}
+local y={}
 
-local function key(bl,bm)return bl*1000000+bm end
+local function key(z,A)return z*1000000+A end
 
-local function push(bl,bm,bn)
-bg=bg+1
-bd[bg],be[bg],bf[bg]=bl,bm,bn
-local bo=bg
-while bo>1 do
-local bp=math.floor(bo/2)
-if bf[bp]<=bf[bo]then break end
-bd[bp],bd[bo]=bd[bo],bd[bp]
-be[bp],be[bo]=be[bo],be[bp]
-bf[bp],bf[bo]=bf[bo],bf[bp]
-bo=bp
+local function push(z,A,B)
+u=u+1
+q[u],r[u],s[u]=z,A,B
+local C=u
+while C>1 do
+local D=math.floor(C/2)
+if s[D]<=s[C]then break end
+q[D],q[C]=q[C],q[D]
+r[D],r[C]=r[C],r[D]
+s[D],s[C]=s[C],s[D]
+C=D
 end
 end
 
 local function pop()
-local bl,bm=bd[1],be[1]
-bd[1],be[1],bf[1]=bd[bg],be[bg],bf[bg]
-bg=bg-1
-local bn=1
+local z,A=q[1],r[1]
+q[1],r[1],s[1]=q[u],r[u],s[u]
+u=u-1
+local B=1
 while true do
-local bo,bp,bq=bn*2,bn*2+1,bn
-if bo<=bg and bf[bo]<bf[bq]then bq=bo end
-if bp<=bg and bf[bp]<bf[bq]then bq=bp end
-if bq==bn then break end
-bd[bq],bd[bn]=bd[bn],bd[bq]
-be[bq],be[bn]=be[bn],be[bq]
-bf[bq],bf[bn]=bf[bn],bf[bq]
-bn=bq
+local C,D,E=B*2,B*2+1,B
+if C<=u and s[C]<s[E]then E=C end
+if D<=u and s[D]<s[E]then E=D end
+if E==B then break end
+q[E],q[B]=q[B],q[E]
+r[E],r[B]=r[B],r[E]
+s[E],s[B]=s[B],s[E]
+B=E
 end
-return bl,bm
-end
-
-
-
-
-local function heur(bl,bm)
-local bn,bo=math.abs(bl-ba),math.abs(bm-bb)
-local bp=math.min(bn,bo)
-return(bn+bo-2*bp)*ac+bp*a6
+return z,A
 end
 
-bh[key(a9,b)]=0
-push(a9,b,heur(a9,b))
 
-while bg>0 do
-local bl,bm=pop()
-local bn=key(bl,bm)
-if not bk[bn]then
-bk[bn]=true
-if bl==ba and bm==bb then
-local bo={}
-local bp,bq=bl,bm
-while bp do
-bo[#bo+1]=Vector3.new(worldOf(bp),at(bp,bq)+ak,worldOf(bq))
-local br=key(bp,bq)
-bp,bq=bi[br],bj[br]
+
+
+local function heur(z,A)
+local B,C=math.abs(z-n),math.abs(A-o)
+local D=math.min(B,C)
+return(B+C-2*D)*ac+D*h
 end
 
-local br={}
-for bs=#bo,1,-1 do br[#br+1]=bo[bs]end
-return br
+v[key(l,m)]=0
+push(l,m,heur(l,m))
+
+while u>0 do
+local z,A=pop()
+local B=key(z,A)
+if not y[B]then
+y[B]=true
+if z==n and A==o then
+local C={}
+local D,E=z,A
+while D do
+C[#C+1]=pointOf(D,E)or Vector3.new(worldOf(D),at(D,E)+al,worldOf(E))
+local F=key(D,E)
+D,E=w[F],x[F]
 end
-local bo=at(bl,bm)
+
+local F={}
+for G=#C,1,-1 do F[#F+1]=C[G]end
+return F
+end
+local C=at(z,A)
 
 
 
@@ -18526,42 +19485,70 @@ local bo=at(bl,bm)
 
 
 
-for bp,bq in ipairs(a7)do
-local br,bs=bl+bq[1],bm+bq[2]
-local bt=at(br,bs)
-local bu=false
-if bt then
-if bq[1]==0 or bq[2]==0 then
-bu=linked(bl,bm,bq[1],bq[2])
+for D,E in ipairs(j)do
+local F,G=z+E[1],A+E[2]
+local H=at(F,G)
+
+
+
+
+
+
+
+
+local I
+if H then
+if E[1]==0 or E[2]==0 then
+I=linked(z,A,E[1],E[2])
 else
-bu=linked(bl,bm,bq[1],0)and linked(bl,bm,0,bq[2])
-and at(bl+bq[1],bm)and at(bl,bm+bq[2])
-and linked(bl+bq[1],bm,0,bq[2])
+local J=linked(z,A,E[1],0)
+local K=linked(z,A,0,E[2])
+local L=(at(z+E[1],A)and at(z,A+E[2]))
+and linked(z+E[1],A,0,E[2])or nil
+
+
+
+
+
+
+
+
+
+
+
+
+
+if J and K and L then I=math.min(J,K,L,bn)end
 end
 end
-if bu then
-local bv=bt-bo
-if bv<=ad and bv>=-ae then
-local bw=key(br,bs)
-if not bk[bw]then
+if I then
+local J=H-C
+if J<=I and J>=-ae then
+local K=key(F,G)
+if not y[K]then
 
 
-local c=bv<-af and(-bv-af)or 0
+local L=J<-af and(-J-af)or 0
 
 
-local d=0
-if not at(br+1,bs)then d=d+1 end
-if not at(br-1,bs)then d=d+1 end
-if not at(br,bs+1)then d=d+1 end
-if not at(br,bs-1)then d=d+1 end
+local M,N=at(F-1,G),at(F+1,G)
+local O,P=at(F,G-1),at(F,G+1)
+local Q=0
+if not N then Q=Q+1 end
+if not M then Q=Q+1 end
+if not P then Q=Q+1 end
+if not O then Q=Q+1 end
 
-local e=bh[bn]+bq[3]
-+c*ag+d*aj
-+(bc[bw]and aY or 0)
-if e<(bh[bw]or math.huge)then
-bh[bw]=e
-bi[bw],bj[bw]=bl,bm
-push(br,bs,e+heur(br,bs))
+
+local R=ridgeAt(F,G)and ak or 0
+
+local T=v[B]+E[3]
++L*ag+Q*aj+R
++(p[K]and bh or 0)
+if T<(v[K]or math.huge)then
+v[K]=T
+w[K],x[K]=z,A
+push(F,G,T+heur(F,G))
 end
 end
 end
@@ -18575,32 +19562,30 @@ end
 
 
 
-local function simplify(a9)
+local function simplify(l)
 LPH_ATTRIBUTES(VM(NONE))
-if#a9<=2 then return a9 end
-local b={a9[1]}
-local ba=1
-for bb=3,#a9 do
-if not ab.ClearSafe(a9[ba],a9[bb])or segHot(a9[ba],a9[bb],a8)then
-b[#b+1]=a9[bb-1]
-ba=bb-1
+if#l<=2 then return l end
+local m={l[1]}
+local n=1
+for o=3,#l do
+if not ab.ClearSafe(l[n],l[o])or segHot(l[n],l[o],k)then
+m[#m+1]=l[o-1]
+n=o-1
 end
 end
-b[#b+1]=a9[#a9]
-return b
+m[#m+1]=l[#l]
+return m
 end
 
-function ab.Path(a9,b)
+function ab.Path(l,m)
 LPH_ATTRIBUTES(VM(NONE))
-aM=b
-aN=(Vector3.new(b.X,0,b.Z)-Vector3.new(a9.X,0,a9.Z)).Magnitude
-if not aA then return nil,"s148"end
+a5=m
+a6=(Vector3.new(m.X,0,m.Z)-Vector3.new(l.X,0,l.Z)).Magnitude
+if not aP then return nil,"s148"end
 
-local ba,bb=nearestCell(a9,4)
-if not ba then aJ=os.clock()aO="s149"return nil,aO end
-local bc,bd=nearestCell(b,8)
-
-
+local n,o=nearestCell(l,4,l.Y-al)
+if not n then a4=os.clock()a7="s149"return nil,a7 end
+local p,q=nearestCell(m,8,nil,true)
 
 
 
@@ -18608,38 +19593,98 @@ local bc,bd=nearestCell(b,8)
 
 
 
-local be=false
-if not bc then
-aJ=os.clock()
-aO="s150"
+
+
+local r=false
+if not p then
+a4=os.clock()
+a7="s150"
 ab.Grow()
 
-local bf,bg,bh=math.huge
-for bi,bj in pairs(aw)do
-for bk in pairs(bj)do
-local bl,bm=worldOf(bi)-b.X,worldOf(bk)-b.Z
-local bn=bl*bl+bm*bm
-if bn<bf then bf,bg,bh=bn,bi,bk end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local s={}
+for u,v in ipairs{true,false}do
+local w,x,y=math.huge
+for z,A in pairs(aF)do
+for B,C in pairs(A)do
+if not v or math.abs(C-m.Y)<=am then
+local D,E=worldOf(z)-m.X,worldOf(B)-m.Z
+local F=v and(C-m.Y)or 0
+local G=D*D+E*E+F*F
+if G<w then w,x,y=G,z,B end
 end
 end
-if not bg then return nil,aO end
-bc,bd,be=bg,bh,true
+end
+s[u]=x and{x,y,math.sqrt(w)}or nil
+end
+local u=s[2]
+if s[1]and(not u or s[1][3]<=u[3]*1.5+20)then u=s[1]end
+if not u then return nil,a7 end
+local v,w=u[1],u[2]
+p,q,r=v,w,true
 end
 
-local bf=astar(ba,bb,bc,bd)
-if not bf then
-aJ=os.clock()
-aO="s151"
+local s=astar(n,o,p,q)
+if not s then
+a4=os.clock()
+a7="s151"
 ab.Grow()
-return nil,aO
+return nil,a7
 end
 
-local bg=simplify(bf)
+local u=simplify(s)
 
 
 
 
-if not be then bg[#bg]=b end
+if not r then u[#u]=m end
 
 
 
@@ -18647,15 +19692,15 @@ if not be then bg[#bg]=b end
 
 
 
-local bh=(Vector3.new(b.X,0,b.Z)-Vector3.new(a9.X,0,a9.Z)).Magnitude
-local bi=(#bf-1)*ac
-if bh>12 and bi>bh*1.6 then
+local v=(Vector3.new(m.X,0,m.Z)-Vector3.new(l.X,0,l.Z)).Magnitude
+local w=(#s-1)*ac
+if v>12 and w>v*1.6 then
 
 end
-return bg,be and"s152"or"ok"
+return u,r and"s152"or"ok"
 end
 
-function ab.Step(a9,b)
+function ab.Step(l,m)
 LPH_ATTRIBUTES(VM(NONE))
 
 
@@ -18679,36 +19724,48 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 
-local ba=false
-if aU then
-local bb=hotCells()
-local bc,bd=b.X-a9.X,b.Z-a9.Z
-local be=math.sqrt(bc*bc+bd*bd)
-if be>0.1 then
-local bf=math.min(64,math.ceil(be/ac))
-for bg=0,bf do
-local bh=bg/bf
-local bi,bj=a9.X+bc*bh,a9.Z+bd*bh
-if bb[cellOf(bi)*1000000+cellOf(bj)]then ba=true break end
+
+local n=false
+if bd then
+local o=hotCells()
+local p,q=m.X-l.X,m.Z-l.Z
+local r=math.sqrt(p*p+q*q)
+if r>0.1 then
+local s=math.min(64,math.ceil(r/ac))
+for u=0,s do
+local v=u/s
+local w,x=l.X+p*v,l.Z+q*v
+if o[cellOf(w)*1000000+cellOf(x)]then n=true break end
 end
 end
 end
 
-if not ba and ab.Clear(a9,b)then
-aH,aI=nil,nil
-return b,"direct"
+
+
+
+
+
+
+
+
+
+
+local function pick(o,p)
+if not o then return o,p end
+if walkable(l,o)then return o,p end
+
+
+
+
+
+if aW then
+for q=math.min(aV,#aW),1,-1 do
+local r=aW[q]
+local s,u=r.X-l.X,r.Z-l.Z
+if math.sqrt(s*s+u*u)>1.5 and walkable(l,r)then
+aV=q
+return r,"s153"
 end
-if not aA then
-if ab.Clear(a9,b)then return b,"s153"end
-return nil,"s148"
-end
-
-local function advance()
-while aG<=#aH do
-local bb=aH[aG]
-local bc,bd=bb.X-a9.X,bb.Z-a9.Z
-if math.sqrt(bc*bc+bd*bd)>au then break end
-aG=aG+1
 end
 end
 
@@ -18721,72 +19778,91 @@ end
 
 
 
+local q=(aW and aW[math.min(aV,#aW)])or m
+local r,s=cellOf(l.X),cellOf(l.Z)
+local u=l.Y-al
+local v,w,x
+for y,z in ipairs(g)do
+local A,B=r+z[1],s+z[2]
+local C=at(A,B)
 
 
 
 
-local function furthest()
-local bb
 
 
 
 
 
 
-for bc=aG,#aH do
-if ab.ClearSafe(a9,aH[bc])and not segHot(a9,aH[bc],a8)then
-bb=bc
-else break end
+
+local D=C and linked(r,s,z[1],z[2])
+local E=C and(C-u)
+if D and E<=D and E>=-ae then
+local F=pointOf(A,B)or Vector3.new(worldOf(A),C+al,worldOf(B))
+if walkable(l,F)then
+local G=(Vector3.new(F.X,0,F.Z)-Vector3.new(q.X,0,q.Z)).Magnitude
+if not x or G<x then x,v,w=G,A,B end
 end
-if bb then return bb end
+end
+end
+if v then
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if aH[aG]and not segHot(a9,aH[aG],a8)then
 if aa.enabled then
 
 end
-return aG
+return pointOf(v,w)or Vector3.new(worldOf(v),at(v,w)+al,worldOf(w)),
+"s154"
 end
-if aH[aG]and aa.enabled then
 
-end
-for bc=aG,#aH do
-if ab.ClearSafe(a9,aH[bc])then bb=bc else break end
-end
-if bb then return bb end
-for bc=aG,#aH do
-if ab.Clear(a9,aH[bc])then bb=bc else break end
-end
-return bb
+return o,p
 end
 
 
 
 
+local function trace(o,p)
+ab.Last={
+why=p,
+at=aV,
+n=aW and#aW or 0,
+step=o,
+node=aW and aW[math.min(aV,math.max(1,#aW))],
+}
+return o,p
+end
+
+
+local function deliver(o,p)
+local q,r=pick(o,p)
+if not q then aZ=nil return trace(q,r)end
+local s=os.clock()
+
+
+
+
+if aZ and(s-aY)<a_ then
+local u,v=aZ.X-l.X,aZ.Z-l.Z
+if math.sqrt(u*u+v*v)>aC then
+
+local w,x=q.X-aZ.X,q.Z-aZ.Z
+if math.sqrt(w*w+x*x)<=a0 then aZ=q end
+return trace(aZ,r)
+end
+end
+aZ,aY=q,s
+return trace(q,r)
+end
+
+if not n and ab.Clear(l,m)then
+aW,aX=nil,nil
+return deliver(m,"direct")
+end
+if not aP then
+if ab.Clear(l,m)then return m,"s155"end
+return nil,"s148"
+end
 
 
 
@@ -18795,30 +19871,347 @@ end
 
 
 
-local bb=math.max(av,(b-a9).Magnitude*0.1)
-if aH and aI and(b-aI).Magnitude<=bb then
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function advance()
+while aV<=#aW do
+local o=aW[aV]
+local p=aW[aV-1]
+local q=aW[aV+1]
+
+
+
+
+
+
+
+
+
+
+
+
+local r=false
+if p then
+local s,u=o.X-p.X,o.Z-p.Z
+r=(l.X-o.X)*s+(l.Z-o.Z)*u>0
+end
+if not r then
+local s,u=o.X-l.X,o.Z-l.Z
+local v=math.sqrt(s*s+u*u)
+
+local w=aw
+if p and q then
+local x,y=o.X-p.X,o.Z-p.Z
+local z,A=q.X-o.X,q.Z-o.Z
+local B=math.sqrt(x*x+y*y)
+local C=math.sqrt(z*z+A*A)
+if B>0.01 and C>0.01
+and(x*z+y*A)/(B*C)<ay then
+w=ax
+end
+end
+if v>w then break end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if o.Y-l.Y>math.max(0.6,v*0.5)then break end
+end
+aV=aV+1
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function stretch(o)
+if not o then return o end
+local p,q=o.X-l.X,o.Z-l.Z
+local r=math.sqrt(p*p+q*q)
+if r>=aD or r<0.05 then return o end
+local s=aD/r
+return Vector3.new(l.X+p*s,o.Y,l.Z+q*s)
+end
+
+local function aimOf(o)
+local p=aW and aW[o]
+if not p then return nil end
+local function farEnough(q)
+local r,s=q.X-l.X,q.Z-l.Z
+return(r*r+s*s)>az*az
+end
+if farEnough(p)then return p end
+
+
+
+
+local q,r,s=p,o,0
+while aW[r+1]and s<aB do
+local u,v=aW[r],aW[r+1]
+local w,x,y=v.X-u.X,v.Y-u.Y,v.Z-u.Z
+local z=math.sqrt(w*w+y*y)
+if z>0.01 then
+local A=aA
+while A<=z do
+local B=A/z
+local C=Vector3.new(u.X+w*B,u.Y+x*B,u.Z+y*B)
+if not ab.Clear(l,C)then return stretch(q)end
+q=C
+if farEnough(C)then return C end
+A=A+aA
+end
+s=s+z
+end
+r=r+1
+end
+return stretch(q)
+end
+
+local function furthest()
+local o
+
+
+
+
+
+
+for p=aV,#aW do
+if ab.ClearSafe(l,aW[p])and not segHot(l,aW[p],k)then
+o=p
+else break end
+end
+if o then return o end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if aW[aV]and ab.Clear(l,aW[aV])
+and not segHot(l,aW[aV],k)then
+if aa.enabled then
+
+end
+return aV
+end
+if aW[aV]and aa.enabled then
+
+end
+for p=aV,#aW do
+if ab.ClearSafe(l,aW[p])then o=p else break end
+end
+if o then return o end
+for p=aV,#aW do
+if ab.Clear(l,aW[p])then o=p else break end
+end
+if o then return o end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function far(p)
+local q=aimOf(p)
+if not q then return nil end
+local r,s=q.X-l.X,q.Z-l.Z
+if math.sqrt(r*r+s*s)<=aw*0.5 then return nil end
+return q
+end
+for p=aV-1,1,-1 do
+local q=far(p)
+if q and ab.ClearSafe(l,q)then return p end
+end
+for p=aV-1,1,-1 do
+local q=far(p)
+if q and ab.Clear(l,q)then return p end
+end
+return nil
+end
+
+
+
+
+
+
+
+
+
+
+
+
+local o=math.max(aE,(m-l).Magnitude*0.1)
+if aW and aX and(m-aX).Magnitude<=o then
 advance()
-local bc=aG<=#aH and furthest()or nil
-if bc then
-aG=bc
-return aH[bc],"via cell"
+local function keeps(p)
+if not p then return false end
+local q,r=m.X-l.X,m.Z-l.Z
+local s,u=m.X-p.X,m.Z-p.Z
+return math.sqrt(s*s+u*u)
+<=math.sqrt(q*q+r*r)+a2
+end
+local p=aV<=#aW and furthest()or nil
+local q=p and aimOf(p)
+if q and keeps(q)then
+aV=p
+return deliver(q,"via cell")
+end
+
+if(p or aW[aV])and(os.clock()-a3)>a1 then
+a3=os.clock()
+aW,aX=nil,nil
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local r=aW and aW[aV]and aimOf(aV)
+if r and keeps(r)then
+return deliver(r,"s156")
 end
 end
 
-local bc=ab.Path(a9,b)
-if not bc or#bc==0 then
+local p=ab.Path(l,m)
+if not p or#p==0 then
 
 
-if ab.Clear(a9,b)then
-return b,ba and"s154"or"s155"
+if ab.Clear(l,m)then
+return m,n and"s157"or"s158"
 end
-return nil,"s156"
+return nil,"s159"
 end
-aH,aI,aG=bc,b,1
+aW,aX,aV=p,m,1
+
+aZ=nil
 advance()
-if aG>#aH then return b,"direct"end
-local bd=furthest()
-if bd then aG=bd end
+if aV>#aW then
 
 
 
@@ -18829,15 +20222,36 @@ if bd then aG=bd end
 
 
 
-return aH[aG],"via cell"
+
+
+
+
+
+return aW[#aW],"s152"
+end
+local q=furthest()
+if q then aV=q end
+local r=aimOf(aV)
+
+
+
+
+
+
+
+
+
+
+
+return deliver(r or aW[aV],"via cell")
 end
 
 
 
-function ab.Rebuild(a9,b)
+function ab.Rebuild(l,m)
 LPH_ATTRIBUTES(VM(NONE))
-if aB then return end
-aB=true
+if aQ then return end
+aQ=true
 
 
 
@@ -18848,20 +20262,20 @@ task.spawn(function()
 
 
 tick()local
-ba=pcall(function()
-local ba=LocalPlayer and LocalPlayer.Character
-local bb=ba and ba:FindFirstChild"HumanoidRootPart"
-if not bb then error"s72"end
+n=pcall(function()
+local n=LocalPlayer and LocalPlayer.Character
+local o=n and n:FindFirstChild"HumanoidRootPart"
+if not o then error"s72"end
 refreshFilter()
-local bc,bd=flood(bb.Position,b)
-if not bc then error(bd)end
+local p,q=flood(o.Position,m)
+if not p then error(q)end
 end)
-aB=false
-aA=az>0
-if ba then
+aQ=false
+aP=aN>0
+if n then
 
 
-aH,aI,aG=nil,nil,1
+aW,aX,aV=nil,nil,1
 
 
 end
@@ -18886,51 +20300,52 @@ end
 
 function ab.Grow()
 LPH_ATTRIBUTES(VM(NONE))
-if aB or not aA then return end
-if os.clock()-aF<as then return end
-aF=os.clock()
+if aQ or not aP then return end
+if os.clock()-aU<av then return end
+aU=os.clock()
 
 
 
-ab.Rebuild(nil,aM)
+ab.Rebuild(nil,a5)
 end
 
-function ab.Refresh(a9)
+function ab.Refresh(l)
 LPH_ATTRIBUTES(VM(NONE))
-if aB then return end
-if os.clock()-aE<ar then return end
+if aQ then return end
+if os.clock()-aT<au then return end
 
-local b=LocalPlayer and LocalPlayer.Character
-local ba=b and b:FindFirstChild"HumanoidRootPart"
-if not ba then return end
+local m=LocalPlayer and LocalPlayer.Character
+local n=m and m:FindFirstChild"HumanoidRootPart"
+if not n then return end
 
-local bb=(cellOf(ba.Position.X)-aC)*ac
-local bc=(cellOf(ba.Position.Z)-aD)*ac
-local bd=math.sqrt(bb*bb+bc*bc)
-
-
+local o=(cellOf(n.Position.X)-aR)*ac
+local p=(cellOf(n.Position.Z)-aS)*ac
+local q=math.sqrt(o*o+p*p)
 
 
 
 
 
-local be=(os.clock()-aJ)<ar
+
+
+local r=(os.clock()-a4)<au
 
 
 
-local bf=ab.HeightAt(ba.Position)==nil
-if not be and bd<aq and not bf then return end
+local s=ab.HeightAt(n.Position)==nil
+if not r and q<as and not s then return end
 
-aE=os.clock()
+aT=os.clock()
 
 
 
-ab.Rebuild(a9)
+ab.Rebuild(l)
 end
 
 function ab.Clear_Held()
 LPH_ATTRIBUTES(VM(NONE))
-aH,aI,aG=nil,nil,1
+aW,aX,aV=nil,nil,1
+aZ=nil
 end
 
 return ab end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
@@ -19013,8 +20428,8 @@ local an,ao
 function ac.Running()return ag~=nil end
 
 function ac.Stats()
-if not ag then return"s163"end
-return("s164")
+if not ag then return"s166"end
+return("s167")
 :format(aj,ak,al,am,
 an and("s99"):format(an)or"-",
 ao and("s99"):format(ao)or"-")
@@ -19044,23 +20459,23 @@ al=al+1
 
 local ay=CFrame.new(aw)*CFrame.Angles(0,0,math.pi/2)
 aa.Foresee(ay,Vector3.new(0.5,ax*2,ax*2),
-av,"s165",0,af,true)
+av,"s168",0,af,true)
 return
 end
 
 local aw,ax=ap.cframe,ap.size
 if typeof(aw)~="CFrame"or typeof(ax)~="Vector3"then return end
 ak=ak+1
-aa.Foresee(aw,ax,av,"s166",0,af,false)
+aa.Foresee(aw,ax,av,"s169",0,af,false)
 end
 
 function ac.Start()
-if ag then return true,"s167"end
+if ag then return true,"s170"end
 
 local ap,aq=pcall(function()
 local ap=ab:WaitForChild("Utility",5)
 local aq=ap and ap:FindFirstChild"BridgeNet2"
-if not aq then error"s168"end
+if not aq then error"s171"end
 local ar=require(aq)
 ah=ar.ReferenceBridge"precastHitbox"
 ai=ar.ReferenceIdentifier"action"
@@ -19075,7 +20490,7 @@ return false,tostring(aq)
 end
 aj,ak,al,am=0,0,0,0
 an,ao=nil,nil
-return true,"s169"
+return true,"s172"
 end
 
 function ac.Stop()
@@ -19690,6 +21105,7 @@ local bb,bc={},0
 
 
 local bd,be,bf=0,0
+
 
 
 
@@ -22560,20 +23976,50 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if math.abs(bO.Y-bJ.Position.Y)>20 then br=bO end
+
 if not br and bR then
 local b1
-for b2,b3 in ipairs{6,10,14}do
-for b4=0,15 do
-local b5=b4*math.pi/8
-local b6=Vector3.new(
-bJ.Position.X+math.cos(b5)*b3,
+for b2,b3 in ipairs{true,false}do
+for b4,b5 in ipairs{6,10,14}do
+for b6=0,15 do
+local b7=b6*math.pi/8
+local b8=Vector3.new(
+bJ.Position.X+math.cos(b7)*b5,
 bJ.Position.Y,
-bJ.Position.Z+math.sin(b5)*b3)
-if ad.BoxSafe(b6)and ad.IsSafe(b6,0)
-and Plan().Clear(bJ.Position,b6)then
-b1=b6
+bJ.Position.Z+math.sin(b7)*b5)
+if ad.BoxSafe(b8)and ad.IsSafe(b8,0)
+and(not b3 or Plan().Clear(bJ.Position,b8))then
+b1=b8
 break
 end
+end
+if b1 then break end
 end
 if b1 then break end
 end
@@ -22705,7 +24151,8 @@ if b6 and ai.enabled and(bN-b)>2 then
 b=bN
 
 end
-if b1<=a5 and(bP or E or y
+if b1<=a5 and math.abs(bO.Y-bJ.Position.Y)<=20
+and(bP or E or y
 or(not bR and bS and not bG and not b6))then
 bL:MoveTo(bJ.Position)
 clearRoute()
@@ -27749,6 +29196,7 @@ ao.Start()
 
 
 
+
 ap.Start()
 
 ak.Watch(
@@ -27780,7 +29228,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="09.09 02:45:23",
+Build="11.09 19:15:41",
 S=S,
 Window=Window,
 Priority=a.j(),
