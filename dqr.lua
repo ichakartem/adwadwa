@@ -20667,11 +20667,8 @@ local aw=0.5
 
 
 
-
-
-
-
 local ax=16
+local ay=3
 
 
 
@@ -20682,11 +20679,78 @@ local ax=16
 
 
 
-local ay={
-["Northern Warrior"]=true,
-}
 
-local az=16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local az=0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local aA=3
 
 
@@ -20702,53 +20766,7 @@ local aA=3
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local aB=0
-
-
-
-
-
-
-
-
-
+local aB=13
 
 
 
@@ -20772,6 +20790,7 @@ local aB=0
 
 local aC=3
 
+local aD=4
 
 
 
@@ -20782,18 +20801,22 @@ local aC=3
 
 
 
+local aE=6
 
 
 
-local aD=13
 
 
 
 
+local aF=1.5
 
 
 
+local aG=60
+local aH=12
 
+local aI=0.4
 
 
 
@@ -20803,53 +20826,11 @@ local aD=13
 
 
 
+local aJ=60
 
 
-
-
-local aE=3
-
-local aF=4
-
-
-
-
-
-
-
-
-
-
-local aG=6
-
-
-
-
-
-
-
-local aH=1.5
-
-
-
-local aI=60
-local aJ=12
-
-local aM=0.4
-
-
-
-
-
-
-
-
-
-local aN=60
-
-
-local aO=55
-local aP=200
+local aM=55
+local aN=200
 
 
 
@@ -20893,7 +20874,7 @@ math.rad(50)
 
 
 
-local aQ=8
+local aO=8
 
 
 
@@ -20908,9 +20889,9 @@ local aQ=8
 
 
 
-local aR=0.35
+local aP=0.35
 
-local aS=0.2
+local aQ=0.2
 
 
 
@@ -20938,8 +20919,8 @@ local aS=0.2
 
 
 
-local aT=2
-local aU=1.5
+local aR=2
+local aS=1.5
 
 
 
@@ -20948,15 +20929,15 @@ local aU=1.5
 
 
 
-local aV=5
-local aW=10
+local aT=5
+local aU=10
 
 
 
 
 
 
-local aX={8,5,3,0}
+local aV={8,5,3,0}
 
 
 
@@ -20973,8 +20954,8 @@ local aX={8,5,3,0}
 
 
 
-local aY=1.6
-local aZ=2
+local aW=1.6
+local aX=2
 
 
 
@@ -20994,13 +20975,13 @@ local aZ=2
 
 
 
-local a_=0.5
+local aY=0.5
 
-local a0=1.5
+local aZ=1.5
 
-local a1=4
+local a_=4
 
-local a2=6
+local a0=6
 
 
 
@@ -21013,15 +20994,15 @@ local a2=6
 
 
 
-local a3=25
-local a4=5
+local a1=25
+local a2=5
 
-local a5=4
+local a3=4
 
 
 
 
-local a6=0.5
+local a4=0.5
 
 
 
@@ -21030,7 +21011,7 @@ local a6=0.5
 
 
 
-local a7=0.66
+local a5=0.66
 
 
 
@@ -21085,18 +21066,18 @@ end
 local function showZones()
 LPH_ATTRIBUTES(VM(NONE))return ai.enabled and S.testZones==true end
 
+local a6=0
+local a7=0
 local a8=0
+
 local a9=0
-local b=0
-
-local ba=0
 
 
 
 
 
 
-local bb,bc={},0
+local b,ba={},0
 
 
 
@@ -21104,7 +21085,7 @@ local bb,bc={},0
 
 
 
-local bd,be,bf=0,0
+local bb,bc,bd=0,0
 
 
 
@@ -21112,21 +21093,21 @@ local bd,be,bf=0,0
 
 
 
-local bg,bh,bi={},{},{}
-local bj=0
-local bk="s3"
-local function noteBranch(bl)
+local be,bf,bg={},{},{}
+local bh=0
+local bi="s3"
+local function noteBranch(bj)
 LPH_ATTRIBUTES(VM(NONE))
-bb[bl]=(bb[bl]or 0)+1
-if bl~="s58"then
-bk=bl
+b[bj]=(b[bj]or 0)+1
+if bj~="s58"then
+bi=bj
 
 
 
 end
 end
 
-local bl=0.2
+local bj=0.2
 
 
 
@@ -21167,12 +21148,12 @@ ag.SetFloorFilter(ad.FloorIgnore)
 
 ag.SetDanger(function()
 LPH_ATTRIBUTES(VM(NONE))
-local bm=ab.HRP()
-if not bm then return{}end
-return ad.ZoneShapes(bm.Position,150,0)
+local bk=ab.HRP()
+if not bk then return{}end
+return ad.ZoneShapes(bk.Position,150,0)
 end)
 
-return function(bm)
+return function(bk)
 LPH_ATTRIBUTES(VM(NONE))
 
 
@@ -21181,14 +21162,14 @@ LPH_ATTRIBUTES(VM(NONE))
 
 
 spawnLoop(function()
-local bn=false
+local bl=false
 while not _apelStopped do
-if not bn then
-local bo=tostring(aa.Name and aa.Name()or""):lower()
-for bp,bq in pairs(ao)do
-if bo~=""and bo:find(bp,1,true)then
-ag.SetNoGo(bq)
-bn=true
+if not bl then
+local bm=tostring(aa.Name and aa.Name()or""):lower()
+for bn,bo in pairs(ao)do
+if bm~=""and bm:find(bn,1,true)then
+ag.SetNoGo(bo)
+bl=true
 
 break
 end
@@ -21199,7 +21180,7 @@ end
 end)
 
 
-local bn,bo={}
+local bl,bm={}
 
 
 
@@ -21210,18 +21191,18 @@ local bn,bo={}
 
 
 
-local bp={}
+local bn={}
 
 local function mobPoints()
-local bq={}
-for br,bs in ipairs(bp)do
-if bs.Parent then
-local bt=aa.PivotOf(bs)
-if bt then bq[#bq+1]=Vector3.new(bt.X,0,bt.Z)end
+local bo={}
+for bp,bq in ipairs(bn)do
+if bq.Parent then
+local br=aa.PivotOf(bq)
+if br then bo[#bo+1]=Vector3.new(br.X,0,br.Z)end
 end
 end
-return bq
-end local bq=
+return bo
+end local bo=
 
 
 
@@ -21354,11 +21335,11 @@ math.huge
 
 
 local function mobKeeps()
-local br={}
-for bs,bt in ipairs(bp)do
-if bt.Parent then
-local bu=aa.PivotOf(bt)
-if bu then
+local bp={}
+for bq,br in ipairs(bn)do
+if br.Parent then
+local bs=aa.PivotOf(br)
+if bs then
 
 
 
@@ -21372,14 +21353,14 @@ if bu then
 
 
 
-br[#br+1]={
-at=Vector3.new(bu.X,0,bu.Z),
-keep=ar[bt.Name]or 0,
+bp[#bp+1]={
+at=Vector3.new(bs.X,0,bs.Z),
+keep=ar[br.Name]or 0,
 }
 end
 end
 end
-return br
+return bp
 end
 
 
@@ -21387,31 +21368,31 @@ end
 
 
 
-local function freshFolder(br)
-for bs,bt in ipairs(workspace:GetChildren())do
-if bt.Name==br then pcall(function()bt:Destroy()end)end
+local function freshFolder(bp)
+for bq,br in ipairs(workspace:GetChildren())do
+if br.Name==bp then pcall(function()br:Destroy()end)end
 end
-local bs=Instance.new"Folder"
-bs.Name=br
-bs.Parent=workspace
-return bs
+local bq=Instance.new"Folder"
+bq.Name=bp
+bq.Parent=workspace
+return bq
 end
 
-local br
+local bp
 
-local bs=RaycastParams.new()
-bs.FilterType=Enum.RaycastFilterType.Exclude
-bs.IgnoreWater=true
+local bq=RaycastParams.new()
+bq.FilterType=Enum.RaycastFilterType.Exclude
+bq.IgnoreWater=true
 
-local function floorAt(bt,bu,bv)
+local function floorAt(br,bs,bt)
 
 
 
 
 
 if ae.Running()then
-local bw=ae.Ground()
-if bw then return bw end
+local bu=ae.Ground()
+if bu then return bu end
 end
 
 
@@ -21422,25 +21403,25 @@ end
 
 
 if ag.Ready()then
-local bw=ag.HeightAt(Vector3.new(bt,0,bu))
-if bw then return bw end
+local bu=ag.HeightAt(Vector3.new(br,0,bs))
+if bu then return bu end
 end
 
 
-bs.FilterDescendantsInstances={LocalPlayer.Character,bo}
-local bw=workspace:Raycast(Vector3.new(bt,(bv or 0)+8,bu),
-Vector3.new(0,-300,0),bs)
-return bw and bw.Position.Y or nil
+bq.FilterDescendantsInstances={LocalPlayer.Character,bm}
+local bu=workspace:Raycast(Vector3.new(br,(bt or 0)+8,bs),
+Vector3.new(0,-300,0),bq)
+return bu and bu.Position.Y or nil
 end
 
 
 
 local function ensureDots()
-if bo and bo.Parent then return end
-bo=freshFolder"ApelTestDots"
-bn={}
-for bt=1,ak*(#au+1)do
-local bu=Instance.new"Part"
+if bm and bm.Parent then return end
+bm=freshFolder"ApelTestDots"
+bl={}
+for br=1,ak*(#au+1)do
+local bs=Instance.new"Part"
 
 
 
@@ -21450,13 +21431,13 @@ local bu=Instance.new"Part"
 
 
 
-bu.Name="ApelMark"
-bu.Size=Vector3.new(al,al,al)
-bu.Anchored,bu.CanCollide,bu.CanQuery,bu.CanTouch=true,false,false,false
-bu.Material=Enum.Material.Neon
-bu.Transparency=0.3
-bu.Parent=bo
-bn[bt]=bu
+bs.Name="ApelMark"
+bs.Size=Vector3.new(al,al,al)
+bs.Anchored,bs.CanCollide,bs.CanQuery,bs.CanTouch=true,false,false,false
+bs.Material=Enum.Material.Neon
+bs.Transparency=0.3
+bs.Parent=bm
+bl[br]=bs
 end
 end
 
@@ -21470,63 +21451,63 @@ end
 
 
 
-local bt,bu={}
+local br,bs={}
 
 local function clearRoute()
-if bu then bu:Destroy()bu=nil end
-bt={}
+if bs then bs:Destroy()bs=nil end
+br={}
 end
 
-local function drawRoute(bv,bw)
-if not showRoute()or not bw or#bw==0 then
-for c,d in ipairs(bt)do d.Transparency=1 end
+local function drawRoute(bt,bu)
+if not showRoute()or not bu or#bu==0 then
+for bv,bw in ipairs(br)do bw.Transparency=1 end
 return
 end
-if not bu or not bu.Parent then
-bu=freshFolder"ApelRouteView"
-bt={}
+if not bs or not bs.Parent then
+bs=freshFolder"ApelRouteView"
+br={}
 end
 
-local c=0
-local function put(d,e)
-c=c+1
-local f=bt[c]
-if not f or not f.Parent then
-f=Instance.new"Part"
-f.Name="ApelMark"
-f.Anchored,f.CanCollide=true,false
-f.CanQuery,f.CanTouch=false,false
-f.Material=Enum.Material.Neon
-f.Parent=bu
-bt[c]=f
+local bv=0
+local function put(bw,c)
+bv=bv+1
+local d=br[bv]
+if not d or not d.Parent then
+d=Instance.new"Part"
+d.Name="ApelMark"
+d.Anchored,d.CanCollide=true,false
+d.CanQuery,d.CanTouch=false,false
+d.Material=Enum.Material.Neon
+d.Parent=bs
+br[bv]=d
 end
 
-f.Size=e and Vector3.new(1.6,1.6,1.6)or Vector3.new(0.7,0.7,0.7)
-f.Color=e and Color3.fromRGB(255,150,40)
+d.Size=c and Vector3.new(1.6,1.6,1.6)or Vector3.new(0.7,0.7,0.7)
+d.Color=c and Color3.fromRGB(255,150,40)
 or Color3.fromRGB(255,220,120)
-f.Transparency=0.3
-f.Position=d
+d.Transparency=0.3
+d.Position=bw
 end
 
-local d=bv
-for e,f in ipairs(bw)do
-local g=(f-d).Magnitude
-if g>0.01 then
-local h=math.floor(g/av)
-for i=1,h do
-put(d:Lerp(f,(i*av)/g),false)
+local bw=bt
+for c,d in ipairs(bu)do
+local e=(d-bw).Magnitude
+if e>0.01 then
+local f=math.floor(e/av)
+for g=1,f do
+put(bw:Lerp(d,(g*av)/e),false)
 end
 end
-put(f,true)
-d=f
-if c>200 then break end
+put(d,true)
+bw=d
+if bv>200 then break end
 end
-for e=c+1,#bt do bt[e].Transparency=1 end
+for c=bv+1,#br do br[c].Transparency=1 end
 end
 
 local function clearMarks()
-if bo then bo:Destroy()bo=nil end
-bn={}
+if bm then bm:Destroy()bm=nil end
+bl={}
 clearRoute()
 end
 
@@ -21536,27 +21517,27 @@ end
 
 
 
-local bv={}
+local bt={}
 
 
 
-local bw={}
+local bu={}
 
 
 
 
 
 
-local function legClear(c,d)
-local e=Vector3.new(d.X-c.X,0,d.Z-c.Z)
-local f=math.min(e.Magnitude,a3)
-if f<0.5 then return true end
-local g=e.Unit
-local h=a4
-while h<=f do
-local i=c+g*h
-if not ad.IsSafe(Vector3.new(i.X,c.Y,i.Z),aB)then return false end
-h=h+a4
+local function legClear(bv,bw)
+local c=Vector3.new(bw.X-bv.X,0,bw.Z-bv.Z)
+local d=math.min(c.Magnitude,a1)
+if d<0.5 then return true end
+local e=c.Unit
+local f=a2
+while f<=d do
+local g=bv+e*f
+if not ad.IsSafe(Vector3.new(g.X,bv.Y,g.Z),az)then return false end
+f=f+a2
 end
 return true
 end
@@ -21575,11 +21556,11 @@ end
 
 
 
-local function legOut(c,d)
-local e=Vector3.new(d.X-c.X,0,d.Z-c.Z)
-local f=math.min(e.Magnitude,a3)
-if f<0.5 then return true end
-local g=e.Unit
+local function legOut(bv,bw)
+local c=Vector3.new(bw.X-bv.X,0,bw.Z-bv.Z)
+local d=math.min(c.Magnitude,a1)
+if d<0.5 then return true end
+local e=c.Unit
 
 
 
@@ -21591,18 +21572,18 @@ local g=e.Unit
 
 
 
-local h=ab.Humanoid()
-local i=math.max((h and h.WalkSpeed)or az,1)
-local j,k=a4,false
-while j<=f do
-local l=c+g*j
-local m=ad.PassAt(Vector3.new(l.X,c.Y,l.Z),aB,j/i)
-if m then
-k=true
-elseif k then
+local f=ab.Humanoid()
+local g=math.max((f and f.WalkSpeed)or ax,1)
+local h,i=a2,false
+while h<=d do
+local j=bv+e*h
+local k=ad.PassAt(Vector3.new(j.X,bv.Y,j.Z),az,h/g)
+if k then
+i=true
+elseif i then
 return false
 end
-j=j+a4
+h=h+a2
 end
 return true
 end
@@ -21617,16 +21598,16 @@ end
 
 
 
-local function pathGap(c,d,e)
-local f,g=c.X-e.X,c.Z-e.Z
-local h,i=d.X-e.X,d.Z-e.Z
-local j,k=h-f,i-g
-local l=j*j+k*k
-if l<1e-6 then return math.sqrt(f*f+g*g)end
-local m=-(f*j+g*k)/l
-if m<0 then m=0 elseif m>1 then m=1 end
-local n,o=f+j*m,g+k*m
-return math.sqrt(n*n+o*o)
+local function pathGap(bv,bw,c)
+local d,e=bv.X-c.X,bv.Z-c.Z
+local f,g=bw.X-c.X,bw.Z-c.Z
+local h,i=f-d,g-e
+local j=h*h+i*i
+if j<1e-6 then return math.sqrt(d*d+e*e)end
+local k=-(d*h+e*i)/j
+if k<0 then k=0 elseif k>1 then k=1 end
+local l,m=d+h*k,e+i*k
+return math.sqrt(l*l+m*m)
 end
 
 
@@ -21636,34 +21617,23 @@ end
 
 
 
-local c,d,e={},0
-local f,g,h,i,j=0,0,0,0,0
+local bv,bw,c={},0
+local d,e,f,g,h=0,0,0,0,0
+local i=0
+local j=0
 local k=0
 local l=0
 local m=0
-local n=0
-local o=0
-local p,q,r=0,0,0
+local n,o,p=0,0,0
 
 
 
 
 
 
-local s=0
-local u,v={},0
-local w=-99
-
-
-
-
-
-
-
-
-
-
-local x,y,z=0
+local q=0
+local r,s={},0
+local u=-99
 
 
 
@@ -21674,36 +21644,47 @@ local x,y,z=0
 
 
 
+local v,w,x=0
 
 
-local function drawZones(A)
-if not e or not e.Parent then
-e=freshFolder"ApelZoneView"
-c={}
+
+
+
+
+
+
+
+
+
+
+local function drawZones(y)
+if not c or not c.Parent then
+c=freshFolder"ApelZoneView"
+bv={}
 end
 
-local B=ad.ZoneShapes(A,90,aB)
-for C,D in ipairs(B)do
-local E=c[C]
-if not E or not E.Parent then
-E=Instance.new"Part"
-E.Name="ApelMark"
-E.Anchored,E.CanCollide=true,false
-E.CanQuery,E.CanTouch=false,false
-E.Material=Enum.Material.ForceField
-E.Parent=e
-c[C]=E
+local z=ad.ZoneShapes(y,90,az)
+for A,B in ipairs(z)do
+local C=bv[A]
+if not C or not C.Parent then
+C=Instance.new"Part"
+C.Name="ApelMark"
+C.Anchored,C.CanCollide=true,false
+C.CanQuery,C.CanTouch=false,false
+C.Material=Enum.Material.ForceField
+C.Parent=c
+bv[A]=C
 end
-E.Shape=D.cylinder and Enum.PartType.Cylinder or Enum.PartType.Block
-E.Size=D.size
-E.CFrame=D.cf
+C.Shape=B.cylinder and Enum.PartType.Cylinder or Enum.PartType.Block
+C.Size=B.size
+C.CFrame=B.cf
 
-E.Color=D.ghost and Color3.fromRGB(90,160,255)
+C.Color=B.ghost and Color3.fromRGB(90,160,255)
 or Color3.fromRGB(255,220,60)
-E.Transparency=0.75
+C.Transparency=0.75
 end
-for C=#B+1,#c do
-if c[C]then c[C].Transparency=1 end
+for A=#z+1,#bv do
+if bv[A]then bv[A].Transparency=1 end
 end
 end
 
@@ -21724,8 +21705,8 @@ end
 
 
 
-local A=6
-local B=false
+local y=6
+local z=false
 
 
 
@@ -21738,50 +21719,50 @@ local B=false
 
 
 
-local function hopSpot(C,D,E)
-local F,G=math.huge
-local H=mobPoints()
+local function hopSpot(A,B,C)
+local D,E=math.huge
+local F=mobPoints()
 mobKeeps()
-local I=D and A or aD
-local J=D and(B and 0 or aE)or aF
-J=J+(E or 0)
-for K=6,aQ,2 do
-for L=1,16 do
-local M=(L/16)*math.pi*2
-local N=C.X+math.cos(M)*K
-local O=C.Z+math.sin(M)*K
-local P=floorAt(N,O,C.Y)
+local G=B and y or aB
+local H=B and(z and 0 or aC)or aD
+H=H+(C or 0)
+for I=6,aO,2 do
+for J=1,16 do
+local K=(J/16)*math.pi*2
+local L=A.X+math.cos(K)*I
+local M=A.Z+math.sin(K)*I
+local N=floorAt(L,M,A.Y)
+if N then
+local O=Vector3.new(L,N+ay,M)
+
+
+
+
+
+
+local P=not ag.InNoGo(O)
+and ad.IsSafe(O,H)and Plan().Clear(A,O)
+and(z or Plan().RoomAt(O,aE))
 if P then
-local Q=Vector3.new(N,P+aA,O)
-
-
-
-
-
-
-local R=not ag.InNoGo(Q)
-and ad.IsSafe(Q,J)and Plan().Clear(C,Q)
-and(B or Plan().RoomAt(Q,aG))
-if R then
-for T,U in ipairs(H)do
-if(Vector3.new(Q.X,0,Q.Z)-U).Magnitude<I then
-R=false break
+for Q,R in ipairs(F)do
+if(Vector3.new(O.X,0,O.Z)-R).Magnitude<G then
+P=false break
 end
 end
 end
-if R and K<F then G,F=Q,K end
+if P and I<D then E,D=O,I end
 end
 end
 
-if G then break end
+if E then break end
 end
-return G
+return E
 end
 
 
 
 
-local function hopSpotDeep(C,D)
+local function hopSpotDeep(A,B)
 
 
 
@@ -21799,68 +21780,68 @@ local function hopSpotDeep(C,D)
 
 
 
-for E,F in ipairs(aX)do
-local G=hopSpot(C,D,F)
-if G and ad.RoomSafe(G,2.5)then return G,F end
+for C,D in ipairs(aV)do
+local E=hopSpot(A,B,D)
+if E and ad.RoomSafe(E,2.5)then return E,D end
 end
-for E,F in ipairs(aX)do
-local G=hopSpot(C,D,F)
-if G then return G,F end
+for C,D in ipairs(aV)do
+local E=hopSpot(A,B,D)
+if E then return E,D end
 end
-if not D then return nil end
-B=true
-local E=hopSpot(C,D,0)
-B=false
-return E,false
+if not B then return nil end
+z=true
+local C=hopSpot(A,B,0)
+z=false
+return C,false
 end
 
 
 
 
-local function leastThreat(C)
-local D=ad.ThreatAt(C,0)
-if D<=0 then return nil end
-local E,F=D
-local G=mobPoints()
+local function leastThreat(A)
+local B=ad.ThreatAt(A,0)
+if B<=0 then return nil end
+local C,D=B
+local E=mobPoints()
 mobKeeps()
-for H=6,aQ,2 do
-for I=1,16 do
-local J=(I/16)*math.pi*2
-local K=C.X+math.cos(J)*H
-local L=C.Z+math.sin(J)*H
-local M=floorAt(K,L,C.Y)
+for F=6,aO,2 do
+for G=1,16 do
+local H=(G/16)*math.pi*2
+local I=A.X+math.cos(H)*F
+local J=A.Z+math.sin(H)*F
+local K=floorAt(I,J,A.Y)
+if K then
+local L=Vector3.new(I,K+ay,J)
+if Plan().Clear(A,L)and not ag.InNoGo(L)then
+local M=true
+for N,O in ipairs(E)do
+if(Vector3.new(L.X,0,L.Z)-O).Magnitude<y then
+M=false break
+end
+end
+
+
 if M then
-local N=Vector3.new(K,M+aA,L)
-if Plan().Clear(C,N)and not ag.InNoGo(N)then
-local O=true
-for P,Q in ipairs(G)do
-if(Vector3.new(N.X,0,N.Z)-Q).Magnitude<A then
-O=false break
-end
-end
-
-
-if O then
-local P=ad.ThreatAt(N,0)
-if P<E-1 then F,E=N,P end
+local N=ad.ThreatAt(L,0)
+if N<C-1 then D,C=L,N end
 end
 end
 end
 end
 end
-return F
+return D
 end
 
 
 
 local function groundNow()
 if ae.Running()then
-local C=ae.Ground()
-if C then return C end
+local A=ae.Ground()
+if A then return A end
 end
-local C=ab.HRP()
-if not C then return nil end
-return floorAt(C.Position.X,C.Position.Z,C.Position.Y)
+local A=ab.HRP()
+if not A then return nil end
+return floorAt(A.Position.X,A.Position.Z,A.Position.Y)
 end
 
 
@@ -21872,9 +21853,9 @@ end
 
 
 
-local function pickSpot(C,D,E,F)
-local G=ab.HRP()and ab.HRP().Position
-if not G then return nil end
+local function pickSpot(A,B,C,D)
+local E=ab.HRP()and ab.HRP().Position
+if not E then return nil end
 if showDots()then ensureDots()end
 
 
@@ -21888,8 +21869,8 @@ if showDots()then ensureDots()end
 
 
 
-local H=not ad.IsSafe(G,0)
-local I=H and 200 or 8
+local F=not ad.IsSafe(E,0)
+local G=F and 200 or 8
 
 
 
@@ -21905,16 +21886,14 @@ local I=H and 200 or 8
 
 
 
-local J,K,L=-1,math.huge
-table.clear(bw)
-local M,N=math.huge
+local H,I,J=-1,math.huge
+table.clear(bu)
+local K,L=math.huge
 
-table.clear(bv)
-bv.total,bv.unsafe,bv.blocked=0,0,0
-bv.tight,bv.close,bv.crossed,bv.nofloor=0,0,0,0
-bv.legcut=0
-
-
+table.clear(bt)
+bt.total,bt.unsafe,bt.blocked=0,0,0
+bt.tight,bt.close,bt.crossed,bt.nofloor=0,0,0,0
+bt.legcut=0
 
 
 
@@ -21922,17 +21901,19 @@ bv.legcut=0
 
 
 
-local O=mobPoints()
-local P=mobKeeps()
-local Q=math.huge
-for R,T in ipairs(O)do
-local U=(Vector3.new(G.X,0,G.Z)-T).Magnitude
-if U<Q then Q=U end
+
+
+local M=mobPoints()
+local N=mobKeeps()
+local O=math.huge
+for P,Q in ipairs(M)do
+local R=(Vector3.new(E.X,0,E.Z)-Q).Magnitude
+if R<O then O=R end
 end
-if Q==math.huge then
-Q=(Vector3.new(G.X,0,G.Z)-Vector3.new(C.X,0,C.Z)).Magnitude
+if O==math.huge then
+O=(Vector3.new(E.X,0,E.Z)-Vector3.new(A.X,0,A.Z)).Magnitude
 end
-local R=math.min(aD,Q)
+local P=math.min(aB,O)
 
 
 
@@ -21943,82 +21924,124 @@ local R=math.min(aD,Q)
 
 
 
-local T={E}
-if F then
-for U,V in ipairs(au)do
-if math.abs(V-E)>1 then T[#T+1]=V end
-end
-end
-
-for U=1,#T do
-local V=T[U]
-for W=1,ak do
-local X=(U-1)*ak+W
-local Y=(W/ak)*math.pi*2
-local Z=C.X+math.cos(Y)*V
-local _=C.Z+math.sin(Y)*V
-local bx=floorAt(Z,_,C.Y)
-
-local by=bx and Vector3.new(Z,bx+aA,_)or nil
-
-if by and ag.InNoGo(by)then by=nil end
-bv.total=bv.total+1
-if not by then bv.nofloor=bv.nofloor+1 end
-local bz=by~=nil and ad.IsSafe(by,aB)
-if by and not bz then bv.unsafe=bv.unsafe+1 end
-
-
-
-
-
-
-
-
-local bA=bz and Plan().Clear(G,by)
-
-
-
-local bB=by~=nil
-if by then
-local bC=Vector3.new(by.X,0,by.Z)
-for bD,bE in ipairs(P)do
-
-
-
-local bF=bE.keep or 0
-if bF>0 and(bC-bE.at).Magnitude<bF then
-bB=false break
+local Q={C}
+if D then
+for R,T in ipairs(au)do
+if math.abs(T-C)>1 then Q[#Q+1]=T end
 end
 end
+
+for R=1,#Q do
+local T=Q[R]
+for U=1,ak do
+local V=(R-1)*ak+U
+local W=(U/ak)*math.pi*2
+local X=A.X+math.cos(W)*T
+local Y=A.Z+math.sin(W)*T
+local Z=floorAt(X,Y,A.Y)
+
+local _=Z and Vector3.new(X,Z+ay,Y)or nil
+
+if _ and ag.InNoGo(_)then _=nil end
+bt.total=bt.total+1
+if not _ then bt.nofloor=bt.nofloor+1 end
+local bx=_~=nil and ad.IsSafe(_,az)
+if _ and not bx then bt.unsafe=bt.unsafe+1 end
+
+
+
+
+
+
+
+
+local by=bx and Plan().Clear(E,_)
+
+
+
+local bz=_~=nil
+if _ then
+local bA=Vector3.new(_.X,0,_.Z)
+for bB,bC in ipairs(N)do
+
+
+
+local bD=bC.keep or 0
+if bD>0 and(bA-bC.at).Magnitude<bD then
+bz=false break
 end
-local bC=bz and bA
+end
+end
+local bA=bx and by
 
-if showDots()and bn[X]then
-local bD=bn[X]
-if by then
-bD.Position=by
-bD.Transparency=0.3
+if showDots()and bl[V]then
+local bB=bl[V]
+if _ then
+bB.Position=_
+bB.Transparency=0.3
 
 
-if bC then
-bD.Color=Color3.fromRGB(60,235,110)
-elseif bz then
-bD.Color=Color3.fromRGB(80,140,255)
+if bA then
+bB.Color=Color3.fromRGB(60,235,110)
+elseif bx then
+bB.Color=Color3.fromRGB(80,140,255)
 else
-bD.Color=Color3.fromRGB(255,70,70)
+bB.Color=Color3.fromRGB(255,70,70)
 end
 else
 
 
-bD.Transparency=1
+bB.Transparency=1
 end
 end
 
-if by and bz and not bA then
-bv.blocked=bv.blocked+1
+if _ and bx and not by then
+bt.blocked=bt.blocked+1
 end
 
+if bA then
+
+
+
+
+
+
+
+
+
+
+
+local bB=0
+
+
+local bC=false
+for bD,bE in ipairs(M)do
+if pathGap(E,_,bE)<P then bC=true break end
+end
 if bC then
+bB=bB-5000
+bt.crossed=bt.crossed+1
+end
+if ad.IsSafe(_,aD)then bB=bB+1000
+elseif ad.IsSafe(_,aC)then
+
+
+bB=bB+400
+bt.tight=bt.tight+1
+else bt.tight=bt.tight+1 end
+if bz then bB=bB+500
+else bt.close=bt.close+1 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22031,56 +22054,14 @@ if bC then
 
 
 local bD=0
-
-
-local bE=false
-for bF,bG in ipairs(O)do
-if pathGap(G,by,bG)<R then bE=true break end
-end
-if bE then
-bD=bD-5000
-bv.crossed=bv.crossed+1
-end
-if ad.IsSafe(by,aF)then bD=bD+1000
-elseif ad.IsSafe(by,aE)then
-
-
-bD=bD+400
-bv.tight=bv.tight+1
-else bv.tight=bv.tight+1 end
-if bB then bD=bD+500
-else bv.close=bv.close+1 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local bF=0
-local bG=Vector3.new(by.X,0,by.Z)
-for bH,bI in ipairs(O)do
-if(bG-bI).Magnitude<=aO then
-bF=bF+1
+local bE=Vector3.new(_.X,0,_.Z)
+for bF,bG in ipairs(M)do
+if(bE-bG).Magnitude<=aM then
+bD=bD+1
 end
 end
-if bF>1 then
-bD=bD-math.min(bF-1,4)*aP
+if bD>1 then
+bB=bB-math.min(bD-1,4)*aN
 end
 
 
@@ -22100,18 +22081,18 @@ end
 
 
 
-if legClear(G,by)then bD=bD+600
+if legClear(E,_)then bB=bB+600
 else
-bD=bD-5000
-bv.legcut=(bv.legcut or 0)+1
+bB=bB-5000
+bt.legcut=(bt.legcut or 0)+1
 end
 
 
 
 
 
-if Plan().RoomAt(by,aG)then bD=bD+1200
-else bD=bD-800 end
+if Plan().RoomAt(_,aE)then bB=bB+1200
+else bB=bB-800 end
 
 
 
@@ -22139,35 +22120,35 @@ else bD=bD-800 end
 
 
 
-local bH=(by-G).Magnitude
-bD=bD-bH*I
+local bF=(_-E).Magnitude
+bB=bB-bF*G
 
 
 
-bw[#bw+1]={score=bD,far=bH}
+bu[#bu+1]={score=bB,far=bF}
 
-local bI=bD>J
-or(bD==J and bH<K)
-if L==nil or bI then
-L,J,K=by,bD,bH
-bv.crowd=bF
+local bG=bB>H
+or(bB==H and bF<I)
+if J==nil or bG then
+J,H,I=_,bB,bF
+bt.crowd=bD
 end
-elseif bz then
+elseif bx then
 
 
 
 
 
 
-local bD=(by-G).Magnitude
-if bD<M then N,M=by,bD end
+local bB=(_-E).Magnitude
+if bB<K then L,K=_,bB end
 end
 end
 end
-bv.best=J
-bv.picked=L and"s59"or(N and"s60"or"s61")
-bv.at=L or N
-return L or N
+bt.best=H
+bt.picked=J and"s59"or(L and"s60"or"s61")
+bt.at=J or L
+return J or L
 end
 
 local function walkSet(bx)
@@ -22199,13 +22180,12 @@ end
 Plan().Rebuild(groundNow())
 else
 ah.Stop()
-br=nil
+bp=nil
 clearMarks()
 local by=ab.Humanoid()
-if by then
-by.WalkSpeed=16
-by.AutoRotate=true
-end
+
+
+if by then by.AutoRotate=true end
 end
 end
 S.walkSet=walkSet
@@ -22319,9 +22299,9 @@ local bD=false
 local bE,bF=0,0
 local bG=false
 
-local bH
+local A
 
-local bI=0
+local B=0
 
 
 
@@ -22414,24 +22394,24 @@ N, O=0
 local function tryHop(P,Q,R)
 
 
-s=s*0.98+(Q and 0.02 or 0)
+q=q*0.98+(Q and 0.02 or 0)
 if Q then
-if p==0 then
-p=P
+if n==0 then
+n=P
 
 
 
-if ai.enabled and q>0 then
+if ai.enabled and o>0 then
 
 end
 end
 else
 
-if p>0 and ai.enabled and q<p
-and(P-p)<a_ then
+if n>0 and ai.enabled and o<n
+and(P-n)<aY then
 
 end
-p=0
+n=0
 end
 
 
@@ -22451,7 +22431,7 @@ end
 
 
 local T,U=math.huge
-for V,W in ipairs(bp)do
+for V,W in ipairs(bn)do
 local X=ar[W.Name]
 if X and W.Parent then
 local Y=aa.PivotOf(W)
@@ -22463,19 +22443,19 @@ end
 end
 end
 
-local V=S.testHop and Q and p>0
-and(P-q)>aR
-and P>=v
+local V=S.testHop and Q and n>0
+and(P-o)>aP
+and P>=s
 
 
 local W=false
 if not V and U and S.testHop and not Q
-and(P-q)>aY and P>=v then
+and(P-o)>aW and P>=s then
 local X=0
-for Y,Z in ipairs(u)do
-if P-Z<=aW then X=X+1 end
+for Y,Z in ipairs(r)do
+if P-Z<=aU then X=X+1 end
 end
-if X<=(aV-aZ)then
+if X<=(aT-aX)then
 V,W=true,true
 end
 end
@@ -22484,24 +22464,24 @@ end
 
 
 if V then
-while u[1]and(P-u[1])>aW do
-table.remove(u,1)
+while r[1]and(P-r[1])>aU do
+table.remove(r,1)
 end
 local X=0
-for Y,Z in ipairs(u)do
-if P-Z<=aU then X=X+1 end
+for Y,Z in ipairs(r)do
+if P-Z<=aS then X=X+1 end
 end
 
 local Y
-if X>=aT then
-Y=("s66"):format(X,aU)
-elseif#u>=aV then
-Y=("s67"):format(#u,aW)
+if X>=aR then
+Y=("s66"):format(X,aS)
+elseif#r>=aT then
+Y=("s67"):format(#r,aU)
 end
 if Y then
 V=false
-if ai.enabled and(P-k)>2 then
-k=P
+if ai.enabled and(P-i)>2 then
+i=P
 
 end
 end
@@ -22523,27 +22503,27 @@ local X,Y=hopSpotDeep(R.Position,true)
 
 if U then
 local Z=Vector3.new(U.X,0,U.Z)
-local _,bJ=T
-for bK=aQ,6,-2 do
-for bL=1,16 do
-local bM=(bL/16)*math.pi*2
-local bN=R.Position.X+math.cos(bM)*bK
-local bO=R.Position.Z+math.sin(bM)*bK
-local bP=floorAt(bN,bO,R.Position.Y)
-if bP then
-local bQ=Vector3.new(bN,bP+aA,bO)
-local bR=(Vector3.new(bN,0,bO)-Z).Magnitude
-if bR>_ and ad.IsSafe(bQ,aE)
-and not ag.InNoGo(bQ)and Plan().Clear(R.Position,bQ)then
-bJ,_=bQ,bR
+local _,bH=T
+for bI=aO,6,-2 do
+for bJ=1,16 do
+local bK=(bJ/16)*math.pi*2
+local bL=R.Position.X+math.cos(bK)*bI
+local bM=R.Position.Z+math.sin(bK)*bI
+local bN=floorAt(bL,bM,R.Position.Y)
+if bN then
+local bO=Vector3.new(bL,bN+ay,bM)
+local bP=(Vector3.new(bL,0,bM)-Z).Magnitude
+if bP>_ and ad.IsSafe(bO,aC)
+and not ag.InNoGo(bO)and Plan().Clear(R.Position,bO)then
+bH,_=bO,bP
 end
 end
 end
 end
-if bJ then
-X,Y=bJ,0
-if ai.enabled and(P-o)>2 then
-o=P
+if bH then
+X,Y=bH,0
+if ai.enabled and(P-m)>2 then
+m=P
 
 end
 elseif W then
@@ -22568,53 +22548,53 @@ end
 
 
 
-local bJ
-if not X and(P-w)>a1 then
+local bH
+if not X and(P-u)>a_ then
 X=leastThreat(R.Position)
-if X then bJ,w=true,P end
+if X then bH,u=true,P end
 end
 if not X then
 if ai.enabled then
 
 end
 return
-end local bK=
+end local bI=
 
 
 
 (Vector3.new(X.X,0,X.Z)
--Vector3.new(R.Position.X,0,R.Position.Z)).Magnitude local bL=
-P-p
+-Vector3.new(R.Position.X,0,R.Position.Z)).Magnitude local bJ=
+P-n
 
 
-local bM=R.Position
+local bK=R.Position
 R.CFrame=CFrame.new(X)*(R.CFrame-R.CFrame.Position)
 R.AssemblyLinearVelocity=Vector3.zero
 R.AssemblyAngularVelocity=Vector3.zero
-q,p=P,0
-u[#u+1]=P
+o,n=P,0
+r[#r+1]=P
 if ad.NoteHop then ad.NoteHop()end
-y,x,z=X,P,ad.ZoneAt(bM,0)
+w,v,x=X,P,ad.ZoneAt(bK,0)
 
 
 
 if ai.enabled then
-local bN=X
-task.delay(aS,function()
-local bO=ab.HRP()
-if not bO then return end
-local bP=(Vector3.new(bO.Position.X,0,bO.Position.Z)
--Vector3.new(bM.X,0,bM.Z)).Magnitude
-local bQ=(Vector3.new(bO.Position.X,0,bO.Position.Z)
--Vector3.new(bN.X,0,bN.Z)).Magnitude
-if bP<3 and bQ>4 then
+local bL=X
+task.delay(aQ,function()
+local bM=ab.HRP()
+if not bM then return end
+local bN=(Vector3.new(bM.Position.X,0,bM.Position.Z)
+-Vector3.new(bK.X,0,bK.Z)).Magnitude
+local bO=(Vector3.new(bM.Position.X,0,bM.Position.Z)
+-Vector3.new(bL.X,0,bL.Z)).Magnitude
+if bN<3 and bO>4 then
 
-v=os.clock()+a0
+s=os.clock()+aZ
 
 end
 end)
 end
-r=r+1
+p=p+1
 if ai.enabled then
 
 end
@@ -22623,9 +22603,9 @@ end
 regConn(aj.Heartbeat:Connect(function()
 if _apelStopped or not S.testWalk then return end
 
-local bJ,bL=ab.HRP(),ab.Humanoid()
-if not bJ or not bL or not ab.Alive()then return end
-watchDamage(bL)
+local bH,bJ=ab.HRP(),ab.Humanoid()
+if not bH or not bJ or not ab.Alive()then return end
+watchDamage(bJ)
 
 
 
@@ -22648,8 +22628,6 @@ watchDamage(bL)
 
 
 
-local bM=(bB and ay[bB.Name])and ax or az
-if bL.WalkSpeed~=bM then bL.WalkSpeed=bM end
 
 
 
@@ -22657,10 +22635,7 @@ if bL.WalkSpeed~=bM then bL.WalkSpeed=bM end
 
 
 
-if bL.AutoRotate then bL.AutoRotate=false end
-
-
-
+if bJ.AutoRotate then bJ.AutoRotate=false end
 
 
 
@@ -22669,24 +22644,27 @@ if bL.AutoRotate then bL.AutoRotate=false end
 
 
 
-local bN=os.clock()
+
+
+
+local bK=os.clock()
 
 
 
 
 
-if showRoute()and br and(bN-f)>0.2 then
-f=bN
-drawRoute(bJ.Position,(Plan().Path(bJ.Position,br)))
+if showRoute()and bp and(bK-d)>0.2 then
+d=bK
+drawRoute(bH.Position,(Plan().Path(bH.Position,bp)))
 end
 
-if showZones()and(bN-d)>0.1 then
-d=bN
-drawZones(bJ.Position)
+if showZones()and(bK-bw)>0.1 then
+bw=bK
+drawZones(bH.Position)
 end
 
-if by and(bN-bz)>0.5 then
-bz=bN
+if by and(bK-bz)>0.5 then
+bz=bK
 
 
 
@@ -22713,9 +22691,9 @@ end
 
 
 
-if not bB or not bB.Parent or(bN-bE)>bl then
-bE=bN
-bB=aa.Nearest(bJ.Position)
+if not bB or not bB.Parent or(bK-bE)>bj then
+bE=bK
+bB=aa.Nearest(bH.Position)
 
 
 
@@ -22768,42 +22746,42 @@ if not S.testArena and ag.Ready()then
 
 
 
-local bO=60
-local bP=25
-local bQ,bR,P=math.huge,math.huge
-local Q=0
-local R,T=math.huge
-local U=aa.AllAlive()
+local bL=60
+local bM=25
+local bN,bO,bP=math.huge,math.huge
+local P=0
+local Q,R=math.huge
+local T=aa.AllAlive()
 
 
 
-local V={}
-for W,X in ipairs(U)do
-local Y=aa.PivotOf(X)
-V[W]=Y and Vector3.new(Y.X,0,Y.Z)or nil
+local U={}
+for V,W in ipairs(T)do
+local X=aa.PivotOf(W)
+U[V]=X and Vector3.new(X.X,0,X.Z)or nil
 end
-for W,X in ipairs(U)do
-local Y=aa.PivotOf(X)
-if Y and V[W]and ag.Reachable(Y,3)then
-local Z=(Y-bJ.Position).Magnitude
-local _=0
-for bS=1,#U do
-if bS~=W and V[bS]
-and(V[bS]-V[W]).Magnitude<=bO then
-_=_+1
-end
-end
-local bS=Z+_*bP
-if bS<bR then
-P,bQ,bR=X,Z,bS
-Q=_
-end
-if ar[X.Name]and Z<=aq and Z<R then
-T,R=X,Z
+for V,W in ipairs(T)do
+local X=aa.PivotOf(W)
+if X and U[V]and ag.Reachable(X,3)then
+local Y=(X-bH.Position).Magnitude
+local Z=0
+for _=1,#T do
+if _~=V and U[_]
+and(U[_]-U[V]).Magnitude<=bL then
+Z=Z+1
 end
 end
+local _=Y+Z*bM
+if _<bO then
+bP,bN,bO=W,Y,_
+P=Z
 end
-if T then P,bQ,Q=T,R,-1 end
+if ar[W.Name]and Y<=aq and Y<Q then
+R,Q=W,Y
+end
+end
+end
+if R then bP,bN,P=R,Q,-1 end
 
 
 
@@ -22818,23 +22796,23 @@ if T then P,bQ,Q=T,R,-1 end
 
 
 
-local bS,W=math.huge
-for X,Y in ipairs(U)do
-if Y.Name=="Northern Warrior"and V[X]then
+local V,W=math.huge
+for X,Y in ipairs(T)do
+if Y.Name=="Northern Warrior"and U[X]then
 local Z=aa.PivotOf(Y)
 if Z and ag.Reachable(Z,3)then
-local _=(Z-bJ.Position).Magnitude
-if _<bS then W,bS=Y,_ end
+local _=(Z-bH.Position).Magnitude
+if _<V then W,V=Y,_ end
 end
 end
 end
-if W then P,bQ,Q=W,bS,-1 end
-if ai.enabled and P and(bN-a8)>2 then
-a8=bN
+if W then bP,bN,P=W,V,-1 end
+if ai.enabled and bP and(bK-a6)>2 then
+a6=bK
 
 end
-if P then
-bB=P
+if bP then
+bB=bP
 bD=false
 else
 
@@ -22850,12 +22828,12 @@ end
 
 
 
-bp={}
-local bO=Vector3.new(bJ.Position.X,0,bJ.Position.Z)
-for bP,bQ in ipairs(aa.AllAlive())do
-local bR=aa.PivotOf(bQ)
-if bR and(Vector3.new(bR.X,0,bR.Z)-bO).Magnitude<=aN then
-bp[#bp+1]=bQ
+bn={}
+local bL=Vector3.new(bH.Position.X,0,bH.Position.Z)
+for bM,bN in ipairs(aa.AllAlive())do
+local bO=aa.PivotOf(bN)
+if bO and(Vector3.new(bO.X,0,bO.Z)-bL).Magnitude<=aJ then
+bn[#bn+1]=bN
 end
 end
 end
@@ -22867,10 +22845,10 @@ if not bB then
 
 
 
-local bO=os.clock()
-local bP=not ad.IsSafe(bJ.Position,aB)
-or not ad.BoxSafe(bJ.Position)
-if bP then
+local bL=os.clock()
+local bM=not ad.IsSafe(bH.Position,az)
+or not ad.BoxSafe(bH.Position)
+if bM then
 
 
 
@@ -22880,61 +22858,61 @@ if bP then
 
 
 
-local bQ=ad.EscapeStep(bJ.Position,aB,aC)
+local bN=ad.EscapeStep(bH.Position,az,aA)
 
 
 
 
 
-if bQ and not ad.BoxSafe(bQ)then bQ=nil end
-if not bQ then
-for bR,bS in ipairs{6,10,14}do
+if bN and not ad.BoxSafe(bN)then bN=nil end
+if not bN then
+for bO,bP in ipairs{6,10,14}do
 for P=0,15 do
 local Q=P*math.pi/8
 local R=Vector3.new(
-bJ.Position.X+math.cos(Q)*bS,
-bJ.Position.Y,
-bJ.Position.Z+math.sin(Q)*bS)
+bH.Position.X+math.cos(Q)*bP,
+bH.Position.Y,
+bH.Position.Z+math.sin(Q)*bP)
 if ad.BoxSafe(R)and ad.IsSafe(R,0)then
-bQ=R
+bN=R
 break
 end
 end
-if bQ then break end
+if bN then break end
 end
-if bQ and ai.enabled and(bO-a9)>1 then
-a9=bO
+if bN and ai.enabled and(bL-a7)>1 then
+a7=bL
 
 end
 end
-if bQ then bL:MoveTo(bQ)end
+if bN then bJ:MoveTo(bN)end
 if bx then bx:Set"No mob nearby — stepping out of an attack"end
 else
 if bx then bx:Set"No mob nearby"end
 end
-tryHop(bO,bP,bJ)
-br=nil
+tryHop(bL,bM,bH)
+bp=nil
 clearMarks()
 return
 end
 
-local bO=aa.PivotOf(bB)
-if not bO then return end
+local bL=aa.PivotOf(bB)
+if not bL then return end
 
 
 
-local bP=ap[bB.Name]
-if bP and not ag.HeightAt(bP)then bP=nil end
-if bP and(bN-i)>5 and ai.enabled then
-i=bN
+local bM=ap[bB.Name]
+if bM and not ag.HeightAt(bM)then bM=nil end
+if bM and(bK-g)>5 and ai.enabled then
+g=bK
 
 end
 
 
 
-local bQ=Vector3.new(bO.X,bJ.Position.Y,bO.Z)
-if(bQ-bJ.Position).Magnitude>0.1 then
-bJ.CFrame=CFrame.new(bJ.Position,bQ)
+local bN=Vector3.new(bL.X,bH.Position.Y,bL.Z)
+if(bN-bH.Position).Magnitude>0.1 then
+bH.CFrame=CFrame.new(bH.Position,bN)
 end
 
 
@@ -22958,8 +22936,8 @@ end
 
 
 
-local bR=not ad.IsSafe(bJ.Position,aB)
-or not ad.BoxSafe(bJ.Position)
+local bO=not ad.IsSafe(bH.Position,az)
+or not ad.BoxSafe(bH.Position)
 
 
 
@@ -22973,14 +22951,14 @@ or not ad.BoxSafe(bJ.Position)
 
 
 
-local bS=ad.IsSafe(bJ.Position,aF)
+local bP=ad.IsSafe(bH.Position,aD)
 
 
 
-if bR then
-if p==0 then p=bN end
+if bO then
+if n==0 then n=bK end
 else
-p=0
+n=0
 end
 
 
@@ -22999,7 +22977,7 @@ end
 
 
 
-if not bP then tryHop(bN,bR,bJ)end
+if not bM then tryHop(bK,bO,bH)end
 
 
 
@@ -23010,8 +22988,8 @@ if not bP then tryHop(bN,bR,bJ)end
 
 
 
-local P=(Vector3.new(bO.X,0,bO.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude
+local P=(Vector3.new(bL.X,0,bL.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
 
 
 
@@ -23022,7 +23000,7 @@ local P=(Vector3.new(bO.X,0,bO.Z)
 local Q=mobPoints()
 local R=P
 do
-local T=Vector3.new(bJ.Position.X,0,bJ.Position.Z)
+local T=Vector3.new(bH.Position.X,0,bH.Position.Z)
 for U,V in ipairs(Q)do
 local W=(V-T).Magnitude
 if W<R then R=W end
@@ -23038,11 +23016,11 @@ end
 
 local T=0
 if O then
-local U=bN-N
+local U=bK-N
 if U>0.01 then T=(O-R)/U end
 end
-if not O or(bN-N)>0.05 then
-O,N=R,bN
+if not O or(bK-N)>0.05 then
+O,N=R,bK
 end
 
 
@@ -23068,9 +23046,9 @@ local W,X=true
 for Y,Z in ipairs(aa.AllAlive())do
 local _=aa.PivotOf(Z)
 if _ then
-local bT=(Vector3.new(_.X,0,_.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude
-if bT<=R+1 then
+local bQ=(Vector3.new(_.X,0,_.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
+if bQ<=R+1 then
 X=X or Z.Name
 if not as[Z.Name]then W=false break end
 end
@@ -23096,22 +23074,22 @@ end
 
 
 
-local bT=am
+local bQ=am
 for Y,Z in ipairs(aa.AllAlive())do
 local _=ar[Z.Name]
-if _ and _>bT then
-local bU=aa.PivotOf(Z)
-if bU then
-local bV=(Vector3.new(bU.X,0,bU.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude
-if bV<_ then bT=_ end
+if _ and _>bQ then
+local bR=aa.PivotOf(Z)
+if bR then
+local bS=(Vector3.new(bR.X,0,bR.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
+if bS<_ then bQ=_ end
 end
 end
 end
-if X and(ar[X]or 0)>bT then
-bT=ar[X]
+if X and(ar[X]or 0)>bQ then
+bQ=ar[X]
 end
-local bU=bT+an
+local bR=bQ+an
 
 
 
@@ -23132,9 +23110,9 @@ local bU=bT+an
 
 
 if bG then
-if R>=bU or W then bG=false end
+if R>=bR or W then bG=false end
 elseif not W
-and(R<bT or(U<aw and R<V))then
+and(R<bQ or(U<aw and R<V))then
 bG=true
 end
 
@@ -23146,13 +23124,13 @@ end
 
 
 
-local bV=bG and bU or am
+local bS=bG and bR or am
 local Y=bB and ad.HazardRadius and ad.HazardRadius(bB)
-if Y and Y+aE>bV then
-bV=Y+aE
+if Y and Y+aC>bS then
+bS=Y+aC
 end
 local Z=bB and ar[bB.Name]
-if Z and Z>bV then bV=Z end
+if Z and Z>bS then bS=Z end
 
 
 
@@ -23161,69 +23139,69 @@ if Z and Z>bV then bV=Z end
 
 
 
-if bR then noteBranch"s58"end
+if bO then noteBranch"s58"end
 
 
-bj=bj%128+1
-bg[bj],bh[bj],bi[bj]=bJ.Position,bN,bR
-local _,bW,bX=false
-for bY=1,128 do
-local bZ=bh[bY]
-if bZ and(bN-bZ)<=0.5 then
-if not bX or bZ<bX then bW,bX=bg[bY],bZ end
-if bi[bY]then _=true end
+bh=bh%128+1
+be[bh],bf[bh],bg[bh]=bH.Position,bK,bO
+local _,bT,bU=false
+for bV=1,128 do
+local bW=bf[bV]
+if bW and(bK-bW)<=0.5 then
+if not bU or bW<bU then bT,bU=be[bV],bW end
+if bg[bV]then _=true end
 end
 end
-local bY=false
-if bW and bX and(bN-bX)>0.4 and _ then
-local bZ=(Vector3.new(bJ.Position.X,0,bJ.Position.Z)
--Vector3.new(bW.X,0,bW.Z)).Magnitude
-bY=bZ<2
-if bY and ai.enabled and(bN-be)>1 then
-be=bN
+local bV=false
+if bT and bU and(bK-bU)>0.4 and _ then
+local bW=(Vector3.new(bH.Position.X,0,bH.Position.Z)
+-Vector3.new(bT.X,0,bT.Z)).Magnitude
+bV=bW<2
+if bV and ai.enabled and(bK-bc)>1 then
+bc=bK
 
 end
 end
 
 
-if bR then
-if bd==0 then
-bd,bf=bN,bJ.Position
-elseif(bN-bd)>0.4 and bf then
-local bZ=(Vector3.new(bJ.Position.X,0,bJ.Position.Z)
--Vector3.new(bf.X,0,bf.Z)).Magnitude
-if bZ<1.5 and ai.enabled and(bN-be)>1 then
-be=bN local b_=
-br and(Vector3.new(br.X,0,br.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude or-1
+if bO then
+if bb==0 then
+bb,bd=bK,bH.Position
+elseif(bK-bb)>0.4 and bd then
+local bW=(Vector3.new(bH.Position.X,0,bH.Position.Z)
+-Vector3.new(bd.X,0,bd.Z)).Magnitude
+if bW<1.5 and ai.enabled and(bK-bc)>1 then
+bc=bK local bX=
+bp and(Vector3.new(bp.X,0,bp.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude or-1
 
 end
 end
 else
-bd,bf=0,nil
+bb,bd=0,nil
 end
-if ai.enabled and(bN-bc)>30 then
-bc=bN
-local bZ={}
-for b_,b0 in pairs(bb)do bZ[#bZ+1]=("%s=%d"):format(b_,b0)end
-table.sort(bZ)
-if#bZ>0 then
+if ai.enabled and(bK-ba)>30 then
+ba=bK
+local bW={}
+for bX,bY in pairs(b)do bW[#bW+1]=("%s=%d"):format(bX,bY)end
+table.sort(bW)
+if#bW>0 then
 
 end
-bb={}
+b={}
 end
 
-if(bR or not bS)and ai.enabled and(bN-g)>1 then
-g=bN
+if(bO or not bP)and ai.enabled and(bK-e)>1 then
+e=bK
 
 
 
-table.sort(bw,function(bZ,b_)return bZ.score>b_.score end)
-local bZ={}
-for b_=1,math.min(5,#bw)do
-bZ[#bZ+1]=("%d@%.0f"):format(bw[b_].score,bw[b_].far)
+table.sort(bu,function(bW,bX)return bW.score>bX.score end)
+local bW={}
+for bX=1,math.min(5,#bu)do
+bW[#bW+1]=("%d@%.0f"):format(bu[bX].score,bu[bX].far)
 end
-if#bZ>0 then
+if#bW>0 then
 
 end
 
@@ -23250,12 +23228,12 @@ if E then
 
 
 
-local bZ
+local bW
 if typeof(F)=="Instance"then
-bZ=not F.Parent or not ad.IsZone(F)
+bW=not F.Parent or not ad.IsZone(F)
 else
 
-bZ=not bR
+bW=not bO
 end
 
 
@@ -23264,11 +23242,11 @@ end
 
 
 
-local b_=false
+local bX=false
 if typeof(F)=="Instance"then
-local b0=F.Parent
-local b1=tostring(b0 and b0.Name or F.Name):lower()
-b_=ad.NamedZoneAt(E,0,b1)and true or false
+local bY=F.Parent
+local bZ=tostring(bY and bY.Name or F.Name):lower()
+bX=ad.NamedZoneAt(E,0,bZ)and true or false
 end
 
 
@@ -23286,7 +23264,7 @@ end
 
 
 
-if bZ or bR or(bN-D)>aJ or b_ then
+if bW or bO or(bK-D)>aH or bX then
 if ai.enabled then
 
 end
@@ -23309,17 +23287,15 @@ end
 
 
 
-local bZ=am+an
-local b_=Vector3.new(bO.X,0,bO.Z)
-local b0=E
-and(Vector3.new(E.X,0,E.Z)-b_).Magnitude>bZ
+local bW=am+an
+local bX=Vector3.new(bL.X,0,bL.Z)
+local bY=E
+and(Vector3.new(E.X,0,E.Z)-bX).Magnitude>bW
 
-if bR and(not E or b0)
-and(not br or not ad.IsSafe(br,0))
-and(bN-G)>aM then
-G=bN
-
-
+if bO and(not E or bY)
+and(not bp or not ad.IsSafe(bp,0))
+and(bK-G)>aI then
+G=bK
 
 
 
@@ -23330,54 +23306,56 @@ G=bN
 
 
 
-local function pick(b1,b2,b3)
-return ag.NearestWhere(bJ.Position,aI,function(b4)
-if not ad.IsSafe(b4,b1)then return false end
-if b2 and not ag.RoomAt(b4,aG)then return false end
-if b3 and(Vector3.new(b4.X,0,b4.Z)-b_).Magnitude>bZ then
+
+
+local function pick(bZ,b_,b0)
+return ag.NearestWhere(bH.Position,aG,function(b1)
+if not ad.IsSafe(b1,bZ)then return false end
+if b_ and not ag.RoomAt(b1,aE)then return false end
+if b0 and(Vector3.new(b1.X,0,b1.Z)-bX).Magnitude>bW then
 return false
 end
 return true
 end)
 end
 
-local b1=pick(aE,true,true)
-or pick(aF,true,false)
-or pick(aE,false,false)
+local bZ=pick(aC,true,true)
+or pick(aD,true,false)
+or pick(aC,false,false)
 or pick(0,false,false)
 
 
-local b2=b1
+local b_=bZ
 
-if b2 and ag.Path(bJ.Position,b2)then
+if b_ and ag.Path(bH.Position,b_)then
 
-E,D=b2,bN
-F=ad.ZoneAt(bJ.Position,0)or F
+E,D=b_,bK
+F=ad.ZoneAt(bH.Position,0)or F
 if ai.enabled then
 
 end
-elseif b2 and ai.enabled then
+elseif b_ and ai.enabled then
 
 end
 end
 end
 
-local bZ=false
-if not bR then bH=nil end
+local bW=false
+if not bO then A=nil end
 
 
 
-if bP then
-br,H,bF,bC=bP,bN,bN,bO
-bZ=true
-if bR then noteBranch"s68"end
-bH,E,F=nil,nil,nil
+if bM then
+bp,H,bF,bC=bM,bK,bK,bL
+bW=true
+if bO then noteBranch"s68"end
+A,E,F=nil,nil,nil
 elseif E then
 
 
-br,H,bF,bC=E,D,bN,bO
-bZ=true
-if bR then noteBranch"s26"end
+bp,H,bF,bC=E,D,bK,bL
+bW=true
+if bO then noteBranch"s26"end
 end
 
 
@@ -23392,35 +23370,29 @@ end
 
 
 
-if bR and bH then
-local b_=(Vector3.new(bH.X,0,bH.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude<=a5
-local b0=(bN-bI)>C
-if b_ or not Plan().Clear(bJ.Position,bH)
-or not legOut(bJ.Position,bH)
-or(b0 and not ad.IsSafe(bH,aB))then
-bH=nil
+if bO and A then
+local bX=(Vector3.new(A.X,0,A.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a3
+local bY=(bK-B)>C
+if bX or not Plan().Clear(bH.Position,A)
+or not legOut(bH.Position,A)
+or(bY and not ad.IsSafe(A,az))then
+A=nil
 else
-br,bF,bC=bH,bN,bO
-bZ=true
+bp,bF,bC=A,bK,bL
+bW=true
 
 end
 end
 
-if bR and not bZ then
+if bO and not bW then
 
 
 
 
 
-local b_=ad.EscapeStep(bJ.Position,aB,aC)
-local b0=false
-
-
-
-
-
-
+local bX=ad.EscapeStep(bH.Position,az,aA)
+local bY=false
 
 
 
@@ -23431,275 +23403,51 @@ local b0=false
 
 
 
-if s>a7 then
-local b1,b2=Vector3.zero,0
-for b3,b4 in ipairs(ad.ZoneShapes(bJ.Position,60,0)or{})do
-local b5=b4.cf and b4.cf.Position
-if b5 then
-b1,b2=b1+Vector3.new(b5.X,0,b5.Z),b2+1
+
+
+
+
+
+
+if q>a5 then
+local bZ,b_=Vector3.zero,0
+for b0,b1 in ipairs(ad.ZoneShapes(bH.Position,60,0)or{})do
+local b2=b1.cf and b1.cf.Position
+if b2 then
+bZ,b_=bZ+Vector3.new(b2.X,0,b2.Z),b_+1
 end
 end
-if b2>0 then
-local b3=b1/b2
-local b4=Vector3.new(bJ.Position.X,0,bJ.Position.Z)
-local b5,b6=(b4-b3).Magnitude
-for b7=aQ,6,-2 do
-for b8=1,16 do
-local b9=(b8/16)*math.pi*2
-local ca=bJ.Position.X+math.cos(b9)*b7
-local cb=bJ.Position.Z+math.sin(b9)*b7
-local cc=(Vector3.new(ca,0,cb)-b3).Magnitude
-if cc>b5 then
-local cd=floorAt(ca,cb,bJ.Position.Y)
-if cd then
-local ce=Vector3.new(ca,cd+aA,cb)
-if not ag.InNoGo(ce)and Plan().Clear(bJ.Position,ce)
-and ad.IsSafe(ce,0)then
-b6,b5=ce,cc
-end
-end
-end
-end
-end
-if b6 then
-b_,b0=b6,true
-if ai.enabled and(bN-n)>2 then
-n=bN
-
+if b_>0 then
+local b0=bZ/b_
+local b1=Vector3.new(bH.Position.X,0,bH.Position.Z)
+local b2,b3=(b1-b0).Magnitude
+for b4=aO,6,-2 do
+for b5=1,16 do
+local b6=(b5/16)*math.pi*2
+local b7=bH.Position.X+math.cos(b6)*b4
+local b8=bH.Position.Z+math.sin(b6)*b4
+local b9=(Vector3.new(b7,0,b8)-b0).Magnitude
+if b9>b2 then
+local ca=floorAt(b7,b8,bH.Position.Y)
+if ca then
+local cb=Vector3.new(b7,ca+ay,b8)
+if not ag.InNoGo(cb)and Plan().Clear(bH.Position,cb)
+and ad.IsSafe(cb,0)then
+b3,b2=cb,b9
 end
 end
 end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if b_ then
-
-
-
-
-
-
-
-
-
-
-
-
-
-local b1=Vector3.new(b_.X-bJ.Position.X,0,b_.Z-bJ.Position.Z)
-if b1.Magnitude>0.1 and not ad.IsSafe(b_,aF)then
-for b2,b3 in ipairs{4,8,12}do
-local b4=b_+b1.Unit*b3
-local b5=floorAt(b4.X,b4.Z,b_.Y)
-if b5 then
-local b6=Vector3.new(b4.X,b5+aA,b4.Z)
-if ad.IsSafe(b6,aF)and not ag.InNoGo(b6)
-and Plan().Clear(bJ.Position,b6)then
-b_=b6
-break
-end
-end
-end
-end
-
-local b2
-for b3,b4 in ipairs{aF,2,0}do
-if ad.IsSafe(b_,b4)then b2=b4 break end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if not b0 and(not b2 or b2<aF)
-and(bN-m)>0.3 then
-m=bN
-
-
-
-
-local b3,b4,b5=math.huge
-for b6,b7 in ipairs{aF,2}do
-for b8=6,aQ,2 do
-for b9=1,16 do
-local ca=(b9/16)*math.pi*2
-local cb=bJ.Position.X+math.cos(ca)*b8
-local cc=bJ.Position.Z+math.sin(ca)*b8
-local cd=floorAt(cb,cc,bJ.Position.Y)
-if cd then
-local ce=Vector3.new(cb,cd+aA,cc)
-if b8<b3 and ad.IsSafe(ce,b7)
-and not ag.InNoGo(ce)
-and Plan().Clear(bJ.Position,ce)then
-b4,b3,b5=ce,b8,b7
-end
-end
-end
-if b4 then break end
-end
-if b4 then break end
-end
-if b4 then
-b_,b2=b4,b5
-if ai.enabled and(bN-l)>1 then
-l=bN
-
-end
-end
-end
-
-if not b2 then b_=nil end
-if b_ and ai.enabled and b2<aF and(bN-l)>1 then
-l=bN
-
-end
-end
-
-
-
-
-
-
-
-if not b_ then
-local b1=ad.ZoneAt(bJ.Position,0)
-
-
-
-
-local b2=(typeof(b1)=="Instance"and b1:IsA"BasePart")and b1 or nil
-local b3
-if b2 then b3=b2.Position
-elseif typeof(b1)=="table"and b1.cf then b3=b1.cf.Position
-elseif typeof(b1)=="Instance"and b1:IsA"Model"then
-local b4,b5=pcall(function()return b1:GetPivot().Position end)
-b3=b4 and b5 or nil
 end
 if b3 then
-
-
-
-
-
-
-
-
-
-
-
-
-local b4=b2 and b2.Size or(typeof(b1)=="table"and b1.size or nil)
-local b5=b2 and b2.CFrame or(typeof(b1)=="table"and b1.cf or nil)
-local b6,b7
-local b8=Vector3.new(bJ.Position.X-b3.X,0,bJ.Position.Z-b3.Z)
-local b9=b4 and math.abs(b4.Z-b4.Y)<1 and b4.X<=8
-if b4 and b5 and not b9 then
-local ca=b5:PointToObjectSpace(bJ.Position)
-local cb,cc=b4.X*0.5,b4.Z*0.5
-
-if(cb-math.abs(ca.X))<=(cc-math.abs(ca.Z))then
-b6=b5.RightVector*(ca.X>=0 and 1 or-1)
-b7=cb
-else
-b6=b5.LookVector*(ca.Z>=0 and 1 or-1)
-b7=cc
-end
-b6=Vector3.new(b6.X,0,b6.Z)
-end
-if not b6 or b6.Magnitude<0.1 then
-b6=b8
-b7=b4 and math.max(b4.X,b4.Z)*0.5 or 17
-end
-if b6.Magnitude<0.5 then
-b6=Vector3.new(bJ.CFrame.LookVector.X,0,bJ.CFrame.LookVector.Z)
-end
-if b6.Magnitude>0.1 then
-local ca=Vector3.new(b3.X,0,b3.Z)+b6.Unit*((b7 or 17)+6)
-local cb=floorAt(ca.X,ca.Z,bJ.Position.Y)
-if cb then
-local cc=Vector3.new(ca.X,cb+aA,ca.Z)
-if not ag.InNoGo(cc)and Plan().Clear(bJ.Position,cc)then
-b_=cc
-if ai.enabled and(bN-l)>1 then
-l=bN
+bX,bY=b3,true
+if ai.enabled and(bK-l)>2 then
+l=bK
 
 end
 end
 end
 end
-end
-end
-
-
-
-
-
-
-
-
-
-if b_ then
-local b1=Vector3.new(b_.X,0,b_.Z)
-local b2=Vector3.new(bO.X,0,bO.Z)
-if(b1-b2).Magnitude<aD then
-local b3=b1-b2
-if b3.Magnitude<0.1 then
-b3=Vector3.new(bJ.Position.X-bO.X,0,bJ.Position.Z-bO.Z)
-end
-if b3.Magnitude>0.1 then
-local b4=b2+b3.Unit*aD
-local b5=Vector3.new(b4.X,b_.Y,b4.Z)
-if ad.IsSafe(b5,aB)and Plan().Clear(bJ.Position,b5)then
-b_=b5
-end
-end
-end
-end
 
 
 
@@ -23718,65 +23466,115 @@ end
 
 
 
-if b_ and ad.BoxSafe(b_)and not ad.RoomSafe(b_,2.5)then
-local b1
-for b2,b3 in ipairs{3,2,1}do
-local b4=ad.EscapeStep(bJ.Position,aB,aC+b3)
-if b4 and ad.BoxSafe(b4)and ad.RoomSafe(b4,b3)then
-b1=b4
+
+
+
+
+
+
+
+
+
+if bX then
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bZ=Vector3.new(bX.X-bH.Position.X,0,bX.Z-bH.Position.Z)
+if bZ.Magnitude>0.1 and not ad.IsSafe(bX,aD)then
+for b_,b0 in ipairs{4,8,12}do
+local b1=bX+bZ.Unit*b0
+local b2=floorAt(b1.X,b1.Z,bX.Y)
+if b2 then
+local b3=Vector3.new(b1.X,b2+ay,b1.Z)
+if ad.IsSafe(b3,aD)and not ag.InNoGo(b3)
+and Plan().Clear(bH.Position,b3)then
+bX=b3
 break
 end
 end
+end
+end
+
+local b_
+for b0,b1 in ipairs{aD,2,0}do
+if ad.IsSafe(bX,b1)then b_=b1 break end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if not bY and(not b_ or b_<aD)
+and(bK-k)>0.3 then
+k=bK
+
+
+
+
+local b0,b1,b2=math.huge
+for b3,b4 in ipairs{aD,2}do
+for b5=6,aO,2 do
+for b6=1,16 do
+local b7=(b6/16)*math.pi*2
+local b8=bH.Position.X+math.cos(b7)*b5
+local b9=bH.Position.Z+math.sin(b7)*b5
+local ca=floorAt(b8,b9,bH.Position.Y)
+if ca then
+local cb=Vector3.new(b8,ca+ay,b9)
+if b5<b0 and ad.IsSafe(cb,b4)
+and not ag.InNoGo(cb)
+and Plan().Clear(bH.Position,cb)then
+b1,b0,b2=cb,b5,b4
+end
+end
+end
+if b1 then break end
+end
+if b1 then break end
+end
 if b1 then
-b_=b1
-if ai.enabled and(bN-ba)>2 then
-ba=bN
+bX,b_=b1,b2
+if ai.enabled and(bK-j)>1 then
+j=bK
 
 end
 end
 end
-if b_ and Plan().Clear(bJ.Position,b_)and legOut(bJ.Position,b_)
-and ad.BoxSafe(b_)then
-br,bF,bC=b_,bN,bO
-bH,bI,bZ=b_,bN,true
-elseif b_ and ai.enabled and(bN-ba)>1 then
-ba=bN
 
-end
-end
+if not b_ then bX=nil end
+if bX and ai.enabled and b_<aD and(bK-j)>1 then
+j=bK
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local b_=false
-if br and not bZ then
-local b0=(Vector3.new(br.X,0,br.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude<=a5
-
-
-
-
-
-
-
-local b1=false
-for b2,b3 in ipairs(Q)do
-if(Vector3.new(br.X,0,br.Z)-b3).Magnitude<aD then
-b1=true break
 end
 end
 
@@ -23786,143 +23584,257 @@ end
 
 
 
+if not bX then
+local bZ=ad.ZoneAt(bH.Position,0)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-local b2=(bN-H)<a6
-b_=not b0
-and not b1
-and Plan().Clear(bJ.Position,br)
-and(bN-H)<aH
-and legClear(bJ.Position,br)
-and(b2 or ad.IsSafe(br,aB))
-
-
-and not bR
-end
-
-
-
-if y then
-
-
-
-
-
-
-
-
-
+local b_=(typeof(bZ)=="Instance"and bZ:IsA"BasePart")and bZ or nil
 local b0
-if typeof(z)=="Instance"then
-b0=not z.Parent or not ad.IsZone(z)
-else
-b0=not bR
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if bR or not ad.IsSafe(y,aB)or(bN-x)>a2 then
-y,z=nil,nil
-elseif b0 then
-y,z=nil,nil
-else
-br,H,bZ=y,x,true
-if bR then noteBranch"s69"end
-if ai.enabled and(bN-j)>2 then
-j=bN
-
-end
-end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if not bZ and not b_ then
-bF,bC=bN,bO
-
-
-local b0=pickSpot(bO,bR or not bS,bV,bR or bG or not bS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if b0 and ad.BoxSafe(b0)and not ad.RoomSafe(b0,2.5)then
-local b1=pickSpot(bO,true,bV,true)
-if b1 and ad.RoomSafe(b1,2.5)then b0=b1 end
-end
-if b0 and not ad.BoxSafe(b0)then
-if ai.enabled and(bN-a9)>1 then
-a9=bN
-
-end
-b0=nil
+if b_ then b0=b_.Position
+elseif typeof(bZ)=="table"and bZ.cf then b0=bZ.cf.Position
+elseif typeof(bZ)=="Instance"and bZ:IsA"Model"then
+local b1,b2=pcall(function()return bZ:GetPivot().Position end)
+b0=b1 and b2 or nil
 end
 if b0 then
-br,H=b0,bN
-if bR then noteBranch"s70"end
-elseif bR then
-br=nil
-if ai.enabled and(bN-a9)>1 then
-a9=bN
+
+
+
+
+
+
+
+
+
+
+
+
+local b1=b_ and b_.Size or(typeof(bZ)=="table"and bZ.size or nil)
+local b2=b_ and b_.CFrame or(typeof(bZ)=="table"and bZ.cf or nil)
+local b3,b4
+local b5=Vector3.new(bH.Position.X-b0.X,0,bH.Position.Z-b0.Z)
+local b6=b1 and math.abs(b1.Z-b1.Y)<1 and b1.X<=8
+if b1 and b2 and not b6 then
+local b7=b2:PointToObjectSpace(bH.Position)
+local b8,b9=b1.X*0.5,b1.Z*0.5
+
+if(b8-math.abs(b7.X))<=(b9-math.abs(b7.Z))then
+b3=b2.RightVector*(b7.X>=0 and 1 or-1)
+b4=b8
+else
+b3=b2.LookVector*(b7.Z>=0 and 1 or-1)
+b4=b9
+end
+b3=Vector3.new(b3.X,0,b3.Z)
+end
+if not b3 or b3.Magnitude<0.1 then
+b3=b5
+b4=b1 and math.max(b1.X,b1.Z)*0.5 or 17
+end
+if b3.Magnitude<0.5 then
+b3=Vector3.new(bH.CFrame.LookVector.X,0,bH.CFrame.LookVector.Z)
+end
+if b3.Magnitude>0.1 then
+local b7=Vector3.new(b0.X,0,b0.Z)+b3.Unit*((b4 or 17)+6)
+local b8=floorAt(b7.X,b7.Z,bH.Position.Y)
+if b8 then
+local b9=Vector3.new(b7.X,b8+ay,b7.Z)
+if not ag.InNoGo(b9)and Plan().Clear(bH.Position,b9)then
+bX=b9
+if ai.enabled and(bK-j)>1 then
+j=bK
+
+end
+end
+end
+end
+end
+end
+
+
+
+
+
+
+
+
+
+if bX then
+local bZ=Vector3.new(bX.X,0,bX.Z)
+local b_=Vector3.new(bL.X,0,bL.Z)
+if(bZ-b_).Magnitude<aB then
+local b0=bZ-b_
+if b0.Magnitude<0.1 then
+b0=Vector3.new(bH.Position.X-bL.X,0,bH.Position.Z-bL.Z)
+end
+if b0.Magnitude>0.1 then
+local b1=b_+b0.Unit*aB
+local b2=Vector3.new(b1.X,bX.Y,b1.Z)
+if ad.IsSafe(b2,az)and Plan().Clear(bH.Position,b2)then
+bX=b2
+end
+end
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bX and ad.BoxSafe(bX)and not ad.RoomSafe(bX,2.5)then
+local bZ
+for b_,b0 in ipairs{3,2,1}do
+local b1=ad.EscapeStep(bH.Position,az,aA+b0)
+if b1 and ad.BoxSafe(b1)and ad.RoomSafe(b1,b0)then
+bZ=b1
+break
+end
+end
+if bZ then
+bX=bZ
+if ai.enabled and(bK-a9)>2 then
+a9=bK
+
+end
+end
+end
+if bX and Plan().Clear(bH.Position,bX)and legOut(bH.Position,bX)
+and ad.BoxSafe(bX)then
+bp,bF,bC=bX,bK,bL
+A,B,bW=bX,bK,true
+elseif bX and ai.enabled and(bK-a9)>1 then
+a9=bK
+
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local bX=false
+if bp and not bW then
+local bY=(Vector3.new(bp.X,0,bp.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude<=a3
+
+
+
+
+
+
+
+local bZ=false
+for b_,b0 in ipairs(Q)do
+if(Vector3.new(bp.X,0,bp.Z)-b0).Magnitude<aB then
+bZ=true break
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local b_=(bK-H)<a4
+bX=not bY
+and not bZ
+and Plan().Clear(bH.Position,bp)
+and(bK-H)<aF
+and legClear(bH.Position,bp)
+and(b_ or ad.IsSafe(bp,az))
+
+
+and not bO
+end
+
+
+
+if w then
+
+
+
+
+
+
+
+
+
+local bY
+if typeof(x)=="Instance"then
+bY=not x.Parent or not ad.IsZone(x)
+else
+bY=not bO
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bO or not ad.IsSafe(w,az)or(bK-v)>a0 then
+w,x=nil,nil
+elseif bY then
+w,x=nil,nil
+else
+bp,H,bW=w,v,true
+if bO then noteBranch"s69"end
+if ai.enabled and(bK-h)>2 then
+h=bK
 
 end
 end
@@ -23932,19 +23844,85 @@ end
 
 
 
-local b0=getgenv().ApelHub
-if b0 then
-b0.TestBrain={
-hurt=bR,roomy=bS,backing=bG,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if not bW and not bX then
+bF,bC=bK,bL
+
+
+local bY=pickSpot(bL,bO or not bP,bS,bO or bG or not bP)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if bY and ad.BoxSafe(bY)and not ad.RoomSafe(bY,2.5)then
+local bZ=pickSpot(bL,true,bS,true)
+if bZ and ad.RoomSafe(bZ,2.5)then bY=bZ end
+end
+if bY and not ad.BoxSafe(bY)then
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
+end
+bY=nil
+end
+if bY then
+bp,H=bY,bK
+if bO then noteBranch"s70"end
+elseif bO then
+bp=nil
+if ai.enabled and(bK-a7)>1 then
+a7=bK
+
+end
+end
+end
+
+
+
+
+
+local bY=getgenv().ApelHub
+if bY then
+bY.TestBrain={
+hurt=bO,roomy=bP,backing=bG,
 mobDist=P,mob=bB and bB.Name or nil,
-here=bJ.Position,goal=br,ring=bV,
-escaped=bZ,fleeTo=bH,
+here=bH.Position,goal=bp,ring=bS,
+escaped=bW,fleeTo=A,
 pick={
-total=bv.total,unsafe=bv.unsafe,
-blocked=bv.blocked,tight=bv.tight,
-close=bv.close,crossed=bv.crossed,
-best=bv.best,picked=bv.picked,
-at=bv.at,
+total=bt.total,unsafe=bt.unsafe,
+blocked=bt.blocked,tight=bt.tight,
+close=bt.close,crossed=bt.crossed,
+best=bt.best,picked=bt.picked,
+at=bt.at,
 },
 }
 end
@@ -24001,56 +23979,56 @@ end
 
 
 
-if math.abs(bO.Y-bJ.Position.Y)>20 then br=bO end
+if math.abs(bL.Y-bH.Position.Y)>20 then bp=bL end
 
-if not br and bR then
-local b1
-for b2,b3 in ipairs{true,false}do
-for b4,b5 in ipairs{6,10,14}do
-for b6=0,15 do
-local b7=b6*math.pi/8
-local b8=Vector3.new(
-bJ.Position.X+math.cos(b7)*b5,
-bJ.Position.Y,
-bJ.Position.Z+math.sin(b7)*b5)
-if ad.BoxSafe(b8)and ad.IsSafe(b8,0)
-and(not b3 or Plan().Clear(bJ.Position,b8))then
-b1=b8
+if not bp and bO then
+local bZ
+for b_,b0 in ipairs{true,false}do
+for b1,b2 in ipairs{6,10,14}do
+for b3=0,15 do
+local b4=b3*math.pi/8
+local b5=Vector3.new(
+bH.Position.X+math.cos(b4)*b2,
+bH.Position.Y,
+bH.Position.Z+math.sin(b4)*b2)
+if ad.BoxSafe(b5)and ad.IsSafe(b5,0)
+and(not b0 or Plan().Clear(bH.Position,b5))then
+bZ=b5
 break
 end
 end
-if b1 then break end
+if bZ then break end
 end
-if b1 then break end
+if bZ then break end
 end
-if b1 then
-br=b1
-if ai.enabled and(bN-a9)>1 then
-a9=bN
+if bZ then
+bp=bZ
+if ai.enabled and(bK-a7)>1 then
+a7=bK
 
 end
 end
 end
 
-if not br then
+if not bp then
 
 
 
 
 
 
-bL:MoveTo(bJ.Position)
+bJ:MoveTo(bH.Position)
 clearRoute()
-if ai.enabled and(bN-a9)>1 then
-a9=bN
+if ai.enabled and(bK-a7)>1 then
+a7=bK
 
 end
 if bx then bx:Set"Nowhere clean to stand"end
 return
 end
 
-local b1=(Vector3.new(br.X,0,br.Z)
--Vector3.new(bJ.Position.X,0,bJ.Position.Z)).Magnitude
+local bZ=(Vector3.new(bp.X,0,bp.Z)
+-Vector3.new(bH.Position.X,0,bH.Position.Z)).Magnitude
 
 
 
@@ -24064,24 +24042,24 @@ local b1=(Vector3.new(br.X,0,br.Z)
 
 
 
-local b2,b3=bB,P
+local b_,b0=bB,P
 if E then
-local b4=Vector3.new(bJ.Position.X,0,bJ.Position.Z)
-for b5,b6 in ipairs(bp)do
-local b7=aa.PivotOf(b6)
-if b7 then
-local b8=(Vector3.new(b7.X,0,b7.Z)-b4).Magnitude
-if b8<b3 then b2,b3=b6,b8 end
+local b1=Vector3.new(bH.Position.X,0,bH.Position.Z)
+for b2,b3 in ipairs(bn)do
+local b4=aa.PivotOf(b3)
+if b4 then
+local b5=(Vector3.new(b4.X,0,b4.Z)-b1).Magnitude
+if b5<b0 then b_,b0=b3,b5 end
 end
 end
-if b2~=bB then
-local b5=aa.PivotOf(b2)
-local b6=b5 and Vector3.new(b5.X,bJ.Position.Y,b5.Z)
-if b6 and(b6-bJ.Position).Magnitude>0.1 then
-bJ.CFrame=CFrame.new(bJ.Position,b6)
+if b_~=bB then
+local b2=aa.PivotOf(b_)
+local b3=b2 and Vector3.new(b2.X,bH.Position.Y,b2.Z)
+if b3 and(b3-bH.Position).Magnitude>0.1 then
+bH.CFrame=CFrame.new(bH.Position,b3)
 end
-if ai.enabled and(bN-h)>1 then
-h=bN
+if ai.enabled and(bK-f)>1 then
+f=bK
 
 end
 end
@@ -24095,25 +24073,25 @@ end
 
 
 
-local b4=ad.HazardRadius and ad.HazardRadius(b2)or nil
+local b1=ad.HazardRadius and ad.HazardRadius(b_)or nil
 
 
 
 
-local b5=math.max(am+an,(b4 or 0)+6,
-(ar[b2.Name]or 0)+4)
-
-
-
-
-
+local b2=math.max(am+an,(b1 or 0)+6,
+(ar[b_.Name]or 0)+4)
 
 
 
 
 
 
-if b3<=b5 or(bP and b1<=a5)then
+
+
+
+
+
+if b0<=b2 or(bM and bZ<=a3)then
 ac.Swing()
 end
 
@@ -24123,8 +24101,8 @@ end
 
 
 
-if ad.IsSafe(bJ.Position,0)then
-ac.CastReady(b2,tonumber(S.castReach)or 0,{})
+if ad.IsSafe(bH.Position,0)then
+ac.CastReady(b_,tonumber(S.castReach)or 0,{})
 end
 
 
@@ -24146,15 +24124,15 @@ end
 
 
 
-local b6=not ad.RoomSafe(bJ.Position,2.5)
-if b6 and ai.enabled and(bN-b)>2 then
-b=bN
+local b3=not ad.RoomSafe(bH.Position,2.5)
+if b3 and ai.enabled and(bK-a8)>2 then
+a8=bK
 
 end
-if b1<=a5 and math.abs(bO.Y-bJ.Position.Y)<=20
-and(bP or E or y
-or(not bR and bS and not bG and not b6))then
-bL:MoveTo(bJ.Position)
+if bZ<=a3 and math.abs(bL.Y-bH.Position.Y)<=20
+and(bM or E or w
+or(not bO and bP and not bG and not b3))then
+bJ:MoveTo(bH.Position)
 clearRoute()
 if bx then
 bx:Set(("Fighting %s — %.0f studs"):format(bB.Name,P))
@@ -24166,20 +24144,20 @@ end
 
 
 
-local b7,b8=Plan().Step(bJ.Position,br)
-if b7 then
-bL:MoveTo(b7)
+local b4,b5=Plan().Step(bH.Position,bp)
+if b4 then
+bJ:MoveTo(b4)
 if bx then
-bx:Set(("Running to %s — %.0f studs (%s)"):format(bB.Name,b1,b8))
+bx:Set(("Running to %s — %.0f studs (%s)"):format(bB.Name,bZ,b5))
 end
 elseif S.testArena then
 
 
 
-bL:MoveTo(br)
+bJ:MoveTo(bp)
 if bx then
 bx:Set(("Running to %s — %.0f studs (%s)")
-:format(bB.Name,b1,b8 or"direct"))
+:format(bB.Name,bZ,b5 or"direct"))
 end
 else
 
@@ -24190,26 +24168,26 @@ else
 
 
 
-if bR then
-local b9
-for ca,cb in ipairs{6,10,14}do
-for cc=0,15 do
-local cd=cc*math.pi/8
-local ce=Vector3.new(
-bJ.Position.X+math.cos(cd)*cb,
-bJ.Position.Y,
-bJ.Position.Z+math.sin(cd)*cb)
-if ad.BoxSafe(ce)and ad.IsSafe(ce,0)then
-b9=ce
+if bO then
+local b6
+for b7,b8 in ipairs{6,10,14}do
+for b9=0,15 do
+local ca=b9*math.pi/8
+local cb=Vector3.new(
+bH.Position.X+math.cos(ca)*b8,
+bH.Position.Y,
+bH.Position.Z+math.sin(ca)*b8)
+if ad.BoxSafe(cb)and ad.IsSafe(cb,0)then
+b6=cb
 break
 end
 end
-if b9 then break end
+if b6 then break end
 end
-if b9 then
-bL:MoveTo(b9)
-if ai.enabled and(bN-a9)>1 then
-a9=bN
+if b6 then
+bJ:MoveTo(b6)
+if ai.enabled and(bK-a7)>1 then
+a7=bK
 
 end
 if bx then bx:Set"Dodging without route"end
@@ -24225,11 +24203,11 @@ end
 
 
 
-bL:MoveTo(bJ.Position)
+bJ:MoveTo(bH.Position)
 clearRoute()
 if bx then
 bx:Set(("No route to %s — %.0f studs (%s)")
-:format(bB.Name,b1,b8 or"no path"))
+:format(bB.Name,bZ,b5 or"no path"))
 end
 end
 end))
@@ -29228,7 +29206,7 @@ ai(Window)
 
 if getgenv then
 getgenv().ApelHub={
-Build="11.09 19:15:41",
+Build="11.09 19:33:58",
 S=S,
 Window=Window,
 Priority=a.j(),
